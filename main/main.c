@@ -25,6 +25,7 @@
 #include "filesystem.h"
 #include "input.h"
 #include "log_buffer.h"
+#include "lottoaxe_api.h"
 
 static GlobalState GLOBAL_STATE;
 
@@ -37,7 +38,7 @@ void app_main(void)
         log_buffer_init();
     }
 
-    ESP_LOGI(TAG, "Welcome to the bitaxe - FOSS || GTFO!");
+    ESP_LOGI(TAG, "Welcome to LottoAxe OS - FOSS || GTFO!");
 
     if (xTaskCreate(cpu_monitor_task, "cpu_monitor", 4096, (void *)&GLOBAL_STATE, 1, NULL) != pdPASS) {
         ESP_LOGE(TAG, "Error creating cpu monitor task");
@@ -117,8 +118,11 @@ void app_main(void)
         ESP_LOGE(TAG, "Critical peripheral initialization failure (%s). Entering degraded mode.", esp_err_to_name(GLOBAL_STATE.SELF_TEST_MODULE.system_init_ret));
     }
     
+    // Initialize LottoAxe OS modules (pool profiles, safety)
+    lottoaxe_api_init();
+
     if (!GLOBAL_STATE.SELF_TEST_MODULE.is_active) {
-        // start the API for AxeOS
+        // start the API for AxeOS / LottoAxe OS
         start_rest_server((void *) &GLOBAL_STATE);
     }
 

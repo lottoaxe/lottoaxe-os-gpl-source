@@ -1,0 +1,49 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="la-section-title">Configuration Backup</h5>
+      <p class="text-500 text-sm mb-4">Export, import, or reset your LottoAxe OS configuration.</p>
+
+      <div class="grid">
+        <!-- Export -->
+        <div class="col-12 md:col-4">
+          <div class="la-config-panel la-config-panel--export">
+            <i class="pi pi-download la-config-icon la-config-icon--neon"></i>
+            <h6 class="la-config-title">Export Config</h6>
+            <p class="la-config-desc">Download all settings as a JSON file. Includes pool profiles, tuning, and network settings.</p>
+            <button pButton label="Export JSON" icon="pi pi-download" class="p-button-outlined w-full" (click)="exportConfig()"></button>
+          </div>
+        </div>
+
+        <!-- Import -->
+        <div class="col-12 md:col-4">
+          <div class="la-config-panel la-config-panel--import">
+            <i class="pi pi-upload la-config-icon la-config-icon--info"></i>
+            <h6 class="la-config-title">Import Config</h6>
+            <p class="la-config-desc">Restore settings from a previously exported JSON file. Requires restart after import.</p>
+            <label pButton class="p-button-outlined p-button-info cursor-pointer w-full justify-content-center">
+              <i class="pi pi-upload mr-2"></i> Choose File
+              <input type="file" accept=".json" (change)="onImportFile($event)" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <!-- Factory Reset -->
+        <div class="col-12 md:col-4">
+          <div class="la-config-panel la-config-panel--danger">
+            <i class="pi pi-exclamation-triangle la-config-icon la-config-icon--danger"></i>
+            <h6 class="la-config-title">Factory Reset</h6>
+            <p class="la-config-desc">Erase ALL settings and reboot. You will need to reconnect via WiFi AP mode.</p>
+            <button pButton label="Factory Reset" icon="pi pi-trash" class="p-button-danger p-button-outlined w-full" (click)="factoryReset()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restart button -->
+      <div class="la-restart-section mt-4">
+        <p class="text-500 text-sm mb-2">After importing a config, restart the device to apply changes:</p>
+        <button pButton label="Restart Device" icon="pi pi-refresh" class="p-button-warning" (click)="restart()"></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="la-splash" *ngIf="visible">
+  <div class="la-splash-content">
+    <div class="la-splash-logo">
+      <span class="la-splash-title">LottoAxe</span>
+      <span class="la-splash-subtitle">OS</span>
+    </div>
+
+    <div class="la-splash-terminal">
+      <div *ngFor="let line of bootLines" class="la-splash-line">
+        <span class="la-splash-prompt">&gt;</span> {{ line }}
+      </div>
+      <span class="la-splash-cursor">_</span>
+    </div>
+
+    <div class="la-splash-bar-wrap">
+      <div class="la-splash-bar" [style.width.%]="progress"></div>
+    </div>
+    <div class="la-splash-status">INITIALIZING MINING ENGINE...</div>
+  </div>
+</div>

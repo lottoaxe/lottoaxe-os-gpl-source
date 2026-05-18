@@ -1,0 +1,903 @@
+// ============================================================
+// LottoAxe OS — Cyberpunk Neon Theme
+// "Tune. Mine. Win."
+// ============================================================
+
+// ---- Brand Colors ----
+:root {
+  --la-neon:        #8DFF00;
+  --la-lime:        #6BFF00;
+  --la-purple:      #A020F0;
+  --la-violet:      #6A00FF;
+
+  --la-bg:          #050505;
+  --la-panel:       #111111;
+  --la-card:        #1A1A1A;
+  --la-border:      #2A2A2A;
+
+  --la-text:        #F5F5F5;
+  --la-gray:        #A1A1AA;
+  --la-muted:       #71717A;
+
+  --la-success:     #00FF99;
+  --la-warning:     #FFB300;
+  --la-danger:      #FF3B3B;
+  --la-info:        #00E5FF;
+
+  --la-glow-neon:   0 0 10px rgba(141,255,0,0.3), 0 0 30px rgba(141,255,0,0.1);
+  --la-glow-purple: 0 0 10px rgba(160,32,240,0.3), 0 0 30px rgba(160,32,240,0.1);
+  --la-glow-danger: 0 0 10px rgba(255,59,59,0.3);
+  --la-glow-info:   0 0 10px rgba(0,229,255,0.3);
+
+  --la-glass:       rgba(26, 26, 26, 0.7);
+  --la-glass-border: rgba(141, 255, 0, 0.08);
+
+  --la-radius:      8px;
+  --la-radius-lg:   12px;
+  --la-transition:  0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// ---- Global Overrides ----
+body {
+  background: var(--la-bg) !important;
+  color: var(--la-text) !important;
+}
+
+// ---- Topbar — Neon underline glow ----
+.layout-topbar {
+  background: var(--la-panel) !important;
+  border-bottom: 1px solid var(--la-border) !important;
+  box-shadow: 0 1px 0 var(--la-border), 0 4px 20px rgba(141,255,0,0.05) !important;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--la-neon) 20%,
+      var(--la-purple) 50%,
+      var(--la-neon) 80%,
+      transparent 100%
+    );
+    opacity: 0.6;
+  }
+}
+
+// ---- Sidebar — Glassmorphism ----
+.layout-sidebar {
+  background: var(--la-glass) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--la-glass-border) !important;
+  border-radius: var(--la-radius-lg) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  display: flex;
+  flex-direction: column;
+}
+
+// ---- Sidebar Logo (bottom of menu) ----
+.la-sidebar-logo {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: auto auto 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.la-sidebar-logo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(141, 255, 0, 0.08);
+  border-top-color: #8DFF00;
+  border-right-color: rgba(160, 32, 240, 0.4);
+  animation: la-sidebar-spin 3s linear infinite;
+  box-shadow: 0 0 12px rgba(141, 255, 0, 0.08);
+}
+
+.la-sidebar-logo-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 0 8px rgba(141, 255, 0, 0.3));
+}
+
+.la-sidebar-logo-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  user-select: none;
+}
+
+.la-sidebar-logo-lotto {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #8DFF00;
+  text-shadow: 0 0 10px rgba(141, 255, 0, 0.4);
+  letter-spacing: 1px;
+}
+
+.la-sidebar-logo-axe {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #A020F0;
+  text-shadow: 0 0 8px rgba(160, 32, 240, 0.4);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+@keyframes la-sidebar-spin {
+  to { transform: rotate(360deg); }
+}
+
+.layout-menu ul a {
+  border-radius: var(--la-radius) !important;
+  transition: all var(--la-transition) !important;
+
+  &:hover {
+    background: rgba(141, 255, 0, 0.06) !important;
+  }
+
+  &.active-route {
+    color: var(--la-neon) !important;
+    background: rgba(141, 255, 0, 0.08) !important;
+    box-shadow: inset 3px 0 0 var(--la-neon);
+  }
+}
+
+.layout-root-menuitem > .layout-menuitem-root-text {
+  color: var(--la-muted) !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+// ---- Cards — Glassmorphism panels ----
+.card {
+  background: var(--la-card) !important;
+  border: 1px solid var(--la-border) !important;
+  border-radius: var(--la-radius-lg) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important;
+  transition: border-color var(--la-transition), box-shadow var(--la-transition) !important;
+
+  &:hover {
+    border-color: rgba(141, 255, 0, 0.12) !important;
+  }
+}
+
+// Neon-bordered card variant
+.la-card-glow {
+  background: var(--la-glass) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(141, 255, 0, 0.15) !important;
+  border-radius: var(--la-radius-lg) !important;
+  box-shadow: var(--la-glow-neon) !important;
+  transition: all var(--la-transition) !important;
+
+  &:hover {
+    border-color: rgba(141, 255, 0, 0.3) !important;
+    box-shadow: 0 0 15px rgba(141,255,0,0.4), 0 0 40px rgba(141,255,0,0.15) !important;
+  }
+}
+
+.la-card-purple {
+  @extend .la-card-glow;
+  border-color: rgba(160, 32, 240, 0.15) !important;
+  box-shadow: var(--la-glow-purple) !important;
+
+  &:hover {
+    border-color: rgba(160, 32, 240, 0.3) !important;
+    box-shadow: 0 0 15px rgba(160,32,240,0.4), 0 0 40px rgba(160,32,240,0.15) !important;
+  }
+}
+
+// ---- Buttons — Neon fill ----
+.p-button:not(.p-button-secondary):not(.p-button-success):not(.p-button-warning):not(.p-button-danger):not(.p-button-info):not(.p-button-outlined):not(.p-button-text) {
+  background: var(--la-neon) !important;
+  border-color: var(--la-neon) !important;
+  color: var(--la-bg) !important;
+  font-weight: 700 !important;
+  border-radius: var(--la-radius) !important;
+  transition: all var(--la-transition) !important;
+
+  &:enabled:hover {
+    background: var(--la-lime) !important;
+    border-color: var(--la-lime) !important;
+    box-shadow: var(--la-glow-neon) !important;
+    transform: translateY(-1px);
+  }
+}
+
+.p-button-outlined {
+  border-radius: var(--la-radius) !important;
+
+  &:not(.p-button-secondary):not(.p-button-success):not(.p-button-warning):not(.p-button-danger) {
+    border-color: var(--la-neon) !important;
+    color: var(--la-neon) !important;
+
+    &:enabled:hover {
+      background: rgba(141, 255, 0, 0.08) !important;
+      box-shadow: var(--la-glow-neon) !important;
+    }
+  }
+}
+
+.p-button-success {
+  background: var(--la-success) !important;
+  border-color: var(--la-success) !important;
+  color: var(--la-bg) !important;
+}
+
+.p-button-warning {
+  background: var(--la-warning) !important;
+  border-color: var(--la-warning) !important;
+  color: var(--la-bg) !important;
+}
+
+.p-button-danger {
+  background: var(--la-danger) !important;
+  border-color: var(--la-danger) !important;
+  color: #fff !important;
+}
+
+.p-button-info {
+  background: var(--la-info) !important;
+  border-color: var(--la-info) !important;
+  color: var(--la-bg) !important;
+}
+
+// ---- Inputs — Neon focus glow ----
+.p-inputtext {
+  border-radius: var(--la-radius) !important;
+  border-color: var(--la-border) !important;
+
+  &:enabled:focus {
+    border-color: var(--la-neon) !important;
+    box-shadow: 0 0 0 1px rgba(141,255,0,0.2) !important;
+  }
+}
+
+.p-dropdown {
+  border-radius: var(--la-radius) !important;
+
+  &:not(.p-disabled).p-focus {
+    border-color: var(--la-neon) !important;
+    box-shadow: 0 0 0 1px rgba(141,255,0,0.2) !important;
+  }
+}
+
+// ---- Sliders — Neon track ----
+.p-slider {
+  border-radius: 4px !important;
+  background: var(--la-border) !important;
+
+  .p-slider-range {
+    background: linear-gradient(90deg, var(--la-lime), var(--la-neon)) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 6px rgba(141,255,0,0.4) !important;
+  }
+
+  .p-slider-handle {
+    background: var(--la-neon) !important;
+    border: 2px solid var(--la-neon) !important;
+    box-shadow: 0 0 8px rgba(141,255,0,0.5) !important;
+    transition: all var(--la-transition) !important;
+
+    &:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 14px rgba(141,255,0,0.7) !important;
+    }
+  }
+}
+
+// ---- Progress Bar — Neon ----
+.p-progressbar {
+  background: var(--la-border) !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+
+  .p-progressbar-value {
+    background: linear-gradient(90deg, var(--la-lime), var(--la-neon)) !important;
+    box-shadow: 0 0 10px rgba(141,255,0,0.3) !important;
+  }
+}
+
+// ---- Checkbox / Toggle — Brand colors ----
+.p-checkbox .p-checkbox-box.p-highlight {
+  background: var(--la-neon) !important;
+  border-color: var(--la-neon) !important;
+}
+
+.p-togglebutton.p-highlight {
+  background: var(--la-neon) !important;
+  border-color: var(--la-neon) !important;
+  color: var(--la-bg) !important;
+}
+
+// ---- Toasts — Cyberpunk style ----
+.toast-container {
+  .ngx-toastr {
+    background: var(--la-card) !important;
+    border: 1px solid var(--la-border) !important;
+    border-radius: var(--la-radius) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+    color: var(--la-text) !important;
+
+    &.toast-success {
+      border-left: 3px solid var(--la-success) !important;
+    }
+    &.toast-warning {
+      border-left: 3px solid var(--la-warning) !important;
+    }
+    &.toast-error {
+      border-left: 3px solid var(--la-danger) !important;
+    }
+    &.toast-info {
+      border-left: 3px solid var(--la-info) !important;
+    }
+  }
+}
+
+// ---- PrimeNG Message overrides ----
+.p-message {
+  border-radius: var(--la-radius) !important;
+
+  &.p-message-warn {
+    background: rgba(255, 179, 0, 0.08) !important;
+    border: 1px solid rgba(255, 179, 0, 0.2) !important;
+    color: var(--la-warning) !important;
+  }
+  &.p-message-error {
+    background: rgba(255, 59, 59, 0.08) !important;
+    border: 1px solid rgba(255, 59, 59, 0.2) !important;
+    color: var(--la-danger) !important;
+  }
+  &.p-message-success {
+    background: rgba(0, 255, 153, 0.08) !important;
+    border: 1px solid rgba(0, 255, 153, 0.2) !important;
+    color: var(--la-success) !important;
+  }
+  &.p-message-info {
+    background: rgba(0, 229, 255, 0.08) !important;
+    border: 1px solid rgba(0, 229, 255, 0.2) !important;
+    color: var(--la-info) !important;
+  }
+}
+
+// ============================================================
+// LottoAxe OS — Custom Components
+// ============================================================
+
+// ---- Stat Widget ----
+.la-stat {
+  background: var(--la-card);
+  border: 1px solid var(--la-border);
+  border-radius: var(--la-radius-lg);
+  padding: 1rem 1.25rem;
+  transition: all var(--la-transition);
+
+  &:hover {
+    border-color: rgba(141, 255, 0, 0.15);
+    box-shadow: 0 0 20px rgba(141,255,0,0.05);
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--la-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--la-text);
+    line-height: 1.1;
+  }
+
+  &__unit {
+    font-size: 0.85rem;
+    color: var(--la-gray);
+    margin-left: 0.25rem;
+  }
+
+  &__sub {
+    font-size: 0.75rem;
+    color: var(--la-muted);
+    margin-top: 0.25rem;
+  }
+
+  &--neon .la-stat__value, &--neon .la-stat-value { color: var(--la-neon); }
+  &--purple .la-stat__value, &--purple .la-stat-value { color: var(--la-purple); }
+  &--info .la-stat__value, &--info .la-stat-value { color: var(--la-info); }
+  &--success .la-stat__value, &--success .la-stat-value { color: var(--la-success); }
+  &--warning .la-stat__value, &--warning .la-stat-value { color: var(--la-warning); }
+  &--danger .la-stat__value, &--danger .la-stat-value { color: var(--la-danger); }
+
+  // Flat-class aliases for Angular component templates
+  &--green .la-stat-value { color: var(--la-neon); }
+  &--orange .la-stat-value { color: var(--la-warning); }
+  &--red .la-stat-value { color: var(--la-danger); }
+}
+
+.la-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--la-muted);
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.la-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--la-text);
+  line-height: 1.1;
+}
+
+.la-stat-unit {
+  font-size: 0.85rem;
+  color: var(--la-gray);
+  margin-left: 0.25rem;
+}
+
+.la-stat-sub {
+  font-size: 0.75rem;
+  color: var(--la-muted);
+  margin-top: 0.25rem;
+}
+
+// ---- Large hashrate display ----
+.la-hashrate-hero {
+  text-align: center;
+  padding: 2rem 1rem;
+
+  &__value {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 900;
+    color: var(--la-neon);
+    text-shadow: 0 0 20px rgba(141,255,0,0.4), 0 0 60px rgba(141,255,0,0.1);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  &__unit {
+    font-size: 1.25rem;
+    color: var(--la-gray);
+    font-weight: 400;
+    margin-left: 0.5rem;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: var(--la-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 0.5rem;
+  }
+}
+
+// ---- Mining activity pulse ----
+.la-mining-pulse {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--la-neon);
+  box-shadow: 0 0 6px var(--la-neon);
+  animation: la-pulse 2s ease-in-out infinite;
+}
+
+@keyframes la-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--la-neon); }
+  50% { opacity: 0.5; box-shadow: 0 0 16px var(--la-neon), 0 0 30px rgba(141,255,0,0.2); }
+}
+
+// ---- Preset Profile Cards ----
+.la-preset {
+  background: var(--la-card);
+  border: 1px solid var(--la-border);
+  border-radius: var(--la-radius-lg);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all var(--la-transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--la-radius-lg) var(--la-radius-lg) 0 0;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &__icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--la-text);
+    margin-bottom: 0.25rem;
+  }
+
+  &__desc {
+    font-size: 0.75rem;
+    color: var(--la-muted);
+    margin-bottom: 1rem;
+  }
+
+  &__specs {
+    font-size: 0.8rem;
+    color: var(--la-gray);
+
+    span {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  &--eco {
+    &::before { background: linear-gradient(90deg, #00FF99, #00CC77); }
+    &:hover { border-color: rgba(0,255,153,0.3); box-shadow: 0 0 20px rgba(0,255,153,0.15); }
+    .la-preset__icon, .la-preset-icon { color: #00FF99; text-shadow: 0 0 12px rgba(0,255,153,0.4); }
+  }
+  &--balanced {
+    &::before { background: linear-gradient(90deg, #00E5FF, #0088CC); }
+    &:hover { border-color: rgba(0,229,255,0.3); box-shadow: 0 0 20px rgba(0,229,255,0.15); }
+    .la-preset__icon, .la-preset-icon { color: #00E5FF; text-shadow: 0 0 12px rgba(0,229,255,0.4); }
+  }
+  &--performance {
+    &::before { background: linear-gradient(90deg, #FFB300, #FF8800); }
+    &:hover { border-color: rgba(255,179,0,0.3); box-shadow: 0 0 20px rgba(255,179,0,0.15); }
+    .la-preset__icon, .la-preset-icon { color: #FFB300; text-shadow: 0 0 12px rgba(255,179,0,0.4); }
+  }
+  &--lotto {
+    &::before { background: linear-gradient(90deg, #A020F0, #6A00FF, #8DFF00); }
+    &:hover { border-color: rgba(160,32,240,0.3); box-shadow: 0 0 20px rgba(160,32,240,0.2), 0 0 40px rgba(141,255,0,0.1); }
+    .la-preset__icon, .la-preset-icon { color: #A020F0; text-shadow: 0 0 12px rgba(160,32,240,0.5); }
+  }
+}
+
+// Flat-class aliases for preset child elements
+.la-preset-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.la-preset-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--la-text);
+  margin-bottom: 0.25rem;
+}
+
+.la-preset-desc {
+  font-size: 0.75rem;
+  color: var(--la-muted);
+  margin-bottom: 1rem;
+}
+
+.la-preset-header {
+  margin-bottom: 1rem;
+}
+
+.la-preset-specs {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.la-preset-spec {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.la-preset-spec-label {
+  color: var(--la-muted);
+}
+
+.la-preset-spec-value {
+  font-weight: 700;
+  color: var(--la-text);
+}
+
+.la-preset-btn {
+  margin-top: auto;
+}
+
+// ---- Status badges ----
+.la-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--active {
+    background: rgba(0, 255, 153, 0.1);
+    color: var(--la-success);
+    border: 1px solid rgba(0, 255, 153, 0.2);
+  }
+  &--warning {
+    background: rgba(255, 179, 0, 0.1);
+    color: var(--la-warning);
+    border: 1px solid rgba(255, 179, 0, 0.2);
+  }
+  &--error {
+    background: rgba(255, 59, 59, 0.1);
+    color: var(--la-danger);
+    border: 1px solid rgba(255, 59, 59, 0.2);
+  }
+  &--info {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--la-info);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+  }
+  &--neon {
+    background: rgba(141, 255, 0, 0.1);
+    color: var(--la-neon);
+    border: 1px solid rgba(141, 255, 0, 0.2);
+  }
+  &--purple {
+    background: rgba(160, 32, 240, 0.1);
+    color: var(--la-purple);
+    border: 1px solid rgba(160, 32, 240, 0.2);
+  }
+}
+
+// ---- Terminal / Log Viewer ----
+.la-terminal {
+  background: #0A0A0A;
+  border: 1px solid var(--la-border);
+  border-radius: var(--la-radius);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 500px;
+  color: var(--la-gray);
+
+  &__line {
+    &--info { color: var(--la-info); }
+    &--success { color: var(--la-success); }
+    &--warning { color: var(--la-warning); }
+    &--error { color: var(--la-danger); }
+    &--neon { color: var(--la-neon); }
+  }
+
+  &__prompt {
+    color: var(--la-neon);
+    &::before { content: '> '; }
+  }
+
+  &__timestamp {
+    color: var(--la-muted);
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+// ---- Boot Splash ----
+.la-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--la-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: la-splash-out 0.4s 2.5s forwards;
+
+  &__logo {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--la-neon);
+    text-shadow: 0 0 30px rgba(141,255,0,0.4), 0 0 80px rgba(141,255,0,0.15);
+    animation: la-logo-in 1s ease-out;
+    letter-spacing: -0.02em;
+  }
+
+  &__sub {
+    font-size: 0.75rem;
+    color: var(--la-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+    animation: la-logo-in 1s 0.3s ease-out both;
+  }
+
+  &__bar {
+    width: 200px;
+    height: 2px;
+    background: var(--la-border);
+    border-radius: 2px;
+    margin-top: 2rem;
+    overflow: hidden;
+
+    &-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--la-neon), var(--la-purple));
+      border-radius: 2px;
+      animation: la-bar-fill 2s ease-in-out;
+      box-shadow: 0 0 8px rgba(141,255,0,0.4);
+    }
+  }
+}
+
+@keyframes la-logo-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes la-bar-fill {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes la-splash-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+// ---- Loading spinner ----
+.la-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--la-border);
+  border-top-color: var(--la-neon);
+  border-radius: 50%;
+  animation: la-spin 0.8s linear infinite;
+
+  &--sm { width: 16px; height: 16px; border-width: 2px; }
+  &--lg { width: 48px; height: 48px; border-width: 4px; }
+}
+
+@keyframes la-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ---- RGB animated border ----
+.la-rgb-border {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      var(--la-rgb-angle, 0deg),
+      var(--la-neon),
+      var(--la-purple),
+      var(--la-info),
+      var(--la-neon)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: la-rgb-rotate 4s linear infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes la-rgb-rotate {
+  to { --la-rgb-angle: 360deg; }
+}
+
+@property --la-rgb-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+// ---- Chart styling ----
+.card.chart {
+  border-color: var(--la-border) !important;
+}
+
+// ---- Scrollbar — Neon thin ----
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--la-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--la-border);
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(141, 255, 0, 0.3);
+  }
+}
+
+// ---- Selection color ----
+::selection {
+  background: rgba(141, 255, 0, 0.2);
+  color: var(--la-neon);
+}
+
+// ---- Responsive touch optimizations ----
+@media (max-width: 768px) {
+  .la-stat__value {
+    font-size: 1.5rem;
+  }
+
+  .la-hashrate-hero__value {
+    font-size: 2.5rem;
+  }
+
+  .la-preset {
+    padding: 1rem;
+  }
+
+  .la-terminal {
+    font-size: 0.7rem;
+    max-height: 300px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  // Larger touch targets on mobile
+  .layout-menu ul a {
+    padding: 0.875rem 1rem !important;
+    min-height: 44px;
+  }
+
+  .p-button {
+    min-height: 44px;
+  }
+
+  .p-slider .p-slider-handle {
+    width: 24px !important;
+    height: 24px !important;
+    margin-top: -12px !important;
+    margin-left: -12px !important;
+  }
+}
+
+// ---- Reduced motion support ----
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

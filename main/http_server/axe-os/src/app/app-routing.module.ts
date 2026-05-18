@@ -11,10 +11,13 @@ import { SwarmComponent } from './components/swarm/swarm.component';
 import { ScoreboardComponent } from './components/scoreboard/scoreboard.component';
 import { DesignComponent } from './components/design/design.component';
 import { PoolComponent } from './components/pool/pool.component';
+import { PoolProfilesComponent } from './components/pool-profiles/pool-profiles.component';
+import { TuningPresetsComponent } from './components/tuning-presets/tuning-presets.component';
+import { ConfigBackupComponent } from './components/config-backup/config-backup.component';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { ApModeGuard } from './guards/ap-mode.guard';
 
-const TITLE_PREFIX = 'AxeOS';
+const TITLE_PREFIX = 'LottoAxe OS';
 
 const routes: Routes = [
   {
@@ -82,6 +85,21 @@ const routes: Routes = [
         path: 'pool',
         component: PoolComponent,
         title: `${TITLE_PREFIX} Pool`,
+      },
+      {
+        path: 'pool-profiles',
+        component: PoolProfilesComponent,
+        title: `${TITLE_PREFIX} Pool Profiles`,
+      },
+      {
+        path: 'tuning',
+        component: TuningPresetsComponent,
+        title: `${TITLE_PREFIX} Tuning`,
+      },
+      {
+        path: 'config',
+        component: ConfigBackupComponent,
+        title: `${TITLE_PREFIX} Config`,
       }
     ]
   },

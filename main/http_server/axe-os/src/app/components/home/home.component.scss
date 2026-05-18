@@ -124,4 +124,108 @@
     .mb-3 { margin-bottom: 1.25rem; }
 }
 
+// -- LottoAxe Cyberpunk Dashboard Overrides --
+
+:host {
+    .grid-stack .grid-stack-item-content > .card {
+        background: rgba(20, 20, 20, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(141, 255, 0, 0.12);
+        border-radius: 10px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            border-color: rgba(141, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(141, 255, 0, 0.08);
+        }
+    }
+
+    // Hashrate hero card
+    .grid-stack-item[gs-id="hashrate"] {
+        .text-2xl {
+            color: #8DFF00;
+            text-shadow: 0 0 10px rgba(141, 255, 0, 0.4);
+        }
+    }
+
+    // Best diff card
+    .grid-stack-item[gs-id="bestdiff"] {
+        .text-2xl {
+            color: #A020F0;
+            text-shadow: 0 0 10px rgba(160, 32, 240, 0.4);
+        }
+    }
+
+    // Shares card accepted count
+    .grid-stack-item[gs-id="shares"] {
+        .text-2xl {
+            color: #8DFF00;
+        }
+    }
+
+    // Efficiency card
+    .grid-stack-item[gs-id="efficiency"] {
+        .text-2xl {
+            color: #6BFF00;
+        }
+    }
+
+    // Power/Heat/Fan card headers
+    .grid-stack-item[gs-id="power"],
+    .grid-stack-item[gs-id="heat"],
+    .grid-stack-item[gs-id="fan"] {
+        h4 {
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+    }
+
+    // Neon progress bars inside dashboard
+    ::ng-deep .p-progressbar {
+        background: rgba(141, 255, 0, 0.08);
+        border-radius: 4px;
+
+        .p-progressbar-value {
+            background: linear-gradient(90deg, #8DFF00, #6BFF00);
+            box-shadow: 0 0 6px rgba(141, 255, 0, 0.3);
+        }
+    }
+
+    // Chart card glow border
+    .grid-stack-item[gs-id="chart"] {
+        .grid-stack-item-content > .card {
+            border-color: rgba(141, 255, 0, 0.2);
+        }
+    }
+
+    // Block header purple accent
+    .grid-stack-item[gs-id="blockheader"] {
+        h4 {
+            color: #A020F0;
+        }
+        .p-badge-success {
+            background: #A020F0;
+            color: #fff;
+        }
+    }
+
+    // Section label styling
+    .text-500 {
+        color: rgba(255, 255, 255, 0.45) !important;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    // Edit mode neon dashed outline
+    .grid-stack.gs-edit-mode {
+        .grid-stack-item > .grid-stack-item-content {
+            outline-color: #8DFF00;
+        }
+    }
+}
+
 

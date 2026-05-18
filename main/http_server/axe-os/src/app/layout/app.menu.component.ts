@@ -32,9 +32,12 @@ export class AppMenuComponent implements OnInit {
           { separator: true },
 
           { label: 'Pool', icon: 'pi pi-fw pi-server', routerLink: ['pool'] },
+          { label: 'Pool Profiles', icon: 'pi pi-fw pi-bookmark', routerLink: ['pool-profiles'] },
+          { label: 'Tuning', icon: 'pi pi-fw pi-sliders-h', routerLink: ['tuning'] },
           { label: 'Network', icon: 'pi pi-fw pi-wifi', routerLink: ['network'] },
           { label: 'Theme', icon: 'pi pi-fw pi-palette', routerLink: ['design'] },
           { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: ['settings'] },
+          { label: 'Config', icon: 'pi pi-fw pi-download', routerLink: ['config'] },
           { label: 'Update', icon: 'pi pi-fw pi-sync', routerLink: ['update'] },
           { separator: true },
 

@@ -1,9 +1,14 @@
 #loading {
-    background-color: var(--maskbg);
+    background-color: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 
     bottom: 0;
     position: fixed;
     z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     --padding: 2rem;
 
@@ -15,6 +20,8 @@
     right: var(--padding);
     top: calc(var(--topbar-height) + var(--padding));
     padding-bottom: calc(var(--topbar-height) + var(--padding));
+    border-radius: 10px;
+    border: 1px solid rgba(141, 255, 0, 0.08);
 
     ::ng-deep .menuIsVisible & {
         @media screen and (min-width: 992px) {
@@ -23,35 +30,57 @@
     }
 }
 
-figure {
-    height: 100%;
+.la-loader {
+    position: relative;
+    width: 160px;
+    height: 160px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin: 0;
+    justify-content: center;
 }
 
-.icon-bitaxe {
-    width: 41px;
-    height: 60px;
-}
-.icon-fan {
-    width: 32px;
-    height: 32px;
-    margin: 24px 0 0;
+.la-loader-ring {
     position: absolute;
-
-    animation: rotation 1s infinite linear;
-    transform-box: fill-box;
-    transform-origin: center;
-    will-change: transform;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(141, 255, 0, 0.08);
+    border-top-color: #8DFF00;
+    border-right-color: rgba(160, 32, 240, 0.5);
+    animation: la-loader-spin 1.2s linear infinite;
+    box-shadow: 0 0 20px rgba(141, 255, 0, 0.1), inset 0 0 20px rgba(141, 255, 0, 0.03);
 }
 
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.la-loader-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    animation: la-loader-pulse 2s ease-in-out infinite;
+    user-select: none;
+}
+
+.la-loader-lotto {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #8DFF00;
+    text-shadow: 0 0 15px rgba(141, 255, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.la-loader-axe {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #A020F0;
+    text-shadow: 0 0 12px rgba(160, 32, 240, 0.5);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+@keyframes la-loader-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes la-loader-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }

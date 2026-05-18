@@ -49,6 +49,7 @@
 #include "stratum_v2_task.h"
 #include "log_buffer.h"
 #include "utils.h"
+#include "lottoaxe_api.h"
 
 static const char * TAG = "http_server";
 static const char * CORS_TAG = "CORS";
@@ -1543,7 +1544,7 @@ esp_err_t start_rest_server(void * pvParameters)
     config.uri_match_fn = httpd_uri_match_wildcard;
     config.stack_size = 8192;
     config.max_open_sockets = 20;
-    config.max_uri_handlers = 25;
+    config.max_uri_handlers = 40;
     config.close_fn = websocket_close_fn;
     config.lru_purge_enable = true;
 
@@ -1692,6 +1693,9 @@ esp_err_t start_rest_server(void * pvParameters)
         .is_websocket = true
     };
     httpd_register_uri_handler(server, &ws);
+
+    // Register LottoAxe OS custom endpoints
+    lottoaxe_api_register(server);
 
     if (!GLOBAL_STATE->filesystem_is_available) {
         /* Make default route serve Recovery */

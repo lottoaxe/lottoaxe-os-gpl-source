@@ -1,0 +1,275 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="la-section-title">Tuning Presets</h5>
+      <p class="text-500 text-sm mb-3">Quick-apply tuning profiles for your BM1366 ASIC. Changes apply immediately — no restart needed.</p>
+
+      <!-- Safety warning banner -->
+      <p-message *ngIf="safety.throttled" severity="warn" class="mb-3 block">
+        Auto-throttle active: frequency reduced from {{safety.originalFrequency}} to {{safety.currentFrequency}} MHz due to high temperature.
+        Throttle events: {{safety.throttleCount}}.
+      </p-message>
+
+      <!-- Current state -->
+      <div class="flex gap-4 mb-4 flex-wrap la-current-stats">
+        <div class="la-stat la-stat--green">
+          <span class="la-stat-label">Frequency</span>
+          <span class="la-stat-value">{{currentFrequency}}</span>
+          <span class="la-stat-unit">MHz</span>
+        </div>
+        <div class="la-stat la-stat--orange">
+          <span class="la-stat-label">Voltage</span>
+          <span class="la-stat-value">{{currentVoltage}}</span>
+          <span class="la-stat-unit">mV</span>
+        </div>
+        <div class="la-stat la-stat--red">
+          <span class="la-stat-label">Temperature</span>
+          <span class="la-stat-value">{{currentTemp | number:'1.0-0'}}</span>
+          <span class="la-stat-unit">&deg;C</span>
+        </div>
+        <div class="la-stat la-stat--blue">
+          <span class="la-stat-label">Hashrate</span>
+          <span class="la-stat-value">{{currentHashrate | number:'1.0-0'}}</span>
+          <span class="la-stat-unit">GH/s</span>
+        </div>
+        <div class="la-stat la-stat--purple">
+          <span class="la-stat-label">Power</span>
+          <span class="la-stat-value">{{currentPower | number:'1.1-1'}}</span>
+          <span class="la-stat-unit">W</span>
+        </div>
+      </div>
+
+      <!-- Preset cards -->
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let preset of presets">
+          <div class="la-preset" [ngClass]="preset.variant">
+            <div class="la-preset-header">
+              <div class="flex align-items-center gap-2 mb-1">
+                <i class="pi {{preset.icon}} la-preset-icon"></i>
+                <h6 class="la-preset-name">{{preset.name}}</h6>
+                <span class="la-risk-badge" [style.color]="getRiskColor(preset.riskLevel)"
+                      [style.borderColor]="getRiskColor(preset.riskLevel)">
+                  {{getRiskLabel(preset.riskLevel)}}
+                </span>
+              </div>
+              <p class="la-preset-desc">{{preset.description}}</p>
+            </div>
+            <div class="la-preset-specs">
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Frequency</span>
+                <span class="la-preset-spec-value">{{preset.frequency}} MHz</span>
+              </div>
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Voltage</span>
+                <span class="la-preset-spec-value">{{preset.voltage}} mV</span>
+              </div>
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Fan</span>
+                <span class="la-preset-spec-value">{{preset.autoFan ? 'Auto' : preset.fanSpeed + '%'}}</span>
+              </div>
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Temp Target</span>
+                <span class="la-preset-spec-value">{{preset.tempTarget}}&deg;C</span>
+              </div>
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Est. Hashrate</span>
+                <span class="la-preset-spec-value">{{preset.estHashrate}}</span>
+              </div>
+              <div class="la-preset-spec">
+                <span class="la-preset-spec-label">Est. Power</span>
+                <span class="la-preset-spec-value">{{preset.estPower}}</span>
+              </div>
+            </div>
+            <button pButton [label]="'Apply ' + preset.name" class="w-full p-button-sm la-preset-btn"
+              (click)="requestApplyPreset(preset)">
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Tuning Toggle -->
+      <div class="mt-4">
+        <button pButton [label]="showCustomTuning ? 'Hide Custom Tuning' : 'Custom Tuning'"
+          icon="pi pi-sliders-v" class="p-button-outlined"
+          (click)="showCustomTuning = !showCustomTuning"></button>
+      </div>
+
+      <!-- Custom Tuning Panel -->
+      <div *ngIf="showCustomTuning" class="la-custom-panel mt-3">
+        <h6 class="la-custom-title"><i class="pi pi-cog mr-2"></i>Custom Tuning</h6>
+        <p class="text-500 text-sm mb-3">Manually adjust each parameter. All changes go through the safety disclosure before applying.</p>
+
+        <form [formGroup]="customForm" (ngSubmit)="applyCustomTuning()">
+          <div class="grid">
+            <!-- Frequency -->
+            <div class="col-12 md:col-6">
+              <div class="la-slider-group">
+                <div class="flex justify-content-between align-items-center mb-2">
+                  <label class="la-slider-label">ASIC Frequency</label>
+                  <span class="la-slider-value la-slider-value--green">{{customForm.value.frequency}} MHz</span>
+                </div>
+                <input type="range" class="la-range la-range--green" formControlName="frequency"
+                  [min]="FREQ_MIN" [max]="FREQ_MAX" step="5">
+                <div class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
+                  <span>{{FREQ_MIN}} MHz</span>
+                  <span>{{FREQ_MAX}} MHz</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Voltage -->
+            <div class="col-12 md:col-6">
+              <div class="la-slider-group">
+                <div class="flex justify-content-between align-items-center mb-2">
+                  <label class="la-slider-label">Core Voltage</label>
+                  <span class="la-slider-value la-slider-value--orange">{{customForm.value.coreVoltage}} mV</span>
+                </div>
+                <input type="range" class="la-range la-range--orange" formControlName="coreVoltage"
+                  [min]="VOLT_MIN" [max]="VOLT_MAX" step="10">
+                <div class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
+                  <span>{{VOLT_MIN}} mV</span>
+                  <span>{{VOLT_MAX}} mV</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Temp Target -->
+            <div class="col-12 md:col-6">
+              <div class="la-slider-group">
+                <div class="flex justify-content-between align-items-center mb-2">
+                  <label class="la-slider-label">Temp Target</label>
+                  <span class="la-slider-value la-slider-value--red">{{customForm.value.temptarget}}&deg;C</span>
+                </div>
+                <input type="range" class="la-range la-range--red" formControlName="temptarget"
+                  [min]="TEMP_MIN" [max]="TEMP_MAX" step="1">
+                <div class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
+                  <span>{{TEMP_MIN}}&deg;C</span>
+                  <span>{{TEMP_MAX}}&deg;C</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fan -->
+            <div class="col-12 md:col-6">
+              <div class="la-slider-group">
+                <div class="flex justify-content-between align-items-center mb-2">
+                  <label class="la-slider-label">Fan Control</label>
+                  <span class="la-slider-value la-slider-value--blue">
+                    {{customForm.value.autofanspeed ? 'Auto' : customForm.value.manualFanSpeed + '%'}}
+                  </span>
+                </div>
+                <div class="flex align-items-center gap-3 mb-2">
+                  <p-checkbox formControlName="autofanspeed" [binary]="true" label="Auto Fan"></p-checkbox>
+                </div>
+                <input *ngIf="!customForm.value.autofanspeed" type="range" class="la-range la-range--blue"
+                  formControlName="manualFanSpeed" [min]="FAN_MIN" [max]="FAN_MAX" step="5">
+                <div *ngIf="!customForm.value.autofanspeed" class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
+                  <span>Off</span>
+                  <span>100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk indicator -->
+            <div class="col-12">
+              <div class="la-risk-meter">
+                <span class="la-risk-meter-label">Risk Level:</span>
+                <span class="la-risk-meter-value" [style.color]="getRiskColor(getCustomRiskLevel())">
+                  {{getRiskLabel(getCustomRiskLevel())}}
+                </span>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <button pButton type="submit" label="Apply Custom Settings" icon="pi pi-check"
+                class="p-button-warning" [disabled]="!customForm.valid"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Safety limits info -->
+      <div class="la-safety-panel mt-3">
+        <h6 class="la-safety-title"><i class="pi pi-shield mr-2"></i>Safety Limits (BM1366)</h6>
+        <div class="grid text-sm">
+          <div class="col-6 md:col-3">
+            <span class="la-safety-label">Frequency Range</span>
+            <span class="la-safety-value">{{FREQ_MIN}} - {{FREQ_MAX}} MHz</span>
+          </div>
+          <div class="col-6 md:col-3">
+            <span class="la-safety-label">Voltage Range</span>
+            <span class="la-safety-value">{{VOLT_MIN}} - {{VOLT_MAX}} mV</span>
+          </div>
+          <div class="col-6 md:col-3">
+            <span class="la-safety-label">Auto-Throttle</span>
+            <span class="la-safety-value">65&deg;C</span>
+          </div>
+          <div class="col-6 md:col-3">
+            <span class="la-safety-label">Emergency Shutdown</span>
+            <span class="la-safety-value">72&deg;C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Disclosure Dialog -->
+<p-dialog header="Tuning Disclosure" [(visible)]="showDisclosure" [modal]="true"
+  [style]="{width: '520px'}" [closable]="true" (onHide)="cancelDisclosure()"
+  styleClass="la-disclosure-dialog">
+
+  <div class="la-disclosure-content" *ngIf="pendingPreset">
+    <div class="la-disclosure-warning">
+      <i class="pi pi-exclamation-triangle la-disclosure-icon"></i>
+      <h6 class="la-disclosure-title">READ BEFORE PROCEEDING</h6>
+    </div>
+
+    <div class="la-disclosure-body">
+      <p>You are about to apply <strong>{{pendingPreset.name}}</strong> tuning settings to your Bitaxe.</p>
+
+      <div class="la-disclosure-settings">
+        <div class="la-disclosure-setting">
+          <span>Frequency:</span> <strong>{{pendingPreset.frequency}} MHz</strong>
+        </div>
+        <div class="la-disclosure-setting">
+          <span>Voltage:</span> <strong>{{pendingPreset.voltage}} mV</strong>
+        </div>
+        <div class="la-disclosure-setting">
+          <span>Fan:</span> <strong>{{pendingPreset.autoFan ? 'Auto' : pendingPreset.fanSpeed + '%'}}</strong>
+        </div>
+        <div class="la-disclosure-setting">
+          <span>Temp Target:</span> <strong>{{pendingPreset.tempTarget}}&deg;C</strong>
+        </div>
+        <div class="la-disclosure-setting">
+          <span>Risk Level:</span>
+          <strong [style.color]="getRiskColor(pendingPreset.riskLevel)">{{getRiskLabel(pendingPreset.riskLevel)}}</strong>
+        </div>
+      </div>
+
+      <div class="la-disclosure-risks">
+        <p><strong>By proceeding you acknowledge:</strong></p>
+        <ul>
+          <li>Changing ASIC frequency and voltage affects power consumption, heat output, and device stability.</li>
+          <li>Aggressive settings may cause hashrate errors, thermal throttling, system instability, or in extreme cases hardware damage.</li>
+          <li>LottoAxe OS safety limits (auto-throttle at 65&deg;C, shutdown at 72&deg;C) remain active, but they are last-resort protections — not guarantees.</li>
+          <li>You are solely responsible for monitoring your device after applying new settings.</li>
+          <li>This is custom firmware. No warranty is provided.</li>
+        </ul>
+      </div>
+
+      <div class="la-disclosure-checkbox">
+        <p-checkbox [(ngModel)]="disclaimerAccepted" [binary]="true"
+          label="I understand the risks and want to proceed"></p-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary p-button-sm"
+      (click)="cancelDisclosure()"></button>
+    <button pButton label="Apply Settings" icon="pi pi-check" class="p-button-sm"
+      [ngClass]="{'p-button-warning': pendingPreset?.riskLevel === 'high' || pendingPreset?.riskLevel === 'extreme', 'p-button-success': pendingPreset?.riskLevel === 'low' || pendingPreset?.riskLevel === 'medium'}"
+      [disabled]="!disclaimerAccepted" (click)="confirmApplyPreset()"></button>
+  </ng-template>
+</p-dialog>

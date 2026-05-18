@@ -1,12 +1,13 @@
-$primaryColor: #f80421 !default;
-$primaryLightColor: scale-color($primaryColor, $lightness: 30%) !default;
-$primaryDarkColor: scale-color($primaryColor, $lightness: -10%) !default;
-$primaryDarkerColor: scale-color($primaryColor, $lightness: -20%) !default;
-$primaryTextColor: white !default;
+// LottoAxe OS — Cyberpunk Neon Theme Variables
+$primaryColor: #8DFF00 !default;
+$primaryLightColor: #A8FF40 !default;
+$primaryDarkColor: #6BFF00 !default;
+$primaryDarkerColor: #4ACC00 !default;
+$primaryTextColor: #050505 !default;
 
-$highlightBg: rgba(100, 181, 246, .16) !default;
+$highlightBg: rgba(141, 255, 0, .16) !default;
 $highlightTextColor: rgba(255,255,255,.87) !default;
-$highlightFocusBg: rgba($primaryColor, .24) !default;
+$highlightFocusBg: rgba(141, 255, 0, .24) !default;
 
 $inputPadding: 0.5rem 0.75rem !default;
 

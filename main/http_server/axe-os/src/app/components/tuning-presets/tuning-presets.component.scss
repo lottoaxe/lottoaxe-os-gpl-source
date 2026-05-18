@@ -1,0 +1,374 @@
+.la-section-title {
+  color: #8DFF00;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1rem;
+}
+
+.la-current-stats {
+  gap: 1rem;
+}
+
+// --- Risk Badge ---
+.la-risk-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+// --- Custom Tuning Panel ---
+.la-custom-panel {
+  background: rgba(141, 255, 0, 0.03);
+  border: 1px solid rgba(141, 255, 0, 0.1);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.la-custom-title {
+  color: #8DFF00;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+// --- Slider Groups ---
+.la-slider-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.la-slider-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.la-slider-value {
+  font-size: 1rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+
+  &--green { color: #8DFF00; text-shadow: 0 0 8px rgba(141, 255, 0, 0.4); }
+  &--orange { color: #FFB300; text-shadow: 0 0 8px rgba(255, 179, 0, 0.4); }
+  &--red { color: #FF3B3B; text-shadow: 0 0 8px rgba(255, 59, 59, 0.4); }
+  &--blue { color: #00E5FF; text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+}
+
+// --- Range Input Styling ---
+.la-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  &--green {
+    &::-webkit-slider-thumb {
+      background: #8DFF00;
+      border-color: #6BFF00;
+      box-shadow: 0 0 12px rgba(141, 255, 0, 0.5);
+    }
+  }
+  &--orange {
+    &::-webkit-slider-thumb {
+      background: #FFB300;
+      border-color: #FF9500;
+      box-shadow: 0 0 12px rgba(255, 179, 0, 0.5);
+    }
+  }
+  &--red {
+    &::-webkit-slider-thumb {
+      background: #FF3B3B;
+      border-color: #FF1111;
+      box-shadow: 0 0 12px rgba(255, 59, 59, 0.5);
+    }
+  }
+  &--blue {
+    &::-webkit-slider-thumb {
+      background: #00E5FF;
+      border-color: #00B8D4;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+    }
+  }
+
+  // Firefox
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid;
+  }
+  &--green::-moz-range-thumb { background: #8DFF00; border-color: #6BFF00; }
+  &--orange::-moz-range-thumb { background: #FFB300; border-color: #FF9500; }
+  &--red::-moz-range-thumb { background: #FF3B3B; border-color: #FF1111; }
+  &--blue::-moz-range-thumb { background: #00E5FF; border-color: #00B8D4; }
+}
+
+// --- Risk Meter ---
+.la-risk-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.la-risk-meter-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.la-risk-meter-value {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+// --- Safety Panel ---
+.la-safety-panel {
+  background: rgba(141, 255, 0, 0.04);
+  border: 1px solid rgba(141, 255, 0, 0.12);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.la-safety-title {
+  color: #8DFF00;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.la-safety-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.la-safety-value {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+// --- Disclosure Dialog ---
+::ng-deep .la-disclosure-dialog {
+  .p-dialog {
+    background: #111 !important;
+    border: 1px solid rgba(255, 179, 0, 0.3) !important;
+    box-shadow: 0 0 40px rgba(255, 179, 0, 0.1), 0 0 80px rgba(0, 0, 0, 0.8) !important;
+    border-radius: 12px !important;
+  }
+
+  .p-dialog-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 179, 0, 0.15) !important;
+    color: #FFB300 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+  }
+
+  .p-dialog-content {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .p-dialog-footer {
+    background: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+}
+
+.la-disclosure-content {
+  padding: 1.5rem;
+}
+
+.la-disclosure-warning {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.la-disclosure-icon {
+  font-size: 2.5rem;
+  color: #FFB300;
+  text-shadow: 0 0 20px rgba(255, 179, 0, 0.5);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.la-disclosure-title {
+  color: #FFB300;
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-size: 0.9rem;
+}
+
+.la-disclosure-body {
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.la-disclosure-settings {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.la-disclosure-setting {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.85rem;
+
+  span { color: rgba(255, 255, 255, 0.5); }
+  strong { color: #fff; }
+}
+
+.la-disclosure-risks {
+  background: rgba(255, 59, 59, 0.05);
+  border: 1px solid rgba(255, 59, 59, 0.15);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  p {
+    color: #FF3B3B !important;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+
+    li {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      margin-bottom: 0.35rem;
+    }
+  }
+}
+
+.la-disclosure-checkbox {
+  padding-top: 0.5rem;
+
+  ::ng-deep .p-checkbox-label {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+// --- Preset variant: Silent ---
+::ng-deep .la-preset--silent {
+  border-color: rgba(0, 229, 255, 0.15) !important;
+
+  &:hover {
+    border-color: rgba(0, 229, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.08) !important;
+  }
+
+  .la-preset-icon, .la-preset__icon {
+    color: #00E5FF !important;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.4) !important;
+  }
+
+  .la-preset-btn {
+    background: rgba(0, 229, 255, 0.1) !important;
+    border-color: rgba(0, 229, 255, 0.3) !important;
+    color: #00E5FF !important;
+
+    &:hover {
+      background: rgba(0, 229, 255, 0.2) !important;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.3) !important;
+    }
+  }
+}
+
+// --- Preset variant: Overclock ---
+::ng-deep .la-preset--overclock {
+  border-color: rgba(255, 59, 59, 0.25) !important;
+  background: rgba(255, 59, 59, 0.04) !important;
+
+  &:hover {
+    border-color: rgba(255, 59, 59, 0.5) !important;
+    box-shadow: 0 0 25px rgba(255, 59, 59, 0.12) !important;
+  }
+
+  .la-preset-icon, .la-preset__icon {
+    color: #FF3B3B !important;
+    text-shadow: 0 0 10px rgba(255, 59, 59, 0.5) !important;
+  }
+
+  .la-preset-name, .la-preset__name {
+    color: #FF3B3B !important;
+  }
+
+  .la-preset-btn {
+    background: rgba(255, 59, 59, 0.15) !important;
+    border-color: rgba(255, 59, 59, 0.4) !important;
+    color: #FF3B3B !important;
+
+    &:hover {
+      background: rgba(255, 59, 59, 0.25) !important;
+      box-shadow: 0 0 15px rgba(255, 59, 59, 0.35) !important;
+    }
+  }
+}
+
+// --- Additional stat colors ---
+::ng-deep .la-stat--blue {
+  .la-stat-value, .la-stat__value {
+    color: #00E5FF !important;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.4) !important;
+  }
+}
+
+::ng-deep .la-stat--purple {
+  .la-stat-value, .la-stat__value {
+    color: #A020F0 !important;
+    text-shadow: 0 0 8px rgba(160, 32, 240, 0.4) !important;
+  }
+}

@@ -1,0 +1,66 @@
+.la-section-title {
+  color: #8DFF00;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1rem;
+}
+
+.la-pool-card {
+  background: rgba(20, 20, 20, 0.7);
+  border: 1px solid rgba(141, 255, 0, 0.08);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: rgba(141, 255, 0, 0.2);
+    box-shadow: 0 0 12px rgba(141, 255, 0, 0.06);
+  }
+
+  &--active {
+    border-color: rgba(141, 255, 0, 0.35);
+    box-shadow: 0 0 20px rgba(141, 255, 0, 0.08), inset 0 0 30px rgba(141, 255, 0, 0.02);
+  }
+}
+
+.la-pool-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.la-pool-detail {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.25rem;
+  font-family: monospace;
+
+  i {
+    color: rgba(141, 255, 0, 0.5);
+    font-size: 0.75rem;
+  }
+}
+
+.la-form-panel {
+  background: rgba(141, 255, 0, 0.03);
+  border: 1px solid rgba(141, 255, 0, 0.1);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.la-form-title {
+  color: #8DFF00;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.la-form-label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.35rem;
+}

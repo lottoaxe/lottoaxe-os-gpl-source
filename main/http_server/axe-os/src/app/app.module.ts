@@ -43,6 +43,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService as PrimeDialogService } from 'primeng/dynamicdialog';
 import { DialogService, DialogListComponent } from './services/dialog.service';
+import { PoolProfilesComponent } from './components/pool-profiles/pool-profiles.component';
+import { TuningPresetsComponent } from './components/tuning-presets/tuning-presets.component';
+import { ConfigBackupComponent } from './components/config-backup/config-backup.component';
+import { BootSplashComponent } from './components/boot-splash/boot-splash.component';
 
 const components = [
   AppComponent,
@@ -78,6 +82,10 @@ const components = [
     ThemeConfigComponent,
     DesignComponent,
     PoolComponent,
+    PoolProfilesComponent,
+    TuningPresetsComponent,
+    ConfigBackupComponent,
+    BootSplashComponent,
     DialogListComponent
   ],
   imports: [

@@ -48,6 +48,11 @@ SRCS
     "./power/vcore.c"
     "./power/asic_reset.c"
     "./power/asic_init.c"
+    "./lottoaxe/pool_profiles.c"
+    "./lottoaxe/tuning_presets.c"
+    "./lottoaxe/config_backup.c"
+    "./lottoaxe/safety.c"
+    "./lottoaxe/lottoaxe_api.c"
 
 INCLUDE_DIRS
     "."
@@ -62,6 +67,7 @@ INCLUDE_DIRS
     "../components/stratum/include"
     "thermal"
     "power"
+    "lottoaxe"
 
 PRIV_REQUIRES
     "app_update"
