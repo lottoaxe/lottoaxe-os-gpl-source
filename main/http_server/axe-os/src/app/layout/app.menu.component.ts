@@ -22,26 +22,31 @@ export class AppMenuComponent implements OnInit {
   ngOnInit() {
     this.model = [
       {
-        label: 'Menu',
+        label: 'MINING',
         items: [
           { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
           { label: 'Scoreboard', icon: 'pi pi-fw pi-trophy', routerLink: ['scoreboard'] },
           { label: 'Swarm', icon: 'pi pi-fw pi-sitemap', routerLink: ['swarm'] },
           { label: 'Logs', icon: 'pi pi-fw pi-list', routerLink: ['logs'] },
           { label: 'System', icon: 'pi pi-fw pi-wave-pulse', routerLink: ['system'] },
-          { separator: true },
-
+        ]
+      },
+      {
+        label: 'CONFIGURE',
+        items: [
           { label: 'Pool', icon: 'pi pi-fw pi-server', routerLink: ['pool'] },
           { label: 'Pool Profiles', icon: 'pi pi-fw pi-bookmark', routerLink: ['pool-profiles'] },
           { label: 'Tuning', icon: 'pi pi-fw pi-sliders-h', routerLink: ['tuning'] },
           { label: 'Network', icon: 'pi pi-fw pi-wifi', routerLink: ['network'] },
-          { label: 'Theme', icon: 'pi pi-fw pi-palette', routerLink: ['design'] },
           { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: ['settings'] },
+        ]
+      },
+      {
+        label: 'TOOLS',
+        items: [
+          { label: 'Theme', icon: 'pi pi-fw pi-palette', routerLink: ['design'] },
           { label: 'Config', icon: 'pi pi-fw pi-download', routerLink: ['config'] },
           { label: 'Update', icon: 'pi pi-fw pi-sync', routerLink: ['update'] },
-          { separator: true },
-
-          { label: 'Whitepaper', icon: 'pi pi-fw pi-bitcoin', command: () => window.open('/bitcoin.pdf', '_blank') },
         ]
       }
     ];

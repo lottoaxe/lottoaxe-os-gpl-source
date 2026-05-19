@@ -20,6 +20,7 @@ import { AppSidebarComponent } from './app.sidebar.component';
 import { AppTopBarComponent } from './app.topbar.component';
 import { LoadingComponent } from '../components/loading/loading.component';
 import { WifiIconComponent } from '../components/wifi-icon/wifi-icon.component';
+import { HashSuffixPipe } from '../pipes/hash-suffix.pipe';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import { WifiIconComponent } from '../components/wifi-icon/wifi-icon.component';
         AppLayoutComponent,
         LoadingComponent,
         WifiIconComponent,
+        HashSuffixPipe,
     ],
     imports: [
         BrowserModule,
@@ -47,6 +49,6 @@ import { WifiIconComponent } from '../components/wifi-icon/wifi-icon.component';
         PrimeNGModule,
         TooltipModule,
     ],
-    exports: [AppLayoutComponent, WifiIconComponent]
+    exports: [AppLayoutComponent, WifiIconComponent, HashSuffixPipe]
 })
 export class AppLayoutModule { }

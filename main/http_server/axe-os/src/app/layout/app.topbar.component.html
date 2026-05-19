@@ -1,16 +1,38 @@
 <div class="layout-topbar">
-    <a routerLink="" class="flex align-items-center gap-2 no-underline">
-        <span style="font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.5px;">LottoAxe</span>
-        <span style="font-size: 0.75rem; font-weight: 400; color: rgba(255,255,255,0.6); margin-top: 4px;">OS</span>
-    </a>
+    <!-- Left: LottoAxe branding -->
+    <div class="la-topbar-brand">
+        <a routerLink="" class="la-topbar-brand-link">
+            <span class="la-topbar-brand-name">LOTTOAXE</span>
+            <span class="la-topbar-brand-os">OS</span>
+            <span class="la-topbar-pulse-dot"></span>
+        </a>
+        <ng-container *ngIf="info$ | async as info">
+            <span class="la-topbar-hostname"
+                tooltipPosition="bottom"
+                pTooltip="Hostname"
+            >{{info.hostname}}</span>
+        </ng-container>
+    </div>
 
+    <!-- Center: Live stats ticker -->
+    <div class="la-topbar-stats" *ngIf="info$ | async as info">
+        <div class="la-topbar-stat">
+            <span class="la-topbar-stat-value">{{info.hashRate | hashSuffix}}</span>
+            <span class="la-topbar-stat-label">HASH</span>
+        </div>
+        <div class="la-topbar-stat">
+            <span class="la-topbar-stat-value">{{info.temp}}&deg;C</span>
+            <span class="la-topbar-stat-label">TEMP</span>
+        </div>
+        <div class="la-topbar-stat">
+            <span class="la-topbar-stat-value">{{info.power | number:'1.1-1'}}W</span>
+            <span class="la-topbar-stat-label">POWER</span>
+        </div>
+    </div>
+
+    <!-- Right: Action icons -->
     <ng-container *ngIf="info$ | async as info">
-        <span class="text-500 select-none absolute left-0 bottom-0 ml-6 md:ml-7 mb-1"
-            tooltipPosition="bottom"
-            pTooltip="Hostname"
-        >{{info.hostname}}</span>
-
-        <ul *ngIf="!isAPMode" class="flex ml-auto list-none p-0 m-0 gap-4 lg:flex-order-2">
+        <ul *ngIf="!isAPMode" class="la-topbar-actions">
             <li *ngIf="dashboardEdit.editMode$ | async" class="hidden md:block">
                 <a class="block py-2 text-white cursor-pointer"
                     tooltipPosition="bottom"

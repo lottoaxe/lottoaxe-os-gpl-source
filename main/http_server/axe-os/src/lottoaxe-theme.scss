@@ -3,7 +3,9 @@
 // "Tune. Mine. Win."
 // ============================================================
 
-// ---- Brand Colors ----
+// ============================================================
+//  1. BRAND COLORS & DESIGN TOKENS
+// ============================================================
 :root {
   --la-neon:        #8DFF00;
   --la-lime:        #6BFF00;
@@ -37,13 +39,23 @@
   --la-transition:  0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// ---- Global Overrides ----
+
+// ============================================================
+//  2. GLOBAL / BODY — Subtle grid pattern overlay
+// ============================================================
 body {
   background: var(--la-bg) !important;
   color: var(--la-text) !important;
+  background-image:
+    linear-gradient(rgba(141, 255, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(141, 255, 0, 0.015) 1px, transparent 1px) !important;
+  background-size: 40px 40px !important;
 }
 
-// ---- Topbar — Neon underline glow ----
+
+// ============================================================
+//  3. TOPBAR — Neon underline + live stat pills
+// ============================================================
 .layout-topbar {
   background: var(--la-panel) !important;
   border-bottom: 1px solid var(--la-border) !important;
@@ -67,24 +79,195 @@ body {
   }
 }
 
-// ---- Sidebar — Glassmorphism ----
+// -- Topbar brand area --
+.la-topbar-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.la-topbar-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.la-topbar-brand-name {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--la-neon);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 12px rgba(141, 255, 0, 0.35);
+  line-height: 1;
+}
+
+.la-topbar-brand-os {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--la-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.la-topbar-pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--la-neon);
+  box-shadow: 0 0 6px var(--la-neon);
+  animation: la-pulse 2s ease-in-out infinite;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+// -- Hostname in topbar --
+.la-topbar-hostname {
+  font-size: 0.65rem;
+  color: var(--la-muted);
+  letter-spacing: 0.02em;
+  user-select: none;
+  line-height: 1;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+// -- Topbar stat pills container --
+.la-topbar-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+// -- Individual stat pill --
+.la-topbar-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: rgba(141, 255, 0, 0.04);
+  border: 1px solid rgba(141, 255, 0, 0.1);
+  border-radius: 100px;
+  line-height: 1;
+  min-width: 70px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all var(--la-transition);
+
+  &:hover {
+    background: rgba(141, 255, 0, 0.08);
+    border-color: rgba(141, 255, 0, 0.2);
+    box-shadow: 0 0 10px rgba(141, 255, 0, 0.1);
+  }
+
+  // Color-coded stat variants
+  &--hashrate .la-topbar-stat-value {
+    color: var(--la-neon);
+    text-shadow: 0 0 6px rgba(141, 255, 0, 0.3);
+  }
+
+  &--temp .la-topbar-stat-value {
+    color: var(--la-info);
+  }
+
+  &--power .la-topbar-stat-value {
+    color: var(--la-gray);
+  }
+}
+
+// -- Stat pill value (the number) --
+.la-topbar-stat-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--la-neon);
+  white-space: nowrap;
+}
+
+// -- Stat pill label (unit text) --
+.la-topbar-stat-label {
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--la-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+// -- Topbar action icons list --
+.la-topbar-actions {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-left: auto;
+  gap: 1rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+// -- Mining active dot indicator --
+.la-mining-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--la-neon);
+  box-shadow: 0 0 6px var(--la-neon), 0 0 12px rgba(141, 255, 0, 0.2);
+  animation: la-mining-dot-pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes la-mining-dot-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 6px var(--la-neon), 0 0 12px rgba(141, 255, 0, 0.2);
+  }
+  50% {
+    opacity: 0.4;
+    box-shadow: 0 0 10px var(--la-neon), 0 0 24px rgba(141, 255, 0, 0.35);
+  }
+}
+
+
+// ============================================================
+//  4. SIDEBAR — Cyberpunk overhaul (dark gradient + neon edge)
+// ============================================================
 .layout-sidebar {
-  background: var(--la-glass) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--la-glass-border) !important;
-  border-radius: var(--la-radius-lg) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  background: linear-gradient(180deg, #080808 0%, #0C0C0C 40%, #101010 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-right: 2px solid rgba(141, 255, 0, 0.15) !important;
+  border-radius: 0 !important;
+  box-shadow:
+    1px 0 0 rgba(141, 255, 0, 0.05),
+    4px 0 20px rgba(0, 0, 0, 0.5) !important;
   display: flex;
   flex-direction: column;
 }
 
-// ---- Sidebar Logo (bottom of menu) ----
+// -- Sidebar logo — at the top --
 .la-sidebar-logo {
   position: relative;
   width: 90px;
   height: 90px;
-  margin: auto auto 0.5rem;
+  margin: 0.5rem auto 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,34 +324,181 @@ body {
   to { transform: rotate(360deg); }
 }
 
+// -- Menu items — neon left bar + hover sliding underline --
 .layout-menu ul a {
-  border-radius: var(--la-radius) !important;
+  border-radius: 0 !important;
   transition: all var(--la-transition) !important;
+  position: relative;
+  overflow: hidden;
+  border-left: 3px solid transparent;
+  margin-left: 0;
+
+  // Hover: sliding neon underline from left
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--la-neon), var(--la-purple));
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
   &:hover {
-    background: rgba(141, 255, 0, 0.06) !important;
+    background: rgba(141, 255, 0, 0.03) !important;
+
+    &::after {
+      width: 100%;
+    }
   }
 
+  // Active route: neon left bar + glow background
   &.active-route {
     color: var(--la-neon) !important;
-    background: rgba(141, 255, 0, 0.08) !important;
-    box-shadow: inset 3px 0 0 var(--la-neon);
+    background: rgba(141, 255, 0, 0.06) !important;
+    border-left-color: var(--la-neon);
+    box-shadow: inset 0 0 20px rgba(141, 255, 0, 0.04);
+
+    // Active icon gets neon tint
+    .layout-menuitem-icon {
+      color: var(--la-neon) !important;
+      filter: drop-shadow(0 0 4px rgba(141, 255, 0, 0.3));
+    }
+
+    &::after {
+      width: 0; // No underline on active — the left bar is the indicator
+    }
   }
 }
 
-.layout-root-menuitem > .layout-menuitem-root-text {
-  color: var(--la-muted) !important;
-  font-size: 0.7rem !important;
-  letter-spacing: 0.1em !important;
+// -- Section headers — cyberpunk category dividers --
+// Root menu items render as <li class="layout-root-menuitem"><a>...<span class="layout-menuitem-text">LABEL</span>...</a><ul>...</ul></li>
+.layout-root-menuitem > a {
+  color: var(--la-neon) !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 0.75rem 0.35rem !important;
+  pointer-events: none;
+  border-left: none !important;
+
+  // Hide the icon placeholder and submenu toggler on section headers
+  .layout-menuitem-icon {
+    display: none !important;
+  }
+  .layout-submenu-toggler {
+    display: none !important;
+  }
+
+  // Section header text
+  .layout-menuitem-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+  }
+
+  // Thin neon line extending to the right
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(141, 255, 0, 0.2), transparent);
+    width: auto;
+  }
+
+  // Override the hover underline from general menu styles
+  &:hover {
+    background: transparent !important;
+  }
 }
 
-// ---- Cards — Glassmorphism panels ----
+// -- Sidebar footer --
+.la-sidebar-footer {
+  margin-top: auto;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(141, 255, 0, 0.06);
+  text-align: center;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.la-sidebar-footer-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--la-neon);
+  box-shadow: 0 0 6px var(--la-neon), 0 0 12px rgba(141, 255, 0, 0.2);
+  animation: la-pulse 2s ease-in-out infinite;
+}
+
+.la-sidebar-footer-text {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--la-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.la-sidebar-tagline {
+  font-size: 0.55rem;
+  color: var(--la-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  opacity: 0.6;
+  user-select: none;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+
+// ============================================================
+//  5. CARDS — Angular cyberpunk cut-corner style
+// ============================================================
 .card {
   background: var(--la-card) !important;
   border: 1px solid var(--la-border) !important;
-  border-radius: var(--la-radius-lg) !important;
+  border-radius: 2px var(--la-radius) var(--la-radius) var(--la-radius) !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important;
   transition: border-color var(--la-transition), box-shadow var(--la-transition) !important;
+  position: relative;
+  // Angled top-left cut
+  clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+
+  // Neon accent line at top-left
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 16px;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--la-neon), transparent);
+    opacity: 0.5;
+    z-index: 1;
+  }
+
+  // Diagonal accent on the cut edge
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 23px;
+    height: 2px;
+    background: var(--la-neon);
+    opacity: 0.3;
+    transform: rotate(45deg);
+    transform-origin: top left;
+    z-index: 1;
+  }
 
   &:hover {
     border-color: rgba(141, 255, 0, 0.12) !important;
@@ -181,9 +511,10 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(141, 255, 0, 0.15) !important;
-  border-radius: var(--la-radius-lg) !important;
+  border-radius: 2px var(--la-radius-lg) var(--la-radius-lg) var(--la-radius-lg) !important;
   box-shadow: var(--la-glow-neon) !important;
   transition: all var(--la-transition) !important;
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
 
   &:hover {
     border-color: rgba(141, 255, 0, 0.3) !important;
@@ -202,7 +533,24 @@ body {
   }
 }
 
-// ---- Buttons — Neon fill ----
+
+// ============================================================
+//  6. PAGE TITLES — Neon cyberpunk heading
+// ============================================================
+.la-page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--la-neon);
+  text-shadow: 0 0 12px rgba(141, 255, 0, 0.25), 0 0 40px rgba(141, 255, 0, 0.08);
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+
+// ============================================================
+//  7. BUTTONS — Neon fill
+// ============================================================
 .p-button:not(.p-button-secondary):not(.p-button-success):not(.p-button-warning):not(.p-button-danger):not(.p-button-info):not(.p-button-outlined):not(.p-button-text) {
   background: var(--la-neon) !important;
   border-color: var(--la-neon) !important;
@@ -257,7 +605,10 @@ body {
   color: var(--la-bg) !important;
 }
 
-// ---- Inputs — Neon focus glow ----
+
+// ============================================================
+//  8. INPUTS — Neon focus glow
+// ============================================================
 .p-inputtext {
   border-radius: var(--la-radius) !important;
   border-color: var(--la-border) !important;
@@ -277,7 +628,10 @@ body {
   }
 }
 
-// ---- Sliders — Neon track ----
+
+// ============================================================
+//  9. SLIDERS — Neon track
+// ============================================================
 .p-slider {
   border-radius: 4px !important;
   background: var(--la-border) !important;
@@ -301,7 +655,10 @@ body {
   }
 }
 
-// ---- Progress Bar — Neon ----
+
+// ============================================================
+// 10. PROGRESS BAR — Neon
+// ============================================================
 .p-progressbar {
   background: var(--la-border) !important;
   border-radius: 4px !important;
@@ -313,7 +670,10 @@ body {
   }
 }
 
-// ---- Checkbox / Toggle — Brand colors ----
+
+// ============================================================
+// 11. CHECKBOX / TOGGLE — Brand colors
+// ============================================================
 .p-checkbox .p-checkbox-box.p-highlight {
   background: var(--la-neon) !important;
   border-color: var(--la-neon) !important;
@@ -325,7 +685,10 @@ body {
   color: var(--la-bg) !important;
 }
 
-// ---- Toasts — Cyberpunk style ----
+
+// ============================================================
+// 12. TOASTS — Cyberpunk style
+// ============================================================
 .toast-container {
   .ngx-toastr {
     background: var(--la-card) !important;
@@ -351,7 +714,10 @@ body {
   }
 }
 
-// ---- PrimeNG Message overrides ----
+
+// ============================================================
+// 13. PRIMENG MESSAGE OVERRIDES
+// ============================================================
 .p-message {
   border-radius: var(--la-radius) !important;
 
@@ -377,8 +743,9 @@ body {
   }
 }
 
+
 // ============================================================
-// LottoAxe OS — Custom Components
+// 14. CUSTOM COMPONENTS — Stats, Hashrate, Pulse, Presets, etc.
 // ============================================================
 
 // ---- Stat Widget ----
@@ -678,7 +1045,10 @@ body {
   }
 }
 
-// ---- Terminal / Log Viewer ----
+
+// ============================================================
+// 15. TERMINAL / LOG VIEWER
+// ============================================================
 .la-terminal {
   background: #0A0A0A;
   border: 1px solid var(--la-border);
@@ -711,7 +1081,10 @@ body {
   }
 }
 
-// ---- Boot Splash ----
+
+// ============================================================
+// 16. BOOT SPLASH
+// ============================================================
 .la-splash {
   position: fixed;
   inset: 0;
@@ -773,7 +1146,10 @@ body {
   to { opacity: 0; visibility: hidden; }
 }
 
-// ---- Loading spinner ----
+
+// ============================================================
+// 17. LOADING SPINNER
+// ============================================================
 .la-spinner {
   width: 32px;
   height: 32px;
@@ -790,7 +1166,10 @@ body {
   to { transform: rotate(360deg); }
 }
 
-// ---- RGB animated border ----
+
+// ============================================================
+// 18. RGB ANIMATED BORDER
+// ============================================================
 .la-rgb-border {
   position: relative;
 
@@ -825,12 +1204,18 @@ body {
   inherits: false;
 }
 
-// ---- Chart styling ----
+
+// ============================================================
+// 19. CHART STYLING
+// ============================================================
 .card.chart {
   border-color: var(--la-border) !important;
 }
 
-// ---- Scrollbar — Neon thin ----
+
+// ============================================================
+// 20. SCROLLBAR — Neon thin
+// ============================================================
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -849,13 +1234,19 @@ body {
   }
 }
 
-// ---- Selection color ----
+
+// ============================================================
+// 21. SELECTION COLOR
+// ============================================================
 ::selection {
   background: rgba(141, 255, 0, 0.2);
   color: var(--la-neon);
 }
 
-// ---- Responsive touch optimizations ----
+
+// ============================================================
+// 22. RESPONSIVE
+// ============================================================
 @media (max-width: 768px) {
   .la-stat__value {
     font-size: 1.5rem;
@@ -872,6 +1263,23 @@ body {
   .la-terminal {
     font-size: 0.7rem;
     max-height: 300px;
+  }
+
+  .la-topbar-stat {
+    padding: 0.15rem 0.4rem;
+    min-width: 55px;
+  }
+
+  .la-topbar-stat-value {
+    font-size: 0.7rem;
+  }
+
+  .la-topbar-stat-label {
+    font-size: 0.5rem;
+  }
+
+  .la-page-title {
+    font-size: 1.35rem;
   }
 }
 
@@ -894,7 +1302,10 @@ body {
   }
 }
 
-// ---- Reduced motion support ----
+
+// ============================================================
+// 23. REDUCED MOTION SUPPORT
+// ============================================================
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
