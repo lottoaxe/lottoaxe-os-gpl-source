@@ -494,7 +494,7 @@
                             <span>Height</span>
                         </div>
                         <div>
-                            {{ info.blockHeight }}
+                            {{ info.blockHeight | number:'1.0-0' }}
                         </div>
                     </div>
 
@@ -509,45 +509,46 @@
 
                     <div class="flex flex-nowrap align-items-baseline">
                         <div class="col-fixed-width text-500">
-                            <span>Scriptsig</span>
+                            <span>Pool Tag</span>
                         </div>
-                        <div class="text-monospace text-sm">
-                            {{ info.scriptsig }}
+                        <div class="text-sm" pTooltip="{{ info.scriptsig }}" tooltipPosition="bottom">
+                            {{ extractPoolTag(info.scriptsig) }}
                         </div>
                     </div>
-                <div class="flex flex-nowrap justify-content-between" *ngIf="(info.coinbaseOutputs?.length ?? 0) > 0">
+
+                    <div class="flex flex-nowrap justify-content-between" *ngIf="(info.coinbaseOutputs?.length ?? 0) > 0">
                         <div class="col-fixed-width text-500">
-                            <tooltip-text-icon text="Value" tooltip="Total value of transaction outputs in BTC. For non-bitcoin chains, disable 'Decode Coinbase Tx' in Advanced Pool Options." />
+                            <tooltip-text-icon text="Block Reward" tooltip="Total block reward value in DGB." />
                         </div>
                         <ng-container *ngIf="info.coinbaseValueTotalSatoshis && info.coinbaseValueTotalSatoshis > 0">
                             {{ info.coinbaseValueTotalSatoshis | sats }}
                         </ng-container>
                     </div>
-                <div class="flex flex-nowrap align-items-baseline" *ngIf="(info.coinbaseOutputs?.length ?? 0) > 0">
+
+                    <div class="flex flex-nowrap align-items-baseline" *ngIf="(info.coinbaseOutputs?.length ?? 0) > 0">
                         <div class="col-fixed-width text-500">
-                            <span>Outputs</span>
+                            <span>Payouts</span>
                         </div>
                         <div class="w-full">
-                            <div *ngFor="let output of info.coinbaseOutputs; let i = index" class="flex justify-content-between">
-                                @if (output.value > 0) {
+                            <ng-container *ngFor="let output of info.coinbaseOutputs; let i = index">
+                                <div *ngIf="output.value > 0" class="flex justify-content-between">
                                     @if (output.address === getAddressPart(activePoolUser)) {
-                                        <span><span class="text-monospace text-sm font-bold" pTooltip="Your payout address" tooltipPosition="top" sensitive-data>{{ output.address | address }}</span>&nbsp;<i class="pi pi-star-fill text-xs"></i></span>
+                                        <span><span class="text-monospace text-sm font-bold" pTooltip="Your payout address" tooltipPosition="top" sensitive-data>{{ output.address | address }}</span>&nbsp;<i class="pi pi-star-fill text-xs" style="color: var(--la-neon)"></i></span>
                                     } @else {
                                         <span class="text-monospace text-sm" pTooltip="{{ output.address }}" tooltipPosition="top">{{ output.address | address }}</span>
                                     }
                                     <span class="text-sm">{{ output.value | sats }}</span>
-                                } @else {
-                                    <span class="text-monospace text-xs">{{ output.address }}</span>
-                                }
-                            </div>
+                                </div>
+                            </ng-container>
                         </div>
                     </div>
-                <div class="flex flex-nowrap align-items-baseline" *ngIf="(info.coinbaseOutputs?.length ?? 0) == 0">
+
+                    <div class="flex flex-nowrap align-items-baseline" *ngIf="(info.coinbaseOutputs?.length ?? 0) == 0">
                         <div class="col-fixed-width text-500">
-                            Amount
+                            Block Reward
                         </div>
                         <ng-container *ngIf="info.coinbaseValueTotalSatoshis && info.coinbaseValueTotalSatoshis > 0">
-                            {{ info.coinbaseValueTotalSatoshis / 100_000_000 }}
+                            {{ info.coinbaseValueTotalSatoshis / 100_000_000 }} DGB
                         </ng-container>
                     </div>
                 </div>

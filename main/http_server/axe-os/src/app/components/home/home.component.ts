@@ -1219,6 +1219,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  extractPoolTag(scriptsig: string): string {
+    if (!scriptsig) return '—';
+    // Extract readable ASCII portion (pool name etc.) from the scriptsig
+    const readable = scriptsig.replace(/[^\x20-\x7E]/g, '').trim();
+    // Try to find common pool identifiers
+    const poolMatch = readable.match(/([a-zA-Z][a-zA-Z0-9._\-]+\.[a-zA-Z]{2,})/);
+    if (poolMatch) return poolMatch[1];
+    // Fall back to last readable chunk
+    const parts = readable.split(/\s+/).filter(p => p.length > 2);
+    return parts.length > 0 ? parts[parts.length - 1] : scriptsig.substring(0, 20) + '…';
+  }
+
   getAddressPart(user: string): string {
     const dotIndex = user.lastIndexOf('.');
     return dotIndex !== -1 ? user.substring(0, dotIndex) : user;

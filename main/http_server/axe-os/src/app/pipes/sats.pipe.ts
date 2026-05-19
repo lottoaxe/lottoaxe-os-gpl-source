@@ -12,7 +12,7 @@ export class SatsPipe implements PipeTransform {
   }
 
   transform(value: number, args?: any): string {
-    if (!value) return '0 BTC';
-    return (value / 100_000_000).toFixed(8) + ' BTC';
+    if (!value) return '0 DGB';
+    return (value / 100_000_000).toFixed(8) + ' DGB';
   }
 }
