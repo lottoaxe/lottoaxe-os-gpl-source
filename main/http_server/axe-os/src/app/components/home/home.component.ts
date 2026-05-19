@@ -1231,6 +1231,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     return parts.length > 0 ? parts[parts.length - 1] : scriptsig.substring(0, 20) + '…';
   }
 
+  truncateAddr(addr: string): string {
+    if (!addr || addr.length <= 14) return addr || '';
+    return addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+  }
+
   getAddressPart(user: string): string {
     const dotIndex = user.lastIndexOf('.');
     return dotIndex !== -1 ? user.substring(0, dotIndex) : user;

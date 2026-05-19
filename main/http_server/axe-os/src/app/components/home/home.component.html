@@ -531,13 +531,13 @@
                         </div>
                         <div class="w-full">
                             <ng-container *ngFor="let output of info.coinbaseOutputs; let i = index">
-                                <div *ngIf="output.value > 0" class="flex justify-content-between">
+                                <div *ngIf="output.value > 0" class="flex justify-content-between align-items-center gap-2" style="white-space: nowrap;">
                                     @if (output.address === getAddressPart(activePoolUser)) {
-                                        <span><span class="text-monospace text-sm font-bold" pTooltip="Your payout address" tooltipPosition="top" sensitive-data>{{ output.address | address }}</span>&nbsp;<i class="pi pi-star-fill text-xs" style="color: var(--la-neon)"></i></span>
+                                        <span class="text-monospace text-sm font-bold" style="overflow:hidden;text-overflow:ellipsis;" pTooltip="{{ output.address }}" tooltipPosition="top" sensitive-data>{{ truncateAddr(output.address) }}&nbsp;<i class="pi pi-star-fill text-xs" style="color: var(--la-neon)"></i></span>
                                     } @else {
-                                        <span class="text-monospace text-sm" pTooltip="{{ output.address }}" tooltipPosition="top">{{ output.address | address }}</span>
+                                        <span class="text-monospace text-sm" style="overflow:hidden;text-overflow:ellipsis;" pTooltip="{{ output.address }}" tooltipPosition="top">{{ truncateAddr(output.address) }}</span>
                                     }
-                                    <span class="text-sm">{{ output.value | sats }}</span>
+                                    <span class="text-sm flex-shrink-0">{{ output.value | sats }}</span>
                                 </div>
                             </ng-container>
                         </div>
