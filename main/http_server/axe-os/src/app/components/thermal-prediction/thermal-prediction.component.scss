@@ -1,0 +1,497 @@
+// ── LottoAxe Thermal Prediction ──
+// Dark theme with orange/red thermal accent, consistent with LottoAxe cyberpunk style
+
+:host {
+  display: block;
+
+  // ── Card base ──
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 158, 11, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+    }
+  }
+
+  // ── Section headers ──
+  .la-section-icon {
+    color: #f59e0b;
+    font-size: 1.25rem;
+  }
+
+  .la-section-title {
+    color: #f59e0b;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  // ── Hero temperature display ──
+  .la-hero-card {
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+
+  .la-hero-stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-hero-value {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 25px currentColor;
+    line-height: 1;
+    transition: color 0.5s ease;
+  }
+
+  .la-hero-unit {
+    font-size: 1.75rem;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: color 0.5s ease;
+  }
+
+  .la-hero-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  // ── Status badge ──
+  .la-status-badge {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #000;
+    transition: background-color 0.5s ease;
+  }
+
+  // ── Thermal status colors ──
+  .thermal-cool {
+    background-color: #22c55e !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+  }
+
+  .thermal-warm {
+    background-color: #eab308 !important;
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.4);
+  }
+
+  .thermal-hot {
+    background-color: #f59e0b !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+  }
+
+  .thermal-throttling {
+    background-color: #ef4444 !important;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  }
+
+  .thermal-critical {
+    background-color: #dc2626 !important;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.6);
+    animation: la-pulse-critical 1.2s ease-in-out infinite;
+  }
+
+  @keyframes la-pulse-critical {
+    0%, 100% {
+      box-shadow: 0 0 16px rgba(220, 38, 38, 0.6);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 28px rgba(220, 38, 38, 0.9);
+      transform: scale(1.05);
+    }
+  }
+
+  // ── General stat values ──
+  .la-stat-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-stat-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .la-efficiency-impact {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  // ── Prediction cards ──
+  .la-prediction-card {
+    text-align: center;
+    position: relative;
+
+    .la-prediction-label {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+
+      i {
+        margin-right: 0.35rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .la-prediction-sub {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.7rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .la-prediction-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+
+      &.la-safe {
+        color: #22c55e;
+        text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+      }
+
+      &.la-danger {
+        color: #ef4444;
+        text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+      }
+    }
+
+    .la-prediction-icon {
+      margin-top: 0.5rem;
+      font-size: 1.25rem;
+    }
+  }
+
+  // ── Trend colors ──
+  .la-trend-rising {
+    color: #ef4444 !important;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  }
+
+  .la-trend-falling {
+    color: #22c55e !important;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+  }
+
+  .la-trend-stable {
+    color: #eab308 !important;
+    text-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
+  }
+
+  .la-score {
+    text-shadow: 0 0 15px currentColor;
+  }
+
+  // ── Stat cards (live stats grid items) ──
+  .la-stat-card {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    height: 100%;
+
+    &:hover {
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+  }
+
+  .la-stat-card-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-stat-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .la-stat-card-sub {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  // ── Temperature gauge ──
+  .la-gauge-card {
+    border-color: rgba(245, 158, 11, 0.15);
+  }
+
+  .la-gauge-container {
+    padding: 0.5rem 0;
+  }
+
+  .la-gauge-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .la-gauge-bar {
+    position: relative;
+    height: 24px;
+    border-radius: 12px;
+    background: linear-gradient(
+      to right,
+      rgba(34, 197, 94, 0.15) 0%,
+      rgba(34, 197, 94, 0.15) 25%,
+      rgba(234, 179, 8, 0.15) 50%,
+      rgba(245, 158, 11, 0.15) 68.75%,
+      rgba(239, 68, 68, 0.15) 81.25%,
+      rgba(220, 38, 38, 0.15) 90%,
+      rgba(220, 38, 38, 0.2) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: visible;
+  }
+
+  .la-gauge-fill {
+    height: 100%;
+    border-radius: 12px 0 0 12px;
+    background: linear-gradient(
+      to right,
+      #22c55e 0%,
+      #22c55e 25%,
+      #eab308 50%,
+      #f59e0b 68.75%,
+      #ef4444 81.25%,
+      #dc2626 100%
+    );
+    transition: width 0.8s ease;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    max-width: 100%;
+  }
+
+  .la-gauge-marker {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    width: 2px;
+    transform: translateX(-50%);
+
+    .la-gauge-marker-label {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      white-space: nowrap;
+    }
+  }
+
+  .la-gauge-marker-throttle {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+
+    .la-gauge-marker-label {
+      color: #ef4444;
+    }
+  }
+
+  .la-gauge-marker-shutdown {
+    background: #dc2626;
+    box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
+
+    .la-gauge-marker-label {
+      color: #dc2626;
+    }
+  }
+
+  .la-gauge-current {
+    text-align: center;
+    margin-top: 1.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  // ── Buffer loading indicator ──
+  .la-buffer-info {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    text-align: center;
+
+    i {
+      margin-right: 0.5rem;
+      color: #f59e0b;
+    }
+  }
+
+  // ── Cooling recommendations ──
+  .la-recommendations-card {
+    border-color: rgba(245, 158, 11, 0.15);
+  }
+
+  .la-recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .la-recommendation-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    background: rgba(30, 30, 30, 0.5);
+    border-left: 3px solid transparent;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(40, 40, 40, 0.6);
+    }
+
+    .la-rec-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .la-rec-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    // Priority-based border & icon colors
+    &.la-rec-info {
+      border-left-color: #22c55e;
+
+      .la-rec-icon {
+        color: #22c55e;
+      }
+    }
+
+    &.la-rec-warning {
+      border-left-color: #f59e0b;
+
+      .la-rec-icon {
+        color: #f59e0b;
+      }
+    }
+
+    &.la-rec-critical {
+      border-left-color: #ef4444;
+      background: rgba(239, 68, 68, 0.06);
+
+      .la-rec-icon {
+        color: #ef4444;
+      }
+
+      .la-rec-text {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 500;
+      }
+    }
+  }
+
+  // ── Stats card section color ──
+  .la-stats-card {
+    border-color: rgba(56, 189, 248, 0.12);
+
+    .la-section-icon,
+    .la-section-title {
+      color: #38bdf8;
+    }
+  }
+}
+
+// ── Responsive adjustments ──
+@media (max-width: 768px) {
+  :host {
+    .la-hero-value {
+      font-size: 2.5rem;
+    }
+
+    .la-hero-unit {
+      font-size: 1.25rem;
+    }
+
+    .la-stat-value {
+      font-size: 1.35rem;
+    }
+
+    .la-stat-card-value {
+      font-size: 1.25rem;
+    }
+
+    .la-prediction-value {
+      font-size: 1.25rem;
+    }
+
+    .card {
+      padding: 1rem;
+    }
+
+    .la-gauge-labels {
+      font-size: 0.6rem;
+    }
+
+    .la-status-badge {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.6rem;
+    }
+
+    .la-recommendation-item {
+      padding: 0.65rem 0.75rem;
+
+      .la-rec-text {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  :host {
+    .la-hero-value {
+      font-size: 2rem;
+    }
+
+    .la-gauge-labels span:nth-child(2),
+    .la-gauge-labels span:nth-child(4),
+    .la-gauge-labels span:nth-child(6) {
+      display: none;
+    }
+  }
+}

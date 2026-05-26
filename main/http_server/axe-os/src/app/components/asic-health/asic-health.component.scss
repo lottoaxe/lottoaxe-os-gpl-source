@@ -1,0 +1,346 @@
+// ── LottoAxe ASIC Health Score ──
+// Dark cyberpunk theme with LottoAxe green (#8DFF00)
+
+:host {
+  display: block;
+
+  // ── Card base ──
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(141, 255, 0, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.25);
+      box-shadow: 0 0 15px rgba(141, 255, 0, 0.06);
+    }
+  }
+
+  // ── Header ──
+  .la-page-title {
+    color: #8DFF00;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .la-accent-icon {
+    color: #8DFF00;
+    font-size: 1.4rem;
+  }
+
+  .la-section-icon {
+    color: #8DFF00;
+    font-size: 1.1rem;
+  }
+
+  .la-section-title {
+    color: #8DFF00;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .la-asic-badge {
+    background: rgba(141, 255, 0, 0.12);
+    border: 1px solid rgba(141, 255, 0, 0.3);
+    color: #8DFF00;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .la-collecting-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #8DFF00;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+
+    .la-pulse {
+      font-size: 0.5rem;
+      animation: la-health-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  .la-subtitle {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  // ── No data state ──
+  .la-nodata-card {
+    border-style: dashed;
+    border-color: rgba(141, 255, 0, 0.15);
+  }
+
+  .la-nodata-content {
+    text-align: center;
+    padding: 2rem 1rem;
+
+    .la-nodata-icon {
+      font-size: 2.5rem;
+      color: rgba(141, 255, 0, 0.3);
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      margin: 0 0 1rem;
+    }
+
+    .la-nodata-count {
+      color: #8DFF00;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+
+  // ── Score section ──
+  .la-score-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .la-score-ring-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+  }
+
+  .la-score-ring {
+    width: 100%;
+    height: 100%;
+  }
+
+  .la-score-arc {
+    transition: stroke-dashoffset 1s ease, stroke 0.5s ease;
+  }
+
+  .la-score-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .la-score-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .la-score-label {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .la-grade-section {
+    text-align: center;
+  }
+
+  .la-grade {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .la-trend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .la-trend-pct {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    font-weight: 400;
+  }
+
+  // ── Metric cards ──
+  .la-metric-card {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.15);
+    }
+  }
+
+  .la-metric-label {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.35rem;
+  }
+
+  .la-metric-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .la-metric-hint {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.65rem;
+    margin-top: 0.2rem;
+  }
+
+  // ── Time selector ──
+  .la-time-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .la-time-label {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .la-time-btn {
+    padding: 0.3rem 0.75rem;
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &.active {
+      border-color: rgba(141, 255, 0, 0.5);
+      background: rgba(141, 255, 0, 0.08);
+      color: #8DFF00;
+    }
+  }
+
+  .la-time-meta {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.7rem;
+    margin-left: auto;
+  }
+
+  // ── Sparkline ──
+  .la-sparkline-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    height: 80px;
+    padding: 0.5rem 0;
+  }
+
+  .la-sparkline-bar {
+    flex: 1;
+    min-width: 2px;
+    border-radius: 1px 1px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .la-sparkline-labels {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.65rem;
+  }
+
+  // ── Info footer ──
+  .la-info-card {
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .la-info-text {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+
+    i {
+      color: rgba(141, 255, 0, 0.4);
+      margin-right: 0.35rem;
+    }
+  }
+
+  .la-clear-btn {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 0.75rem;
+
+    &:hover {
+      color: #FF3B3B !important;
+    }
+  }
+
+  // ── Animations ──
+  @keyframes la-health-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  // ── Responsive ──
+  @media (max-width: 768px) {
+    .la-score-ring-wrap {
+      width: 110px;
+      height: 110px;
+    }
+
+    .la-score-number {
+      font-size: 1.8rem;
+    }
+
+    .la-grade {
+      font-size: 2.2rem;
+    }
+
+    .la-metric-value {
+      font-size: 1.3rem;
+    }
+  }
+}

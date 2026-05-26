@@ -3,6 +3,7 @@
 #include "tuning_presets.h"
 #include "config_backup.h"
 #include "safety.h"
+#include "global_state.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "cJSON.h"
@@ -266,11 +267,13 @@ static esp_err_t GET_safety_status(httpd_req_t *req)
     cJSON_AddNumberToObject(json, "throttleCount", s->throttle_count);
     cJSON_AddNumberToObject(json, "lastThrottleTime", s->last_throttle_time);
 
+    const TuningLimits *tl = tuning_presets_get_limits();
     cJSON *limits = cJSON_CreateObject();
-    cJSON_AddNumberToObject(limits, "freqMin", BM1366_FREQ_MIN);
-    cJSON_AddNumberToObject(limits, "freqMax", BM1366_FREQ_MAX);
-    cJSON_AddNumberToObject(limits, "voltMin", BM1366_VOLT_MIN);
-    cJSON_AddNumberToObject(limits, "voltMax", BM1366_VOLT_MAX);
+    cJSON_AddNumberToObject(limits, "freqMin", tl->freq_min);
+    cJSON_AddNumberToObject(limits, "freqMax", tl->freq_max);
+    cJSON_AddNumberToObject(limits, "voltMin", tl->volt_min);
+    cJSON_AddNumberToObject(limits, "voltMax", tl->volt_max);
+    cJSON_AddStringToObject(limits, "asicName", tl->asic_name);
     cJSON_AddNumberToObject(limits, "tempThrottle", SAFETY_THROTTLE_TEMP);
     cJSON_AddNumberToObject(limits, "tempShutdown", SAFETY_SHUTDOWN_TEMP);
     cJSON_AddItemToObject(json, "limits", limits);
@@ -278,10 +281,16 @@ static esp_err_t GET_safety_status(httpd_req_t *req)
     return send_json_response(req, json);
 }
 
-esp_err_t lottoaxe_api_init(void)
+esp_err_t lottoaxe_api_init(GlobalState *state)
 {
     pool_profiles_init();
     safety_init();
+
+    // Initialize tuning presets with the detected ASIC config
+    if (state) {
+        tuning_presets_init(&state->DEVICE_CONFIG.family.asic);
+    }
+
     ESP_LOGI(TAG, "LottoAxe OS modules initialized");
     return ESP_OK;
 }

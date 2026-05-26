@@ -1,0 +1,174 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- Settings Card -->
+  <div class="card la-settings-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-cog la-section-icon"></i>
+      <span class="la-section-title">Chart Settings</span>
+    </div>
+
+    <form [formGroup]="form">
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <label class="la-label" for="timeRange">Time Range</label>
+          <p-dropdown id="timeRange"
+                      [options]="timeRangeOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      formControlName="timeRange"
+                      styleClass="w-full la-dropdown">
+          </p-dropdown>
+        </div>
+        <div class="col-12 md:col-4 flex align-items-end">
+          <span class="la-data-count">
+            <i class="pi pi-database"></i>
+            {{ getDataPointCount() }} data points
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Hero Hashrate Card -->
+  <div class="card la-hero-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-chart-line la-section-icon"></i>
+      <span class="la-section-title">Current Hashrate</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 text-center">
+        <div class="la-hero-stat">
+          <span class="la-hero-value">{{ getCurrentHashrate(info) | number:'1.1-1' }}</span>
+          <span class="la-hero-unit">GH/s</span>
+        </div>
+        <div class="la-hero-label">Live Hashrate</div>
+      </div>
+    </div>
+
+    <div class="grid mt-3">
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value">{{ getAvgHashrate() | number:'1.1-1' }}</div>
+        <div class="la-stat-label">Avg ({{ getTimeRangeLabel() }})</div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value la-stat-min">{{ getMinHashrate() | number:'1.1-1' }}</div>
+        <div class="la-stat-label">Min</div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value la-stat-max">{{ getMaxHashrate() | number:'1.1-1' }}</div>
+        <div class="la-stat-label">Max</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="card la-chart-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-chart-line la-section-icon"></i>
+      <span class="la-section-title">Hashrate History</span>
+    </div>
+
+    <div class="la-chart-container">
+      <p-chart type="line"
+               [data]="chartData"
+               [options]="chartOptions"
+               height="320px">
+      </p-chart>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="la-stat-card-label">Average Hashrate</div>
+          <div class="la-stat-card-value la-hashrate">
+            {{ getAvgHashrate() | number:'1.2-2' }} GH/s
+          </div>
+          <div class="la-stat-card-sub">over {{ getTimeRangeLabel() }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon">
+            <i class="pi pi-bolt"></i>
+          </div>
+          <div class="la-stat-card-label">Peak Hashrate</div>
+          <div class="la-stat-card-value la-hashrate">
+            {{ getMaxHashrate() | number:'1.2-2' }} GH/s
+          </div>
+          <div class="la-stat-card-sub">maximum recorded</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon la-icon-temp">
+            <i class="pi pi-sun"></i>
+          </div>
+          <div class="la-stat-card-label">Current Temp</div>
+          <div class="la-stat-card-value la-temp">
+            {{ info.temp | number:'1.1-1' }} C
+          </div>
+          <div class="la-stat-card-sub">ASIC chip temperature</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon la-icon-power">
+            <i class="pi pi-bolt"></i>
+          </div>
+          <div class="la-stat-card-label">Current Power</div>
+          <div class="la-stat-card-value la-power">
+            {{ info.power | number:'1.1-1' }} W
+          </div>
+          <div class="la-stat-card-sub">live power draw</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon la-icon-uptime">
+            <i class="pi pi-clock"></i>
+          </div>
+          <div class="la-stat-card-label">Uptime</div>
+          <div class="la-stat-card-value la-uptime">
+            {{ getUptimeFormatted(info) }}
+          </div>
+          <div class="la-stat-card-sub">since last restart</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="card la-stat-card-wrap">
+        <div class="la-stat-card">
+          <div class="la-stat-card-icon">
+            <i class="pi pi-database"></i>
+          </div>
+          <div class="la-stat-card-label">Data Points</div>
+          <div class="la-stat-card-value la-hashrate">
+            {{ getDataPointCount() }}
+          </div>
+          <div class="la-stat-card-sub">samples in {{ getTimeRangeLabel() }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

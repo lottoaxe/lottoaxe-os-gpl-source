@@ -55,3 +55,364 @@
         }
     }
 }
+
+// =========================================================================
+// LottoAxe Tip Pill Button
+// =========================================================================
+
+.la-tip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.4rem 1rem;
+    margin: 0 0.75rem;
+    background: linear-gradient(135deg, #E6007A 0%, #FF3B9A 100%);
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(230, 0, 122, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: la-tip-glow 3s ease-in-out infinite;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    i {
+        font-size: 0.7rem;
+    }
+
+    &:hover {
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 0 20px rgba(230, 0, 122, 0.5), 0 4px 15px rgba(230, 0, 122, 0.25);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    &:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    @media screen and (max-width: 768px) {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.55rem;
+        margin: 0 0.4rem;
+        letter-spacing: 1px;
+
+        span {
+            display: none;
+        }
+
+        i {
+            font-size: 0.85rem;
+        }
+    }
+}
+
+@keyframes la-tip-glow {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(230, 0, 122, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(230, 0, 122, 0.45), 0 0 40px rgba(230, 0, 122, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+}
+
+// =========================================================================
+// LottoAxe Update Available Banner
+// =========================================================================
+
+.la-update-banner {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    width: 100%;
+    z-index: 996;
+    background: linear-gradient(135deg, rgba(141, 255, 0, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(141, 255, 0, 0.25);
+    padding: 0.6rem 2rem;
+    animation: la-banner-slide-in 0.4s ease-out;
+
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    &__icon {
+        color: #8DFF00;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        animation: la-banner-pulse 2s ease-in-out infinite;
+    }
+
+    &__text {
+        flex: 1;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.85rem;
+        line-height: 1.4;
+
+        strong {
+            color: #8DFF00;
+        }
+    }
+
+    &__changelog {
+        display: inline;
+        color: rgba(255, 255, 255, 0.55);
+        margin-left: 0.5rem;
+
+        @media (max-width: 768px) {
+            display: none;
+        }
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 1rem;
+        background: rgba(141, 255, 0, 0.15);
+        border: 1px solid rgba(141, 255, 0, 0.4);
+        border-radius: 6px;
+        color: #8DFF00;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            background: rgba(141, 255, 0, 0.25);
+            box-shadow: 0 0 12px rgba(141, 255, 0, 0.2);
+            color: #8DFF00;
+            text-decoration: none;
+        }
+    }
+
+    &__dismiss {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        flex-shrink: 0;
+        transition: color 0.2s ease, background 0.2s ease;
+
+        &:hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        i {
+            font-size: 0.85rem;
+        }
+    }
+
+    &__version-info {
+        max-width: 1400px;
+        margin: 0.25rem auto 0;
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.5rem 1rem;
+
+        &__content {
+            flex-wrap: wrap;
+        }
+
+        &__btn {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.75rem;
+        }
+    }
+}
+
+// Slide in from top animation
+@keyframes la-banner-slide-in {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+// Gentle pulse on the update icon
+@keyframes la-banner-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+// =========================================================================
+// LottoAxe Remote Notification Banners
+// =========================================================================
+
+.la-notif-banner {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    width: 100%;
+    z-index: 995;
+    padding: 0.5rem 2rem;
+    opacity: 1;
+    animation: la-banner-slide-in 0.4s ease-out forwards;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    // ── Type variants ──
+    &--info {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.10) 0%, rgba(99, 102, 241, 0.06) 100%);
+        border-bottom-color: rgba(56, 189, 248, 0.20);
+
+        .la-notif-banner__icon { color: #38bdf8; }
+        .la-notif-banner__text strong { color: #38bdf8; }
+        .la-notif-banner__link {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+            &:hover {
+                background: rgba(56, 189, 248, 0.22);
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+            }
+        }
+    }
+
+    &--warning {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(234, 88, 12, 0.06) 100%);
+        border-bottom-color: rgba(245, 158, 11, 0.25);
+
+        .la-notif-banner__icon { color: #f59e0b; }
+        .la-notif-banner__text strong { color: #f59e0b; }
+        .la-notif-banner__link {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.35);
+            color: #f59e0b;
+            &:hover {
+                background: rgba(245, 158, 11, 0.22);
+                box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+            }
+        }
+    }
+
+    &--urgent {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(190, 18, 60, 0.08) 100%);
+        border-bottom-color: rgba(239, 68, 68, 0.30);
+
+        .la-notif-banner__icon {
+            color: #ef4444;
+            animation: la-banner-pulse 1.5s ease-in-out infinite;
+        }
+        .la-notif-banner__text strong { color: #ef4444; }
+        .la-notif-banner__link {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #ef4444;
+            &:hover {
+                background: rgba(239, 68, 68, 0.22);
+                box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
+            }
+        }
+    }
+
+    // ── Inner elements ──
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    &__icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    &__text {
+        flex: 1;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.82rem;
+        line-height: 1.4;
+    }
+
+    &__msg {
+        color: rgba(255, 255, 255, 0.55);
+        margin-left: 0.5rem;
+
+        @media (max-width: 768px) {
+            display: none;
+        }
+    }
+
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.85rem;
+        border: 1px solid;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    &__dismiss {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        flex-shrink: 0;
+        transition: color 0.2s ease, background 0.2s ease;
+
+        &:hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        i { font-size: 0.8rem; }
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.4rem 1rem;
+
+        &__content {
+            flex-wrap: wrap;
+        }
+    }
+}
+

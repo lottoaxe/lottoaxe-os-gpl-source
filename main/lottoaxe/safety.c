@@ -74,14 +74,15 @@ const SafetyState *safety_get_state(void)
 
 bool safety_validate_settings(float frequency, uint16_t voltage)
 {
+    const TuningLimits *lim = tuning_presets_get_limits();
     if (!tuning_presets_validate_frequency(frequency)) {
-        ESP_LOGW(TAG, "Rejected frequency %.0f MHz (range: %d-%d)",
-                 frequency, BM1366_FREQ_MIN, BM1366_FREQ_MAX);
+        ESP_LOGW(TAG, "Rejected frequency %.0f MHz (range: %u-%u for %s)",
+                 frequency, lim->freq_min, lim->freq_max, lim->asic_name);
         return false;
     }
     if (!tuning_presets_validate_voltage(voltage)) {
-        ESP_LOGW(TAG, "Rejected voltage %d mV (range: %d-%d)",
-                 voltage, BM1366_VOLT_MIN, BM1366_VOLT_MAX);
+        ESP_LOGW(TAG, "Rejected voltage %d mV (range: %u-%u for %s)",
+                 voltage, lim->volt_min, lim->volt_max, lim->asic_name);
         return false;
     }
     return true;

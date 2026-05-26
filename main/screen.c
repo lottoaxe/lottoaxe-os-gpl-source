@@ -129,7 +129,7 @@ static lv_obj_t * create_scr_self_test() {
     lv_obj_t * scr = create_flex_screen(4);
 
     lv_obj_t *label1 = lv_label_create(scr);
-    lv_label_set_text(label1, "BITAXE SELF-TEST");
+    lv_label_set_text(label1, "LOTTOAXE SELF-TEST");
 
     self_test_message_label = lv_label_create(scr);
     self_test_result_label = lv_label_create(scr);
@@ -205,7 +205,7 @@ static lv_obj_t * create_scr_welcome(const char * ap_ssid) {
     lv_obj_set_width(label1, lv_pct(100));
     lv_obj_set_style_anim_duration(label1, 15000, LV_PART_MAIN);
     lv_label_set_long_mode(label1, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_label_set_text(label1, "Welcome to your new Bitaxe! Connect to the configuration Wi-Fi and connect the Bitaxe to your network.");
+    lv_label_set_text(label1, "Welcome to LottoAxe OS! Connect to the configuration Wi-Fi and connect your miner to your network.");
 
     // add a bit of padding, it looks nicer this way
     lv_obj_set_style_pad_bottom(label1, 4, LV_PART_MAIN);
@@ -260,15 +260,7 @@ static lv_obj_t * create_scr_bitaxe_logo(const char * name, const char * board_v
 
     lv_obj_t *img = lv_img_create(scr);
     lv_img_set_src(img, &bitaxe_logo);
-    lv_obj_align(img, LV_ALIGN_CENTER, 0, 1);
-
-    lv_obj_t *label1 = lv_label_create(scr);
-    lv_label_set_text(label1, name);
-    lv_obj_align(label1, LV_ALIGN_RIGHT_MID, -6, -12);
-
-    lv_obj_t *label2 = lv_label_create(scr);
-    lv_label_set_text(label2, board_version);
-    lv_obj_align(label2, LV_ALIGN_RIGHT_MID, -6, -4);
+    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
 
     return scr;
 }

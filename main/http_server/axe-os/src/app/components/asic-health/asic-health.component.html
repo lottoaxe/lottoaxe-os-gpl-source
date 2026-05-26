@@ -1,0 +1,151 @@
+<!-- ═══════ Header ═══════ -->
+<div class="card la-health-header mb-4">
+  <div class="flex align-items-center gap-2 mb-2">
+    <i class="pi pi-heart la-accent-icon"></i>
+    <span class="la-page-title">ASIC Health</span>
+    <span class="la-asic-badge" *ngIf="asicModel">{{asicModel}}</span>
+    <span class="la-collecting-badge" *ngIf="collecting">
+      <i class="pi pi-circle-fill la-pulse"></i> Collecting
+    </span>
+  </div>
+  <p class="la-subtitle">
+    Tracks your ASIC's performance over time, detects degradation, and calculates an overall health score.
+    Data is stored locally and collected every 60 seconds while this page is open.
+  </p>
+</div>
+
+<!-- ═══════ No Data State ═══════ -->
+<div class="card la-nodata-card mb-4" *ngIf="!report || report.sampleCount < 3">
+  <div class="la-nodata-content">
+    <i class="pi pi-clock la-nodata-icon"></i>
+    <h3>Collecting Data...</h3>
+    <p>Health scoring requires at least 3 minutes of data. Keep this page open or visit periodically.</p>
+    <div class="la-nodata-count">{{totalSnapshots}} snapshots recorded</div>
+  </div>
+</div>
+
+<!-- ═══════ Main Report ═══════ -->
+<ng-container *ngIf="report && report.sampleCount >= 3">
+
+  <!-- Score Ring + Grade -->
+  <div class="la-score-section mb-4">
+    <div class="la-score-ring-wrap">
+      <svg viewBox="0 0 120 120" class="la-score-ring">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+        <circle cx="60" cy="60" r="54" fill="none"
+                [attr.stroke]="getScoreColor(report.score)"
+                stroke-width="8"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="scoreCircumference"
+                [attr.stroke-dashoffset]="scoreDashOffset"
+                transform="rotate(-90 60 60)"
+                class="la-score-arc"/>
+      </svg>
+      <div class="la-score-inner">
+        <div class="la-score-number" [style.color]="getScoreColor(report.score)">{{report.score}}</div>
+        <div class="la-score-label">HEALTH</div>
+      </div>
+    </div>
+
+    <div class="la-grade-section">
+      <div class="la-grade" [style.color]="getGradeColor(report.grade)">{{report.grade}}</div>
+      <div class="la-trend-row">
+        <i [class]="getTrendIcon(report.trendDirection)" [style.color]="getTrendColor(report.trendDirection)"></i>
+        <span [style.color]="getTrendColor(report.trendDirection)">
+          {{report.trendDirection | titlecase}}
+        </span>
+        <span class="la-trend-pct" *ngIf="report.degradationPct !== 0">
+          ({{report.degradationPct > 0 ? '-' : '+'}}{{report.degradationPct | number:'1.1-1'}}%)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="grid mb-4">
+    <div class="col-6 md:col-3">
+      <div class="la-metric-card">
+        <div class="la-metric-label">Hash Efficiency</div>
+        <div class="la-metric-value" [style.color]="report.hashEfficiency >= 0.9 ? '#8DFF00' : report.hashEfficiency >= 0.7 ? '#FFB300' : '#FF3B3B'">
+          {{report.hashEfficiency * 100 | number:'1.0-0'}}%
+        </div>
+        <div class="la-metric-hint">actual / expected</div>
+      </div>
+    </div>
+
+    <div class="col-6 md:col-3">
+      <div class="la-metric-card">
+        <div class="la-metric-label">Avg Error Rate</div>
+        <div class="la-metric-value" [style.color]="report.avgErrorPct < 2 ? '#8DFF00' : report.avgErrorPct < 5 ? '#FFB300' : '#FF3B3B'">
+          {{report.avgErrorPct | number:'1.1-1'}}%
+        </div>
+        <div class="la-metric-hint">ASIC errors</div>
+      </div>
+    </div>
+
+    <div class="col-6 md:col-3">
+      <div class="la-metric-card">
+        <div class="la-metric-label">Avg Temp</div>
+        <div class="la-metric-value" [style.color]="report.avgTemp < 60 ? '#8DFF00' : report.avgTemp < 68 ? '#FFB300' : '#FF3B3B'">
+          {{report.avgTemp | number:'1.0-0'}}°C
+        </div>
+        <div class="la-metric-hint">± {{report.tempStability | number:'1.1-1'}}°</div>
+      </div>
+    </div>
+
+    <div class="col-6 md:col-3">
+      <div class="la-metric-card">
+        <div class="la-metric-label">Hash Stability</div>
+        <div class="la-metric-value" [style.color]="report.hashrateStability < 0.08 ? '#8DFF00' : report.hashrateStability < 0.15 ? '#FFB300' : '#FF3B3B'">
+          {{(1 - report.hashrateStability) * 100 | number:'1.0-0'}}%
+        </div>
+        <div class="la-metric-hint">consistency</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Window Selector -->
+  <div class="la-time-selector mb-3">
+    <span class="la-time-label">Time Window:</span>
+    <button class="la-time-btn" [class.active]="timeWindow === 1" (click)="setTimeWindow(1)">1h</button>
+    <button class="la-time-btn" [class.active]="timeWindow === 6" (click)="setTimeWindow(6)">6h</button>
+    <button class="la-time-btn" [class.active]="timeWindow === 24" (click)="setTimeWindow(24)">24h</button>
+    <button class="la-time-btn" [class.active]="timeWindow === 168" (click)="setTimeWindow(168)">7d</button>
+    <span class="la-time-meta">{{report.sampleCount}} samples &bull; {{dataAge}} of data</span>
+  </div>
+
+  <!-- Sparkline area (simple CSS-based) -->
+  <div class="card la-chart-card mb-4" *ngIf="chartData.length > 0">
+    <div class="flex align-items-center gap-2 mb-2">
+      <i class="pi pi-chart-line la-section-icon"></i>
+      <span class="la-section-title">Hashrate Over Time</span>
+    </div>
+    <div class="la-sparkline-wrap">
+      <div class="la-sparkline-bar"
+           *ngFor="let val of chartData; let i = index"
+           [style.height.%]="getBarHeight(val)"
+           [style.background]="getScoreColor(report.score)"
+           [title]="chartLabels[i] + ': ' + (val | number:'1.1-1') + ' GH/s'">
+      </div>
+    </div>
+    <div class="la-sparkline-labels">
+      <span>{{chartLabels[0]}}</span>
+      <span>{{chartLabels[chartLabels.length - 1]}}</span>
+    </div>
+  </div>
+
+  <!-- Data info -->
+  <div class="card la-info-card">
+    <div class="flex align-items-center justify-content-between">
+      <div class="la-info-text">
+        <i class="pi pi-database"></i>
+        {{totalSnapshots}} total snapshots &bull;
+        Uptime {{formatDuration(report.uptimeHours)}}
+      </div>
+      <button pButton class="p-button-text p-button-sm la-clear-btn" (click)="clearData()">
+        <i class="pi pi-trash"></i> Clear Data
+      </button>
+    </div>
+  </div>
+
+</ng-container>

@@ -1,0 +1,613 @@
+// =============================================================================
+// LottoAxe -- Mining Aura Visual Effects
+// Namespace: .la-aura-*, .la-perf-card, .la-vital, .la-legend-*
+// =============================================================================
+
+$card-bg: rgba(20, 20, 20, 0.7);
+$card-border: rgba(245, 158, 11, 0.12);
+$card-radius: 16px;
+$label-color: #888;
+$value-color: #fff;
+
+// State colors
+$dormant-color: #555;
+$awakening-color: #22c55e;
+$mining-color: #4ade80;
+$blazing-color: #f59e0b;
+$legendary-color: #ffd700;
+$legendary-accent: #a855f7;
+
+:host {
+  display: block;
+}
+
+// =============================================================================
+// Card base (shared)
+// =============================================================================
+
+.card {
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+  }
+}
+
+.la-section-icon {
+  color: #f59e0b;
+  font-size: 1.25rem;
+}
+
+.la-section-title {
+  color: #f59e0b;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+// =============================================================================
+// Aura Container
+// =============================================================================
+
+.la-aura-container {
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+  border-radius: $card-radius;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 1.5s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  // State-specific animations
+  &.la-aura--dormant {
+    animation: aura-dormant 6s ease-in-out infinite;
+  }
+  &.la-aura--awakening {
+    animation: aura-awakening 4s ease-in-out infinite;
+  }
+  &.la-aura--mining {
+    animation: aura-mining 3s ease-in-out infinite;
+  }
+  &.la-aura--blazing {
+    animation: aura-blazing 2s ease-in-out infinite;
+  }
+  &.la-aura--legendary {
+    animation: aura-legendary 3s ease-in-out infinite;
+  }
+}
+
+// =============================================================================
+// Aura ring overlay
+// =============================================================================
+
+.la-aura-ring {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+
+  .la-aura--dormant & {
+    border-color: rgba(85, 85, 85, 0.15);
+  }
+  .la-aura--awakening & {
+    border-color: rgba(34, 197, 94, 0.2);
+    animation: ring-pulse 4s ease-in-out infinite;
+  }
+  .la-aura--mining & {
+    border-color: rgba(74, 222, 128, 0.25);
+    animation: ring-pulse 3s ease-in-out infinite;
+  }
+  .la-aura--blazing & {
+    border-color: rgba(245, 158, 11, 0.3);
+    animation: ring-pulse 2s ease-in-out infinite;
+  }
+  .la-aura--legendary & {
+    border-color: rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.2), 0 0 80px rgba(255, 215, 0, 0.15);
+    animation: ring-legendary 2.5s ease-in-out infinite;
+  }
+}
+
+// =============================================================================
+// Center content
+// =============================================================================
+
+.la-aura-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.la-aura-hashrate {
+  font-size: 4rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: $value-color;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+
+  .la-aura--legendary & {
+    color: $legendary-color;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(168, 85, 247, 0.2);
+  }
+  .la-aura--blazing & {
+    color: $blazing-color;
+    text-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+  }
+  .la-aura--mining & {
+    color: $mining-color;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+  }
+  .la-aura--awakening & {
+    color: $awakening-color;
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.25);
+  }
+  .la-aura--dormant & {
+    color: $dormant-color;
+    text-shadow: none;
+  }
+}
+
+.la-aura-hashrate-unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-top: 0.25rem;
+}
+
+.la-aura-state-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.3rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+
+  &--dormant {
+    background: rgba(85, 85, 85, 0.25);
+    color: $dormant-color;
+    border: 1px solid rgba(85, 85, 85, 0.4);
+  }
+  &--awakening {
+    background: rgba(34, 197, 94, 0.15);
+    color: $awakening-color;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+  }
+  &--mining {
+    background: rgba(74, 222, 128, 0.15);
+    color: $mining-color;
+    border: 1px solid rgba(74, 222, 128, 0.35);
+  }
+  &--blazing {
+    background: rgba(245, 158, 11, 0.15);
+    color: $blazing-color;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+  }
+  &--legendary {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(168, 85, 247, 0.2));
+    color: $legendary-color;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  }
+}
+
+// =============================================================================
+// Stats ring (positioned around center)
+// =============================================================================
+
+.la-aura-stats-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.la-aura-stat {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  padding: 0.4rem 0.75rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+
+  i {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  span {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  &--top {
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &--right {
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &--bottom {
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &--left {
+    left: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+// =============================================================================
+// Performance Cards
+// =============================================================================
+
+.la-perf-card {
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.25rem;
+  text-align: center;
+  height: 100%;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+  }
+
+  &__label {
+    color: $label-color;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  &__value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: $value-color;
+    line-height: 1.2;
+
+    &--state {
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+    }
+  }
+
+  &__sub {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+  }
+
+  &__bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease-out;
+    min-width: 0;
+
+    &--dormant {
+      background: $dormant-color;
+    }
+    &--awakening {
+      background: $awakening-color;
+    }
+    &--mining {
+      background: linear-gradient(90deg, $awakening-color, $mining-color);
+    }
+    &--blazing {
+      background: linear-gradient(90deg, $blazing-color, #ef4444);
+    }
+    &--legendary {
+      background: linear-gradient(90deg, $legendary-color, $legendary-accent);
+    }
+  }
+}
+
+// Aura text colors
+.la-aura-text--dormant { color: $dormant-color; }
+.la-aura-text--awakening { color: $awakening-color; }
+.la-aura-text--mining { color: $mining-color; }
+.la-aura-text--blazing { color: $blazing-color; }
+.la-aura-text--legendary {
+  color: $legendary-color;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+}
+
+// =============================================================================
+// Vitals Card
+// =============================================================================
+
+.la-vitals-card {
+  border-color: rgba(56, 189, 248, 0.12);
+
+  .la-section-icon,
+  .la-section-title {
+    color: #38bdf8;
+  }
+}
+
+.la-vital {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+
+  &__label {
+    display: block;
+    color: $label-color;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+  }
+
+  &__value {
+    display: block;
+    color: $value-color;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+// =============================================================================
+// Legend Card
+// =============================================================================
+
+.la-legend-card {
+  border-color: rgba(168, 85, 247, 0.12);
+
+  .la-section-icon,
+  .la-section-title {
+    color: #a855f7;
+  }
+}
+
+.la-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.la-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &--active {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.12);
+    background: rgba(245, 158, 11, 0.04);
+  }
+}
+
+.la-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.la-legend-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.la-legend-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: $value-color;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.la-legend-threshold {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+// =============================================================================
+// Utility text colors
+// =============================================================================
+
+.la-text-green { color: #22c55e; }
+.la-text-amber { color: #f59e0b; }
+.la-text-red { color: #ef4444; }
+
+// =============================================================================
+// Keyframe Animations
+// =============================================================================
+
+@keyframes aura-dormant {
+  0%, 100% {
+    box-shadow: inset 0 0 60px rgba(40, 40, 40, 0.3);
+  }
+  50% {
+    box-shadow: inset 0 0 80px rgba(50, 50, 50, 0.4);
+  }
+}
+
+@keyframes aura-awakening {
+  0%, 100% {
+    box-shadow: inset 0 0 60px rgba(34, 197, 94, 0.08), 0 0 20px rgba(34, 197, 94, 0.05);
+  }
+  50% {
+    box-shadow: inset 0 0 100px rgba(34, 197, 94, 0.15), 0 0 40px rgba(34, 197, 94, 0.1);
+  }
+}
+
+@keyframes aura-mining {
+  0%, 100% {
+    box-shadow: inset 0 0 80px rgba(74, 222, 128, 0.12), 0 0 30px rgba(74, 222, 128, 0.08);
+  }
+  50% {
+    box-shadow: inset 0 0 120px rgba(74, 222, 128, 0.2), 0 0 50px rgba(74, 222, 128, 0.12);
+  }
+}
+
+@keyframes aura-blazing {
+  0%, 100% {
+    box-shadow: inset 0 0 80px rgba(245, 158, 11, 0.15), 0 0 30px rgba(239, 68, 68, 0.08);
+  }
+  50% {
+    box-shadow: inset 0 0 140px rgba(245, 158, 11, 0.25), 0 0 60px rgba(239, 68, 68, 0.15);
+  }
+}
+
+@keyframes aura-legendary {
+  0% {
+    box-shadow:
+      inset 0 0 100px rgba(255, 215, 0, 0.2),
+      0 0 40px rgba(168, 85, 247, 0.1),
+      0 0 80px rgba(255, 215, 0, 0.05);
+  }
+  33% {
+    box-shadow:
+      inset 0 0 140px rgba(168, 85, 247, 0.2),
+      0 0 60px rgba(255, 215, 0, 0.15),
+      0 0 100px rgba(168, 85, 247, 0.08);
+  }
+  66% {
+    box-shadow:
+      inset 0 0 120px rgba(255, 215, 0, 0.25),
+      0 0 50px rgba(168, 85, 247, 0.12),
+      0 0 90px rgba(255, 215, 0, 0.1);
+  }
+  100% {
+    box-shadow:
+      inset 0 0 100px rgba(255, 215, 0, 0.2),
+      0 0 40px rgba(168, 85, 247, 0.1),
+      0 0 80px rgba(255, 215, 0, 0.05);
+  }
+}
+
+@keyframes ring-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes ring-legendary {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+    border-color: rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.2), 0 0 80px rgba(255, 215, 0, 0.15);
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.3), 0 0 100px rgba(168, 85, 247, 0.2);
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media (max-width: 768px) {
+  .la-aura-container {
+    min-height: 280px;
+  }
+
+  .la-aura-ring {
+    width: 200px;
+    height: 200px;
+  }
+
+  .la-aura-hashrate {
+    font-size: 2.75rem;
+  }
+
+  .la-aura-stat {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+
+    &--top { top: 6%; }
+    &--right { right: 4%; }
+    &--bottom { bottom: 6%; }
+    &--left { left: 4%; }
+
+    span { font-size: 0.65rem; }
+  }
+
+  .la-perf-card__value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .la-aura-stats-ring {
+    display: none;
+  }
+
+  .la-aura-container {
+    min-height: 220px;
+  }
+}

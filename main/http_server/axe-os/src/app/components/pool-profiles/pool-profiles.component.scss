@@ -5,6 +5,43 @@
   font-size: 1rem;
 }
 
+// --- Default Profiles Warning Banner ---
+.la-default-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255, 179, 0, 0.06);
+  border: 1px solid rgba(255, 179, 0, 0.3);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.la-default-banner-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 179, 0, 0.12);
+  border-radius: 8px;
+
+  i {
+    font-size: 1.2rem;
+    color: #FFB300;
+  }
+}
+
+.la-default-banner-body {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+
+  strong {
+    color: #FFB300;
+  }
+}
+
 .la-pool-card {
   background: rgba(20, 20, 20, 0.7);
   border: 1px solid rgba(141, 255, 0, 0.08);

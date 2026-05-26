@@ -1,0 +1,163 @@
+<!-- ═══════ Hash DNA Header ═══════ -->
+<div class="card la-header mb-4">
+  <div class="flex align-items-center gap-2 mb-2">
+    <i class="pi pi-sparkles la-accent-icon"></i>
+    <span class="la-page-title">Hash DNA</span>
+    <span class="la-live-badge">
+      <span class="la-pulse-dot"></span> SCANNING
+    </span>
+  </div>
+  <p class="la-subtitle">
+    Every hash your ASIC produces has a unique fingerprint. Collect rare patterns — hex words, palindromes, repeating sequences, and more.
+  </p>
+</div>
+
+<!-- ═══════ Trophy Case (Best Specimen) ═══════ -->
+<div class="la-trophy-card mb-4" *ngIf="bestSpecimen" [style.borderColor]="bestSpecimen.rarityColor + '44'">
+  <div class="la-trophy-glow" [style.background]="'radial-gradient(circle, ' + bestSpecimen.rarityColor + '11, transparent 70%)'"></div>
+  <div class="la-trophy-content">
+    <div class="la-trophy-label" [style.color]="bestSpecimen.rarityColor">RAREST SPECIMEN</div>
+    <div class="la-trophy-hash">{{formatHash(bestSpecimen.hash)}}</div>
+    <div class="la-trophy-rarity">
+      <span class="la-rarity-badge" [style.borderColor]="bestSpecimen.rarityColor" [style.color]="bestSpecimen.rarityColor">
+        {{getRarityLabel(bestSpecimen.rarity)}}
+      </span>
+      <span class="la-trophy-score">Score: {{bestSpecimen.totalScore}}</span>
+    </div>
+    <div class="la-trophy-traits">
+      <span class="la-trait-chip" *ngFor="let trait of bestSpecimen.traits" [style.borderColor]="trait.color + '66'" [style.color]="trait.color">
+        <i [class]="'pi ' + trait.icon" style="font-size: 0.6rem"></i>
+        {{trait.name}}: {{trait.description}}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Rarity Stats ═══════ -->
+<div class="la-stat-row mb-4">
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Analyzed</span>
+    <span class="la-stat-value">{{totalAnalyzed}}</span>
+  </div>
+  <div class="la-stat-pill" (click)="filterRarity = filterRarity === 'uncommon' ? 'all' : 'uncommon'" style="cursor:pointer">
+    <span class="la-stat-label" style="color: #8DFF00">Uncommon</span>
+    <span class="la-stat-value" style="color: #8DFF00">{{rarityCounts.uncommon}}</span>
+  </div>
+  <div class="la-stat-pill" (click)="filterRarity = filterRarity === 'rare' ? 'all' : 'rare'" style="cursor:pointer">
+    <span class="la-stat-label" style="color: #00C8FF">Rare</span>
+    <span class="la-stat-value" style="color: #00C8FF">{{rarityCounts.rare}}</span>
+  </div>
+  <div class="la-stat-pill" (click)="filterRarity = filterRarity === 'epic' ? 'all' : 'epic'" style="cursor:pointer">
+    <span class="la-stat-label" style="color: #A855F7">Epic</span>
+    <span class="la-stat-value" style="color: #A855F7">{{rarityCounts.epic}}</span>
+  </div>
+  <div class="la-stat-pill" (click)="filterRarity = filterRarity === 'legendary' ? 'all' : 'legendary'" style="cursor:pointer">
+    <span class="la-stat-label" style="color: #FFD700">Legendary</span>
+    <span class="la-stat-value" style="color: #FFD700">{{rarityCounts.legendary}}</span>
+  </div>
+  <div class="la-stat-pill" (click)="filterRarity = filterRarity === 'mythic' ? 'all' : 'mythic'" style="cursor:pointer">
+    <span class="la-stat-label" style="color: #FF3B3B">Mythic</span>
+    <span class="la-stat-value" style="color: #FF3B3B">{{rarityCounts.mythic}}</span>
+  </div>
+</div>
+
+<!-- ═══════ Collection Grid ═══════ -->
+<div class="card la-collection-card mb-4" *ngIf="getFilteredCollection().length > 0">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-th-large la-section-icon"></i>
+      <span class="la-section-title">Collection {{filterRarity !== 'all' ? '(' + filterRarity + ')' : ''}}</span>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <button pButton class="p-button-text p-button-sm la-filter-btn" [class.active]="filterRarity === 'all'" (click)="filterRarity = 'all'">All</button>
+      <button pButton class="p-button-text p-button-sm la-clear-btn" (click)="clearCollection()">
+        <i class="pi pi-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="la-specimen-grid">
+    <div class="la-specimen-card" *ngFor="let specimen of getFilteredCollection(); let i = index"
+         [style.borderColor]="specimen.rarityColor + '33'"
+         [style.boxShadow]="i === 0 ? getRarityGlow(specimen.rarity) : 'none'">
+      <div class="la-specimen-header">
+        <span class="la-rarity-dot" [style.background]="specimen.rarityColor"></span>
+        <span class="la-rarity-name" [style.color]="specimen.rarityColor">{{getRarityLabel(specimen.rarity)}}</span>
+        <span class="la-specimen-score">{{specimen.totalScore}} pts</span>
+      </div>
+      <div class="la-specimen-hash">{{formatHash(specimen.hash)}}</div>
+      <div class="la-specimen-traits">
+        <span class="la-trait-mini" *ngFor="let trait of specimen.traits" [style.color]="trait.color">
+          <i [class]="'pi ' + trait.icon" style="font-size: 0.55rem"></i>
+          {{trait.name}}
+        </span>
+      </div>
+      <div class="la-specimen-footer">
+        <span>Diff: {{specimen.difficulty}}</span>
+        <span>{{getSpecimenAge(specimen.timestamp)}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Empty State ═══════ -->
+<div class="card la-nodata-card mb-4" *ngIf="collection.length === 0">
+  <div class="la-nodata-content">
+    <i class="pi pi-sparkles la-nodata-icon"></i>
+    <h3>Hunting for rare hashes...</h3>
+    <p>Your ASIC is generating hashes constantly. When a share with a rare pattern is found — hex words like DEAD or CAFE, palindromes, repeating digits — it will appear in your collection here.</p>
+    <div class="la-nodata-count" *ngIf="totalAnalyzed > 0">{{totalAnalyzed}} hashes scanned so far</div>
+  </div>
+</div>
+
+<!-- ═══════ Legend ═══════ -->
+<div class="card la-legend-card">
+  <div class="flex align-items-center gap-2 mb-3">
+    <i class="pi pi-info-circle la-section-icon"></i>
+    <span class="la-section-title">Trait Guide</span>
+  </div>
+  <div class="la-legend-grid">
+    <div class="la-legend-item">
+      <i class="pi pi-circle" style="color: #00C8FF"></i>
+      <div>
+        <strong>Leading Zeros</strong>
+        <small>Hash starts with consecutive zeros</small>
+      </div>
+    </div>
+    <div class="la-legend-item">
+      <i class="pi pi-book" style="color: #FFD700"></i>
+      <div>
+        <strong>Hex Word</strong>
+        <small>Contains words like DEAD, BEEF, CAFE</small>
+      </div>
+    </div>
+    <div class="la-legend-item">
+      <i class="pi pi-arrows-h" style="color: #A855F7"></i>
+      <div>
+        <strong>Palindrome</strong>
+        <small>Reads the same forwards and backwards</small>
+      </div>
+    </div>
+    <div class="la-legend-item">
+      <i class="pi pi-replay" style="color: #F59E0B"></i>
+      <div>
+        <strong>Repeater</strong>
+        <small>Same character repeated 4+ times</small>
+      </div>
+    </div>
+    <div class="la-legend-item">
+      <i class="pi pi-sort-amount-up" style="color: #8DFF00"></i>
+      <div>
+        <strong>Sequence</strong>
+        <small>Sequential hex digits (1234, ABCD)</small>
+      </div>
+    </div>
+    <div class="la-legend-item">
+      <i class="pi pi-star" style="color: #FFD700"></i>
+      <div>
+        <strong>Lucky 7s</strong>
+        <small>Contains 4+ sevens</small>
+      </div>
+    </div>
+  </div>
+</div>

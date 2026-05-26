@@ -1,0 +1,32 @@
+<div style="position: relative; display: inline-block;"
+  (mousedown)="onHoldStart($event)"
+  (mouseup)="onHoldEnd()"
+  (mouseleave)="onHoldEnd()"
+  (touchstart)="onHoldStart($event)"
+  (touchend)="onHoldEnd()">
+
+  <button pButton
+    type="button"
+    [label]="displayLabel"
+    [icon]="icon"
+    [disabled]="disabled"
+    [class]="'p-button p-button-' + severity"
+    style="position: relative; overflow: hidden; min-width: 180px; z-index: 1; user-select: none;">
+  </button>
+
+  <!-- Progress overlay -->
+  <div *ngIf="holding && progress > 0"
+    style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: inherit;
+      pointer-events: none;
+      transition: width 30ms linear;
+      z-index: 2;
+    "
+    [style.width.%]="progress">
+  </div>
+</div>

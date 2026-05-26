@@ -1,0 +1,121 @@
+<!-- ═══════ Near Miss Header ═══════ -->
+<div class="card la-header mb-4" *ngIf="info$ | async as info">
+  <div class="flex align-items-center gap-2 mb-2">
+    <i class="pi pi-bullseye la-accent-icon"></i>
+    <span class="la-page-title">Near Miss Tracker</span>
+    <span class="la-live-badge">
+      <span class="la-pulse-dot"></span> LIVE
+    </span>
+  </div>
+  <p class="la-subtitle">
+    Tracks how close your shares get to meeting Bitcoin's network difficulty. Every share is a shot at the bullseye.
+  </p>
+</div>
+
+<!-- ═══════ Bullseye Target ═══════ -->
+<div class="card la-bullseye-card mb-4" *ngIf="info$ | async as info">
+  <div class="la-bullseye-layout">
+    <!-- SVG Bullseye -->
+    <div class="la-bullseye-wrap">
+      <svg viewBox="0 0 200 200" class="la-bullseye-svg">
+        <!-- Concentric rings -->
+        <circle cx="100" cy="100" r="95" fill="none" stroke="rgba(239,68,68,0.15)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(245,158,11,0.15)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="65" fill="none" stroke="rgba(168,85,247,0.15)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(0,200,255,0.15)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="35" fill="none" stroke="rgba(141,255,0,0.2)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="18" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="2"/>
+        <!-- Center dot (block found zone) -->
+        <circle cx="100" cy="100" r="5" fill="rgba(255,215,0,0.15)"/>
+        <!-- Best share dot -->
+        <circle [attr.cx]="100" [attr.cy]="getBullseyeDotPosition(info)"
+                r="6" [attr.fill]="getBullseyeColor(info)"
+                class="la-share-dot">
+          <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Crosshairs -->
+        <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+        <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+      </svg>
+      <div class="la-bullseye-center-label">
+        <span class="la-center-pct" [style.color]="getBullseyeColor(info)">{{getClosestPctDisplay(info)}}%</span>
+        <span class="la-center-sub">of network difficulty</span>
+      </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="la-target-stats">
+      <div class="la-target-stat">
+        <span class="la-target-label">All-Time Closest</span>
+        <span class="la-target-value la-green">{{getClosestPctDisplay(info)}}%</span>
+        <span class="la-target-hint">{{formatDiff(info.bestDiff)}} diff</span>
+      </div>
+      <div class="la-target-stat">
+        <span class="la-target-label">Session Closest</span>
+        <span class="la-target-value la-cyan">{{getSessionClosestPctDisplay(info)}}%</span>
+        <span class="la-target-hint">{{formatDiff(info.bestSessionDiff)}} diff</span>
+      </div>
+      <div class="la-target-stat">
+        <span class="la-target-label">Distance to Block</span>
+        <span class="la-target-value la-yellow">{{getDistanceMultiple(info)}}</span>
+        <span class="la-target-hint">Network: {{formatDiff(info.networkDifficulty)}}</span>
+      </div>
+      <div class="la-target-stat">
+        <span class="la-target-label">Zone</span>
+        <span class="la-target-value" [style.color]="getBullseyeColor(info)">{{getBullseyeLabel(info)}}</span>
+        <span class="la-target-hint">{{info.sharesAccepted}} shares submitted</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Ring Legend ═══════ -->
+<div class="card la-legend-card mb-4">
+  <div class="la-ring-legend">
+    <div class="la-ring-item" *ngFor="let ring of bullseyeRings">
+      <span class="la-ring-dot" [style.background]="ring.color"></span>
+      <span class="la-ring-label">{{ring.label}}</span>
+      <span class="la-ring-threshold">{{ring.threshold}}%+ of target</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Best Shares History ═══════ -->
+<div class="card la-history-card mb-4" *ngIf="nearMisses.length > 0">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-history la-section-icon"></i>
+      <span class="la-section-title">Best Shares</span>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <span class="la-history-count">{{totalSharesTracked}} recorded</span>
+      <button pButton class="p-button-text p-button-sm la-clear-btn" (click)="clearHistory()">
+        <i class="pi pi-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="la-share-list">
+    <div class="la-share-entry" *ngFor="let entry of nearMisses; let i = index">
+      <div class="la-share-rank">
+        <span class="la-rank-num">#{{i + 1}}</span>
+      </div>
+      <div class="la-share-bar-wrap">
+        <div class="la-share-bar" [style.width.%]="getBarWidth(entry)" [style.background]="getBarColor(entry.percentage)"></div>
+      </div>
+      <div class="la-share-pct" [style.color]="getBarColor(entry.percentage)">{{formatPct(entry.percentage)}}</div>
+      <div class="la-share-diff">{{formatDiff(entry.shareDiff)}}</div>
+      <div class="la-share-meta">{{entry.frequency}} MHz &bull; {{entry.hashRate | number:'1.0-0'}} GH/s</div>
+      <div class="la-share-age">{{getEntryAge(entry.timestamp)}}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ No Data State ═══════ -->
+<div class="card la-nodata-card mb-4" *ngIf="nearMisses.length === 0 && !(info$ | async)?.bestDiff">
+  <div class="la-nodata-content">
+    <i class="pi pi-bullseye la-nodata-icon"></i>
+    <h3>Waiting for shares...</h3>
+    <p>Your best shares will appear here as your miner submits work. Each share is compared against the network difficulty to show how close you've gotten to finding a block.</p>
+  </div>
+</div>

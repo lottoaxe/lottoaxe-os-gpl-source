@@ -1,0 +1,105 @@
+<div class="card">
+  <!-- Header -->
+  <div class="la-achievements-header flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="m-0">Achievements</h2>
+      <span class="text-500 text-sm" *ngIf="info$ | async">
+        {{ unlockedCount }} / {{ totalCount }} Unlocked
+      </span>
+    </div>
+  </div>
+
+  <!-- Category filter pills -->
+  <div class="la-category-filters flex flex-wrap gap-2 mb-4">
+    <button
+      *ngFor="let cat of categories"
+      class="la-filter-pill"
+      [ngClass]="{ 'la-filter-pill--active': selectedCategory === cat.value }"
+      (click)="selectCategory(cat.value)">
+      {{ cat.label }}
+    </button>
+  </div>
+
+  <!-- Achievement grid -->
+  <ng-container *ngIf="info$ | async as info">
+    <div class="la-achievements-grid">
+      <div
+        *ngFor="let a of filteredAchievements; trackBy: trackById"
+        class="la-achievement-card"
+        [ngClass]="{
+          'la-achievement-card--unlocked': isUnlocked(a),
+          'la-achievement-card--locked': !isUnlocked(a),
+          'la-achievement-card--recent': isRecentlyUnlocked(a),
+          'la-achievement-card--secret': a.secret && !isUnlocked(a)
+        }">
+
+        <!-- Icon circle -->
+        <div class="la-achievement-icon" [ngStyle]="{ 'border-color': getTierColor(a.tier) }">
+          <ng-container *ngIf="!(a.secret && !isUnlocked(a)); else secretIcon">
+            <i class="pi {{ a.icon }}" [ngStyle]="{ 'color': getTierColor(a.tier) }"></i>
+          </ng-container>
+          <ng-template #secretIcon>
+            <i class="pi pi-question-circle" style="color: #666;"></i>
+          </ng-template>
+
+          <!-- Checkmark overlay when unlocked -->
+          <div class="la-achievement-check" *ngIf="isUnlocked(a)">
+            <i class="pi pi-check-circle"></i>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="la-achievement-content">
+          <!-- Name -->
+          <div class="la-achievement-name">
+            <ng-container *ngIf="!(a.secret && !isUnlocked(a)); else secretName">
+              {{ a.name }}
+            </ng-container>
+            <ng-template #secretName>???</ng-template>
+          </div>
+
+          <!-- Description -->
+          <div class="la-achievement-desc text-500 text-sm">
+            <ng-container *ngIf="!(a.secret && !isUnlocked(a)); else secretDesc">
+              {{ a.description }}
+            </ng-container>
+            <ng-template #secretDesc>Secret Achievement</ng-template>
+          </div>
+
+          <!-- Tier badge -->
+          <div class="la-achievement-tier mt-1">
+            <span class="la-tier-badge" [ngStyle]="{
+              'background-color': getTierColor(a.tier) + '22',
+              'color': getTierColor(a.tier),
+              'border': '1px solid ' + getTierColor(a.tier) + '44'
+            }">
+              {{ a.tier | uppercase }}
+            </span>
+          </div>
+
+          <!-- Progress bar (locked only) -->
+          <div class="la-achievement-progress mt-2" *ngIf="!isUnlocked(a) && !(a.secret && !isUnlocked(a))">
+            <div class="la-progress-track">
+              <div
+                class="la-progress-fill"
+                [ngStyle]="{ 'width.%': getProgress(a, info) }">
+              </div>
+            </div>
+            <span class="la-progress-label text-500 text-xs">{{ getProgress(a, info) }}%</span>
+          </div>
+
+          <!-- Unlocked timestamp -->
+          <div class="la-achievement-unlocked-at text-500 text-xs mt-1" *ngIf="isUnlocked(a)">
+            <i class="pi pi-check mr-1" style="font-size: 0.7rem;"></i>
+            Unlocked {{ getTimeAgo(a) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="filteredAchievements.length === 0" class="text-center text-500 py-6">
+      No achievements in this category yet.
+    </div>
+  </ng-container>
+</div>

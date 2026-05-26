@@ -2,7 +2,7 @@
   <div class="col-12">
     <div class="card">
       <h5 class="la-section-title">Tuning Presets</h5>
-      <p class="text-500 text-sm mb-3">Quick-apply tuning profiles for your BM1366 ASIC. Changes apply immediately — no restart needed.</p>
+      <p class="text-500 text-sm mb-3">Quick-apply tuning profiles for your {{asicModel || 'ASIC'}}. Changes apply immediately — no restart needed.</p>
 
       <!-- Safety warning banner -->
       <p-message *ngIf="safety.throttled" severity="warn" class="mb-3 block">
@@ -51,26 +51,66 @@
                       [style.borderColor]="getRiskColor(preset.riskLevel)">
                   {{getRiskLabel(preset.riskLevel)}}
                 </span>
+                <span *ngIf="preset.experimental" class="la-experimental-badge">EXPERIMENTAL</span>
+                <a class="la-preset-edit-toggle" (click)="toggleEditPreset(preset); $event.stopPropagation()"
+                   [pTooltip]="isEditing(preset) ? 'Lock Values' : 'Edit Values'" tooltipPosition="top">
+                  <i class="pi" [ngClass]="isEditing(preset) ? 'pi-lock' : 'pi-pencil'"></i>
+                </a>
               </div>
               <p class="la-preset-desc">{{preset.description}}</p>
             </div>
             <div class="la-preset-specs">
+              <!-- Frequency -->
               <div class="la-preset-spec">
                 <span class="la-preset-spec-label">Frequency</span>
-                <span class="la-preset-spec-value">{{preset.frequency}} MHz</span>
+                <span *ngIf="!isEditing(preset)" class="la-preset-spec-value">{{preset.frequency}} MHz</span>
+                <div *ngIf="isEditing(preset)" class="la-preset-inline-input">
+                  <input type="number" class="la-inline-field"
+                    [value]="getEffectiveValue(preset, 'frequency')"
+                    (input)="updatePresetOverride(preset, 'frequency', $event)"
+                    [min]="preset.id === 'overclock' || preset.id === 'lotto' ? OC_FREQ_MIN : FREQ_MIN"
+                    [max]="preset.id === 'overclock' || preset.id === 'lotto' ? OC_FREQ_MAX : FREQ_MAX" step="5">
+                  <span class="la-inline-unit">MHz</span>
+                </div>
               </div>
+              <!-- Voltage -->
               <div class="la-preset-spec">
                 <span class="la-preset-spec-label">Voltage</span>
-                <span class="la-preset-spec-value">{{preset.voltage}} mV</span>
+                <span *ngIf="!isEditing(preset)" class="la-preset-spec-value">{{preset.voltage}} mV</span>
+                <div *ngIf="isEditing(preset)" class="la-preset-inline-input">
+                  <input type="number" class="la-inline-field"
+                    [value]="getEffectiveValue(preset, 'voltage')"
+                    (input)="updatePresetOverride(preset, 'voltage', $event)"
+                    [min]="preset.id === 'overclock' || preset.id === 'lotto' ? OC_VOLT_MIN : VOLT_MIN"
+                    [max]="preset.id === 'overclock' || preset.id === 'lotto' ? OC_VOLT_MAX : VOLT_MAX" step="10">
+                  <span class="la-inline-unit">mV</span>
+                </div>
               </div>
+              <!-- Fan Speed -->
               <div class="la-preset-spec">
                 <span class="la-preset-spec-label">Fan</span>
-                <span class="la-preset-spec-value">{{preset.autoFan ? 'Auto' : preset.fanSpeed + '%'}}</span>
+                <span *ngIf="!isEditing(preset)" class="la-preset-spec-value">{{preset.autoFan ? 'Auto' : preset.fanSpeed + '%'}}</span>
+                <div *ngIf="isEditing(preset)" class="la-preset-inline-input">
+                  <input type="number" class="la-inline-field"
+                    [value]="getEffectiveValue(preset, 'fanSpeed')"
+                    (input)="updatePresetOverride(preset, 'fanSpeed', $event)"
+                    min="0" max="100" step="5">
+                  <span class="la-inline-unit">%</span>
+                </div>
               </div>
+              <!-- Temp Target -->
               <div class="la-preset-spec">
                 <span class="la-preset-spec-label">Temp Target</span>
-                <span class="la-preset-spec-value">{{preset.tempTarget}}&deg;C</span>
+                <span *ngIf="!isEditing(preset)" class="la-preset-spec-value">{{preset.tempTarget}}&deg;C</span>
+                <div *ngIf="isEditing(preset)" class="la-preset-inline-input">
+                  <input type="number" class="la-inline-field"
+                    [value]="getEffectiveValue(preset, 'tempTarget')"
+                    (input)="updatePresetOverride(preset, 'tempTarget', $event)"
+                    [min]="TEMP_MIN" [max]="TEMP_MAX" step="1">
+                  <span class="la-inline-unit">&deg;C</span>
+                </div>
               </div>
+              <!-- Read-only estimates -->
               <div class="la-preset-spec">
                 <span class="la-preset-spec-label">Est. Hashrate</span>
                 <span class="la-preset-spec-value">{{preset.estHashrate}}</span>
@@ -80,7 +120,13 @@
                 <span class="la-preset-spec-value">{{preset.estPower}}</span>
               </div>
             </div>
-            <button pButton [label]="'Apply ' + preset.name" class="w-full p-button-sm la-preset-btn"
+            <!-- Modified indicator + reset -->
+            <div *ngIf="isEditing(preset) && hasOverrides(preset)" class="la-preset-modified">
+              <span class="la-preset-modified-label"><i class="pi pi-info-circle"></i> Modified</span>
+              <a class="la-preset-reset-link" (click)="resetPresetOverrides(preset); $event.stopPropagation()">Reset</a>
+            </div>
+            <button pButton [label]="hasOverrides(preset) ? 'Apply Edited' : 'Apply ' + preset.name"
+              class="w-full p-button-sm la-preset-btn"
               (click)="requestApplyPreset(preset)">
             </button>
           </div>
@@ -96,8 +142,18 @@
 
       <!-- Custom Tuning Panel -->
       <div *ngIf="showCustomTuning" class="la-custom-panel mt-3">
-        <h6 class="la-custom-title"><i class="pi pi-cog mr-2"></i>Custom Tuning</h6>
+        <div class="flex justify-content-between align-items-center mb-2">
+          <h6 class="la-custom-title mb-0"><i class="pi pi-cog mr-2"></i>Custom Tuning</h6>
+          <button pButton class="p-button-sm p-button-text" [ngClass]="overclockUnlocked ? 'p-button-danger' : 'p-button-secondary'" (click)="toggleOverclock()">
+            <i class="pi pi-exclamation-triangle mr-1"></i>
+            {{overclockUnlocked ? 'OC Unlocked' : 'Unlock Overclock'}}
+          </button>
+        </div>
         <p class="text-500 text-sm mb-3">Manually adjust each parameter. All changes go through the safety disclosure before applying.</p>
+        <p *ngIf="overclockUnlocked" class="text-sm mb-3" style="color: #FF3B3B;">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Overclock unlocked — frequency and voltage limits removed. Values beyond the ASIC's rated range may cause instability or hardware damage.
+        </p>
 
         <form [formGroup]="customForm" (ngSubmit)="applyCustomTuning()">
           <div class="grid">
@@ -109,10 +165,10 @@
                   <span class="la-slider-value la-slider-value--green">{{customForm.value.frequency}} MHz</span>
                 </div>
                 <input type="range" class="la-range la-range--green" formControlName="frequency"
-                  [min]="FREQ_MIN" [max]="FREQ_MAX" step="5">
+                  [min]="activeFreqMin" [max]="activeFreqMax" step="5">
                 <div class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
-                  <span>{{FREQ_MIN}} MHz</span>
-                  <span>{{FREQ_MAX}} MHz</span>
+                  <span>{{activeFreqMin}} MHz</span>
+                  <span>{{activeFreqMax}} MHz</span>
                 </div>
               </div>
             </div>
@@ -125,10 +181,10 @@
                   <span class="la-slider-value la-slider-value--orange">{{customForm.value.coreVoltage}} mV</span>
                 </div>
                 <input type="range" class="la-range la-range--orange" formControlName="coreVoltage"
-                  [min]="VOLT_MIN" [max]="VOLT_MAX" step="10">
+                  [min]="activeVoltMin" [max]="activeVoltMax" step="10">
                 <div class="flex justify-content-between text-xs" style="color: rgba(255,255,255,0.3)">
-                  <span>{{VOLT_MIN}} mV</span>
-                  <span>{{VOLT_MAX}} mV</span>
+                  <span>{{activeVoltMin}} mV</span>
+                  <span>{{activeVoltMax}} mV</span>
                 </div>
               </div>
             </div>
@@ -190,15 +246,15 @@
 
       <!-- Safety limits info -->
       <div class="la-safety-panel mt-3">
-        <h6 class="la-safety-title"><i class="pi pi-shield mr-2"></i>Safety Limits (BM1366)</h6>
+        <h6 class="la-safety-title"><i class="pi pi-shield mr-2"></i>{{overclockUnlocked ? 'OC Limits' : 'Safety Limits'}} ({{asicModel || 'ASIC'}})</h6>
         <div class="grid text-sm">
           <div class="col-6 md:col-3">
             <span class="la-safety-label">Frequency Range</span>
-            <span class="la-safety-value">{{FREQ_MIN}} - {{FREQ_MAX}} MHz</span>
+            <span class="la-safety-value" [style.color]="overclockUnlocked ? '#FF3B3B' : ''">{{activeFreqMin}} - {{activeFreqMax}} MHz</span>
           </div>
           <div class="col-6 md:col-3">
             <span class="la-safety-label">Voltage Range</span>
-            <span class="la-safety-value">{{VOLT_MIN}} - {{VOLT_MAX}} mV</span>
+            <span class="la-safety-value" [style.color]="overclockUnlocked ? '#FF3B3B' : ''">{{activeVoltMin}} - {{activeVoltMax}} mV</span>
           </div>
           <div class="col-6 md:col-3">
             <span class="la-safety-label">Auto-Throttle</span>
@@ -226,7 +282,11 @@
     </div>
 
     <div class="la-disclosure-body">
-      <p>You are about to apply <strong>{{pendingPreset.name}}</strong> tuning settings to your Bitaxe.</p>
+      <p>You are about to apply <strong>{{pendingPreset.name}}</strong> tuning settings to your Bitaxe.
+        <span *ngIf="pendingPreset.name.endsWith('(Edited)')" style="color: #8DFF00; font-size: 0.8rem;">
+          Values have been customized from the preset defaults.
+        </span>
+      </p>
 
       <div class="la-disclosure-settings">
         <div class="la-disclosure-setting">
@@ -258,6 +318,19 @@
         </ul>
       </div>
 
+      <!-- Extra warning for extreme presets -->
+      <div *ngIf="pendingPreset?.riskLevel === 'extreme'" class="la-disclosure-extreme">
+        <i class="pi pi-ban" style="font-size: 1.5rem; color: #FF3B3B;"></i>
+        <div>
+          <strong style="color: #FF3B3B;">EXTREME RISK — HARDWARE DAMAGE POSSIBLE</strong>
+          <p style="margin: 0.25rem 0 0; font-size: 0.78rem; color: rgba(255,255,255,0.6);">
+            These settings push your ASIC beyond manufacturer specifications. Component degradation,
+            permanent damage, and device failure are real possibilities. Proceed only if you fully
+            accept these consequences.
+          </p>
+        </div>
+      </div>
+
       <div class="la-disclosure-checkbox">
         <p-checkbox [(ngModel)]="disclaimerAccepted" [binary]="true"
           label="I understand the risks and want to proceed"></p-checkbox>
@@ -268,8 +341,21 @@
   <ng-template pTemplate="footer">
     <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary p-button-sm"
       (click)="cancelDisclosure()"></button>
-    <button pButton label="Apply Settings" icon="pi pi-check" class="p-button-sm"
-      [ngClass]="{'p-button-warning': pendingPreset?.riskLevel === 'high' || pendingPreset?.riskLevel === 'extreme', 'p-button-success': pendingPreset?.riskLevel === 'low' || pendingPreset?.riskLevel === 'medium'}"
+
+    <!-- Standard click button for low/medium risk -->
+    <button *ngIf="pendingPreset?.riskLevel === 'low' || pendingPreset?.riskLevel === 'medium'"
+      pButton label="Apply Settings" icon="pi pi-check" class="p-button-success p-button-sm"
       [disabled]="!disclaimerAccepted" (click)="confirmApplyPreset()"></button>
+
+    <!-- Hold-to-confirm for high/extreme risk -->
+    <app-hold-confirm
+      *ngIf="pendingPreset?.riskLevel === 'high' || pendingPreset?.riskLevel === 'extreme'"
+      [label]="'Hold to Apply'"
+      [holdDuration]="pendingPreset?.riskLevel === 'extreme' ? 4000 : 2500"
+      [severity]="pendingPreset?.riskLevel === 'extreme' ? 'danger' : 'warning'"
+      icon="pi pi-exclamation-triangle"
+      [disabled]="!disclaimerAccepted"
+      (confirmed)="confirmApplyPreset()">
+    </app-hold-confirm>
   </ng-template>
 </p-dialog>

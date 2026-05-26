@@ -1,0 +1,197 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- ===== Aura Visualization ===== -->
+  <div class="la-aura-container"
+       [ngClass]="'la-aura--' + getAuraState(info)"
+       [style.background]="getAuraColor(info)">
+
+    <!-- Animated overlay ring -->
+    <div class="la-aura-ring"></div>
+
+    <!-- Center content -->
+    <div class="la-aura-center">
+      <div class="la-aura-hashrate">
+        {{ info.hashRate | number:'1.1-1' }}
+      </div>
+      <div class="la-aura-hashrate-unit">GH/s</div>
+      <div class="la-aura-state-badge"
+           [ngClass]="'la-aura-state-badge--' + getAuraState(info)">
+        {{ getAuraStateLabel(getAuraState(info)) }}
+      </div>
+    </div>
+
+    <!-- Stat ring around the center -->
+    <div class="la-aura-stats-ring">
+      <div class="la-aura-stat la-aura-stat--top">
+        <i class="pi pi-sun"></i>
+        <span>{{ info.temp | number:'1.0-0' }}&deg;C</span>
+      </div>
+      <div class="la-aura-stat la-aura-stat--right">
+        <i class="pi pi-bolt"></i>
+        <span>{{ info.power | number:'1.1-1' }}W</span>
+      </div>
+      <div class="la-aura-stat la-aura-stat--bottom">
+        <i class="pi pi-gauge"></i>
+        <span>{{ getHashratePercentage(info) }}%</span>
+      </div>
+      <div class="la-aura-stat la-aura-stat--left">
+        <i class="pi pi-check-square"></i>
+        <span>{{ info.sharesAccepted | number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Performance Cards ===== -->
+  <div class="grid mt-3">
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="la-perf-card">
+        <div class="la-perf-card__label">Performance Score</div>
+        <div class="la-perf-card__value">
+          {{ getPerformanceScore(info) }}
+        </div>
+        <div class="la-perf-card__sub">/ 100</div>
+        <div class="la-perf-card__bar-track">
+          <div class="la-perf-card__bar-fill"
+               [style.width.%]="getPerformanceScore(info)"
+               [ngClass]="'la-perf-card__bar-fill--' + getAuraState(info)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="la-perf-card">
+        <div class="la-perf-card__label">Aura State</div>
+        <div class="la-perf-card__value la-perf-card__value--state"
+             [ngClass]="'la-aura-text--' + getAuraState(info)">
+          {{ getAuraStateLabel(getAuraState(info)) }}
+        </div>
+        <div class="la-perf-card__sub">Intensity: {{ getAuraIntensity(info) }}%</div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="la-perf-card">
+        <div class="la-perf-card__label">Hashrate vs Expected</div>
+        <div class="la-perf-card__value"
+             [ngClass]="{
+               'la-text-green': getHashratePercentage(info) >= 100,
+               'la-text-amber': getHashratePercentage(info) >= 80 && getHashratePercentage(info) < 100,
+               'la-text-red': getHashratePercentage(info) < 80
+             }">
+          {{ getHashratePercentage(info) }}%
+        </div>
+        <div class="la-perf-card__sub">
+          {{ info.hashRate | number:'1.1-1' }} / {{ info.expectedHashrate | number:'1.0-0' }} GH/s
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="la-perf-card">
+        <div class="la-perf-card__label">Efficiency Rating</div>
+        <div class="la-perf-card__value"
+             [style.color]="getEfficiencyRatingColor(getEfficiencyRating(info))">
+          {{ getEfficiencyRating(info) | titlecase }}
+        </div>
+        <div class="la-perf-card__sub">
+          {{ (info.power / (info.hashRate / 1000)) | number:'1.1-1' }} J/TH
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Mining Vitals Grid ===== -->
+  <div class="card la-vitals-card mt-3">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-heart la-section-icon"></i>
+      <span class="la-section-title">Mining Vitals</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Hashrate</span>
+          <span class="la-vital__value">{{ info.hashRate | number:'1.1-1' }} GH/s</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Temperature</span>
+          <span class="la-vital__value"
+                [ngClass]="{
+                  'la-text-green': info.temp < 55,
+                  'la-text-amber': info.temp >= 55 && info.temp < 70,
+                  'la-text-red': info.temp >= 70
+                }">
+            {{ info.temp | number:'1.0-0' }}&deg;C
+          </span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Power</span>
+          <span class="la-vital__value">{{ info.power | number:'1.1-1' }} W</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Fan</span>
+          <span class="la-vital__value">{{ info.fanspeed > 100 ? 100 : info.fanspeed }}% ({{ info.fanrpm }} RPM)</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Uptime</span>
+          <span class="la-vital__value">{{ formatUptime(info.uptimeSeconds) }}</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Shares Accepted</span>
+          <span class="la-vital__value la-text-green">{{ info.sharesAccepted | number }}</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Rejection Rate</span>
+          <span class="la-vital__value"
+                [ngClass]="{
+                  'la-text-green': getRejectionRate(info) < 2,
+                  'la-text-amber': getRejectionRate(info) >= 2 && getRejectionRate(info) < 10,
+                  'la-text-red': getRejectionRate(info) >= 10
+                }">
+            {{ getRejectionRate(info) | number:'1.2-2' }}%
+          </span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-vital">
+          <span class="la-vital__label">Best Diff</span>
+          <span class="la-vital__value">{{ formatDiffSuffix(info.bestSessionDiff) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Aura State Legend ===== -->
+  <div class="card la-legend-card mt-3">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-palette la-section-icon"></i>
+      <span class="la-section-title">Aura States</span>
+    </div>
+
+    <div class="la-legend-grid">
+      <div *ngFor="let item of auraLegend"
+           class="la-legend-item"
+           [ngClass]="{'la-legend-item--active': getAuraState(info) === item.state}">
+        <div class="la-legend-swatch" [style.background]="item.color"></div>
+        <div class="la-legend-info">
+          <span class="la-legend-name">{{ item.label }}</span>
+          <span class="la-legend-threshold">{{ item.threshold }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

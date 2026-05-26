@@ -1,0 +1,600 @@
+// =============================================================================
+// LottoAxe -- Overclock Scheduler
+// Namespace: .la-oc-*, .la-label, .la-input, .la-section-*
+// =============================================================================
+
+$cyan: #38bdf8;
+$cyan-dim: rgba(56, 189, 248, 0.15);
+$cyan-glow: rgba(56, 189, 248, 0.35);
+$card-bg: rgba(20, 20, 20, 0.7);
+$card-border: rgba(56, 189, 248, 0.12);
+$card-radius: 16px;
+$label-color: #888;
+$value-color: #fff;
+
+:host {
+  display: block;
+}
+
+// =============================================================================
+// Card base
+// =============================================================================
+
+.card {
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.08);
+  }
+}
+
+.la-section-icon {
+  color: $cyan;
+  font-size: 1.25rem;
+}
+
+.la-section-title {
+  color: $cyan;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+// =============================================================================
+// Form inputs
+// =============================================================================
+
+.la-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.la-input {
+  background: rgba(30, 30, 30, 0.9) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+
+  &:focus {
+    border-color: $cyan !important;
+    box-shadow: 0 0 8px $cyan-dim !important;
+  }
+}
+
+// =============================================================================
+// Header Card
+// =============================================================================
+
+.la-oc-header {
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.la-oc-icon {
+  color: $cyan;
+  font-size: 1.5rem;
+}
+
+.la-oc-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $cyan;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.la-oc-time-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.la-oc-current-time {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: $value-color;
+  line-height: 1;
+}
+
+.la-oc-current-day {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.la-oc-time-toggle {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  border-radius: 6px !important;
+  color: $cyan !important;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.la-oc-status-block {
+  min-width: 200px;
+}
+
+.la-oc-status-label {
+  color: $label-color;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.la-oc-status-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.la-text-active {
+  color: #22c55e;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.la-text-inactive {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.la-text-green { color: #22c55e; }
+.la-text-amber { color: #f59e0b; }
+.la-text-red { color: #ef4444; }
+
+.la-oc-next-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+}
+
+// =============================================================================
+// Device Status Card
+// =============================================================================
+
+.la-oc-device-card {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.la-oc-device-stat {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+
+  &__label {
+    display: block;
+    color: $label-color;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+  }
+
+  &__value {
+    display: block;
+    color: $value-color;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+// =============================================================================
+// Timeline
+// =============================================================================
+
+.la-oc-timeline {
+  display: flex;
+  gap: 2px;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+
+  &__segment {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+    position: relative;
+
+    &--active {
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.35rem;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// =============================================================================
+// Schedule List
+// =============================================================================
+
+.la-oc-count-badge {
+  background: $cyan-dim;
+  color: $cyan;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.la-oc-add-btn {
+  border-color: $cyan !important;
+  color: $cyan !important;
+
+  &:hover {
+    background: $cyan-dim !important;
+  }
+}
+
+.la-oc-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: rgba(255, 255, 255, 0.35);
+
+  i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.15);
+  }
+
+  p {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+// =============================================================================
+// Schedule Entry Card
+// =============================================================================
+
+.la-oc-schedule-entry {
+  background: rgba(30, 30, 30, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &--active {
+    border-left: 3px solid #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.08);
+    background: rgba(34, 197, 94, 0.03);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+  }
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.2);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  &__color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: $value-color;
+  }
+
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  &__time {
+    color: $cyan;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  &__days {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__params {
+    display: flex;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+
+    i {
+      color: rgba(255, 255, 255, 0.35);
+      margin-right: 2px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: flex-end;
+  }
+}
+
+.la-oc-active-pill {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+// =============================================================================
+// Day Pills
+// =============================================================================
+
+.la-oc-day-pill {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  &--active {
+    background: $cyan-dim;
+    color: $cyan;
+    border-color: rgba(56, 189, 248, 0.3);
+  }
+}
+
+// Day toggle (in edit mode)
+.la-oc-day-toggle {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+  user-select: none;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &--active {
+    background: $cyan-dim;
+    color: $cyan;
+    border-color: rgba(56, 189, 248, 0.4);
+
+    &:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: $cyan;
+    }
+  }
+}
+
+// =============================================================================
+// Toggle button override
+// =============================================================================
+
+::ng-deep .la-oc-toggle {
+  .p-button {
+    font-size: 0.7rem !important;
+    padding: 0.25rem 0.6rem !important;
+    border-radius: 2rem !important;
+  }
+}
+
+// =============================================================================
+// Action buttons
+// =============================================================================
+
+.la-oc-action-btn {
+  color: rgba(255, 255, 255, 0.4) !important;
+
+  &:hover {
+    color: $cyan !important;
+    background: rgba(56, 189, 248, 0.08) !important;
+  }
+}
+
+// =============================================================================
+// Edit Form
+// =============================================================================
+
+.la-oc-edit-form {
+  padding: 0.5rem 0;
+}
+
+.la-oc-preset-btn {
+  font-size: 0.75rem !important;
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 2rem !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.la-oc-save-btn {
+  background: $cyan !important;
+  border-color: $cyan !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+
+  &:hover {
+    background: lighten(#38bdf8, 10%) !important;
+  }
+}
+
+// =============================================================================
+// Quick Add Card
+// =============================================================================
+
+.la-oc-quick-card {
+  border-color: rgba(168, 85, 247, 0.12);
+
+  .la-section-icon,
+  .la-section-title {
+    color: #a855f7;
+  }
+}
+
+.la-oc-quick-btn {
+  font-size: 0.8rem !important;
+  border-radius: 2rem !important;
+
+  &--night {
+    border-color: #64748b !important;
+    color: #64748b !important;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.12) !important;
+    }
+  }
+
+  &--peak {
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+
+    &:hover {
+      background: rgba(245, 158, 11, 0.12) !important;
+    }
+  }
+
+  &--weekend {
+    border-color: #a855f7 !important;
+    color: #a855f7 !important;
+
+    &:hover {
+      background: rgba(168, 85, 247, 0.12) !important;
+    }
+  }
+}
+
+// =============================================================================
+// Note
+// =============================================================================
+
+.la-oc-note {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+
+  i {
+    color: $cyan;
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media (max-width: 768px) {
+  .la-oc-current-time {
+    font-size: 1.75rem;
+  }
+
+  .la-oc-title {
+    font-size: 1.1rem;
+  }
+
+  .la-oc-status-block {
+    text-align: left;
+    min-width: auto;
+  }
+
+  .la-oc-schedule-entry {
+    padding: 0.75rem 1rem;
+
+    &__body {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    &__params {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  }
+
+  .la-oc-timeline {
+    height: 24px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .la-oc-schedule-entry__actions {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}

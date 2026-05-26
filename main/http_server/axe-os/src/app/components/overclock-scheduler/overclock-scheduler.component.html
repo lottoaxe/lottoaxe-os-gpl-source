@@ -1,0 +1,317 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- ===== Header Card: Current Status ===== -->
+  <div class="card la-oc-header mb-3">
+    <div class="flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <div class="flex align-items-center gap-2 mb-2">
+          <i class="pi pi-clock la-oc-icon"></i>
+          <span class="la-oc-title">Overclock Scheduler</span>
+        </div>
+        <div class="la-oc-time-row">
+          <span class="la-oc-current-time">{{ getCurrentTimeDisplay() }}</span>
+          <span class="la-oc-current-day">{{ getCurrentDayDisplay() }}</span>
+          <button pButton
+                  class="p-button-sm p-button-text la-oc-time-toggle"
+                  [icon]="use24HourFormat ? 'pi pi-clock' : 'pi pi-clock'"
+                  [label]="use24HourFormat ? '24h' : '12h'"
+                  pTooltip="Switch to {{ use24HourFormat ? '12-hour' : '24-hour' }} format"
+                  tooltipPosition="top"
+                  (click)="toggleTimeFormat()">
+          </button>
+        </div>
+      </div>
+      <div class="la-oc-status-block text-right">
+        <div class="la-oc-status-label">Active Schedule</div>
+        <div class="la-oc-status-value"
+             [ngClass]="{'la-text-active': getActiveSchedule(), 'la-text-inactive': !getActiveSchedule()}">
+          {{ getActiveSchedule()?.name || 'No schedule active' }}
+        </div>
+        <div class="la-oc-next-label mt-1">
+          <i class="pi pi-forward text-xs mr-1"></i>
+          {{ getNextTransition() }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Current Device Status ===== -->
+  <div class="card la-oc-device-card mb-3">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-microchip la-section-icon"></i>
+      <span class="la-section-title">Current Device</span>
+    </div>
+    <div class="grid">
+      <div class="col-6 md:col-3">
+        <div class="la-oc-device-stat">
+          <span class="la-oc-device-stat__label">Frequency</span>
+          <span class="la-oc-device-stat__value">{{ info.frequency }} MHz</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-oc-device-stat">
+          <span class="la-oc-device-stat__label">Core Voltage</span>
+          <span class="la-oc-device-stat__value">{{ info.coreVoltage }} mV</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-oc-device-stat">
+          <span class="la-oc-device-stat__label">Fan Speed</span>
+          <span class="la-oc-device-stat__value">{{ info.fanspeed > 100 ? 100 : info.fanspeed }}%</span>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div class="la-oc-device-stat">
+          <span class="la-oc-device-stat__label">Temperature</span>
+          <span class="la-oc-device-stat__value"
+                [ngClass]="{
+                  'la-text-green': info.temp < 55,
+                  'la-text-amber': info.temp >= 55 && info.temp < 70,
+                  'la-text-red': info.temp >= 70
+                }">
+            {{ info.temp | number:'1.0-0' }}&deg;C
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Timeline Visualization ===== -->
+  <div class="card la-oc-timeline-card mb-3">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-calendar la-section-icon"></i>
+      <span class="la-section-title">24-Hour Timeline</span>
+    </div>
+    <div class="la-oc-timeline">
+      <div *ngFor="let seg of getTimelineSegments()"
+           class="la-oc-timeline__segment"
+           [ngClass]="{'la-oc-timeline__segment--active': seg.active}"
+           [style.background]="seg.active ? seg.color : ''"
+           [pTooltip]="seg.active ? seg.scheduleName + ' (' + formatScheduleTime(seg.hour, 0) + ')' : formatScheduleTime(seg.hour, 0)"
+           tooltipPosition="top">
+      </div>
+    </div>
+    <div class="la-oc-timeline__labels">
+      <span>{{ use24HourFormat ? '00:00' : '12 AM' }}</span>
+      <span>{{ use24HourFormat ? '06:00' : '6 AM' }}</span>
+      <span>{{ use24HourFormat ? '12:00' : '12 PM' }}</span>
+      <span>{{ use24HourFormat ? '18:00' : '6 PM' }}</span>
+      <span>{{ use24HourFormat ? '24:00' : '12 AM' }}</span>
+    </div>
+  </div>
+
+  <!-- ===== Schedule List ===== -->
+  <div class="card la-oc-list-card mb-3">
+    <div class="flex align-items-center justify-content-between mb-3">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-list la-section-icon"></i>
+        <span class="la-section-title">Schedules</span>
+        <span class="la-oc-count-badge">{{ schedules.length }}</span>
+      </div>
+      <button pButton
+              class="p-button-sm p-button-outlined la-oc-add-btn"
+              icon="pi pi-plus"
+              label="Add Schedule"
+              (click)="addSchedule()">
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="schedules.length === 0" class="la-oc-empty">
+      <i class="pi pi-calendar-plus"></i>
+      <p>No schedules yet. Add one to get started.</p>
+    </div>
+
+    <!-- Schedule entries -->
+    <div *ngFor="let entry of schedules; trackBy: trackById"
+         class="la-oc-schedule-entry"
+         [ngClass]="{
+           'la-oc-schedule-entry--active': isScheduleActive(entry) && entry.enabled,
+           'la-oc-schedule-entry--disabled': !entry.enabled
+         }">
+
+      <!-- View mode -->
+      <ng-container *ngIf="editingId !== entry.id">
+        <div class="la-oc-schedule-entry__header">
+          <div class="flex align-items-center gap-2">
+            <div class="la-oc-schedule-entry__color-dot" [style.background]="getScheduleColor(entry)"></div>
+            <span class="la-oc-schedule-entry__name">{{ entry.name }}</span>
+            <span *ngIf="isScheduleActive(entry) && entry.enabled" class="la-oc-active-pill">Active</span>
+          </div>
+          <div class="flex align-items-center gap-2">
+            <p-toggleButton [(ngModel)]="entry.enabled"
+                            onLabel="On"
+                            offLabel="Off"
+                            styleClass="la-oc-toggle"
+                            (onChange)="saveSchedules()">
+            </p-toggleButton>
+          </div>
+        </div>
+
+        <div class="la-oc-schedule-entry__body">
+          <div class="la-oc-schedule-entry__time">
+            <i class="pi pi-clock text-xs mr-1"></i>
+            {{ formatScheduleTime(entry.startHour, entry.startMinute) }} -
+            {{ formatScheduleTime(entry.endHour, entry.endMinute) }}
+          </div>
+          <div class="la-oc-schedule-entry__days">
+            <span *ngFor="let day of dayNames; let i = index"
+                  class="la-oc-day-pill"
+                  [ngClass]="{'la-oc-day-pill--active': entry.days[i]}">
+              {{ day }}
+            </span>
+          </div>
+          <div class="la-oc-schedule-entry__params">
+            <span><i class="pi pi-bolt text-xs"></i> {{ entry.frequency }} MHz</span>
+            <span><i class="pi pi-gauge text-xs"></i> {{ entry.coreVoltage }} mV</span>
+            <span><i class="pi pi-wind text-xs"></i> {{ entry.fanSpeed }}%</span>
+          </div>
+        </div>
+
+        <div class="la-oc-schedule-entry__actions">
+          <button pButton
+                  class="p-button-sm p-button-text la-oc-action-btn"
+                  icon="pi pi-pencil"
+                  pTooltip="Edit"
+                  (click)="startEditing(entry)">
+          </button>
+          <button pButton
+                  class="p-button-sm p-button-text la-oc-action-btn"
+                  icon="pi pi-copy"
+                  pTooltip="Duplicate"
+                  (click)="duplicateSchedule(entry)">
+          </button>
+          <button pButton
+                  class="p-button-sm p-button-text p-button-danger la-oc-action-btn"
+                  icon="pi pi-trash"
+                  pTooltip="Delete"
+                  (click)="removeSchedule(entry.id)">
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Edit mode -->
+      <ng-container *ngIf="editingId === entry.id">
+        <form [formGroup]="editForm" class="la-oc-edit-form">
+          <div class="grid">
+            <!-- Name -->
+            <div class="col-12">
+              <label class="la-label">Schedule Name</label>
+              <input pInputText formControlName="name" class="w-full la-input" />
+            </div>
+
+            <!-- Time range -->
+            <div class="col-6 md:col-3">
+              <label class="la-label">Start Hour</label>
+              <input pInputText type="number" formControlName="startHour" min="0" max="23" class="w-full la-input" />
+            </div>
+            <div class="col-6 md:col-3">
+              <label class="la-label">Start Minute</label>
+              <input pInputText type="number" formControlName="startMinute" min="0" max="59" class="w-full la-input" />
+            </div>
+            <div class="col-6 md:col-3">
+              <label class="la-label">End Hour</label>
+              <input pInputText type="number" formControlName="endHour" min="0" max="23" class="w-full la-input" />
+            </div>
+            <div class="col-6 md:col-3">
+              <label class="la-label">End Minute</label>
+              <input pInputText type="number" formControlName="endMinute" min="0" max="59" class="w-full la-input" />
+            </div>
+
+            <!-- Days -->
+            <div class="col-12">
+              <label class="la-label">Days</label>
+              <div class="flex flex-wrap gap-2" formArrayName="days">
+                <span *ngFor="let day of dayNames; let i = index"
+                      class="la-oc-day-toggle"
+                      [ngClass]="{'la-oc-day-toggle--active': daysFormArray.at(i).value}"
+                      (click)="daysFormArray.at(i).setValue(!daysFormArray.at(i).value)">
+                  {{ day }}
+                </span>
+              </div>
+            </div>
+
+            <!-- OC parameters -->
+            <div class="col-12 md:col-4">
+              <label class="la-label">Frequency (MHz)</label>
+              <input pInputText type="number" formControlName="frequency" min="300" max="700" class="w-full la-input" />
+            </div>
+            <div class="col-12 md:col-4">
+              <label class="la-label">Core Voltage (mV)</label>
+              <input pInputText type="number" formControlName="coreVoltage" min="900" max="1400" class="w-full la-input" />
+            </div>
+            <div class="col-12 md:col-4">
+              <label class="la-label">Fan Speed (%)</label>
+              <input pInputText type="number" formControlName="fanSpeed" min="0" max="100" class="w-full la-input" />
+            </div>
+
+            <!-- Preset buttons -->
+            <div class="col-12">
+              <label class="la-label">Quick Presets</label>
+              <div class="flex flex-wrap gap-2">
+                <button *ngFor="let preset of presets"
+                        pButton
+                        class="p-button-sm p-button-outlined la-oc-preset-btn"
+                        [style.borderColor]="preset.color"
+                        [style.color]="preset.color"
+                        (click)="applyPreset(preset)">
+                  {{ preset.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Save/Cancel -->
+            <div class="col-12 flex justify-content-end gap-2 mt-2">
+              <button pButton
+                      class="p-button-sm p-button-text"
+                      label="Cancel"
+                      (click)="cancelEditing()">
+              </button>
+              <button pButton
+                      class="p-button-sm la-oc-save-btn"
+                      icon="pi pi-check"
+                      label="Save"
+                      (click)="saveEditing()">
+              </button>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- ===== Quick Schedule Presets ===== -->
+  <div class="card la-oc-quick-card mb-3">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-bolt la-section-icon"></i>
+      <span class="la-section-title">Quick Add</span>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button pButton
+              class="p-button-sm p-button-outlined la-oc-quick-btn la-oc-quick-btn--night"
+              icon="pi pi-moon"
+              label="Night Mode"
+              (click)="addNightMode()">
+      </button>
+      <button pButton
+              class="p-button-sm p-button-outlined la-oc-quick-btn la-oc-quick-btn--peak"
+              icon="pi pi-sun"
+              label="Peak Hours"
+              (click)="addPeakHours()">
+      </button>
+      <button pButton
+              class="p-button-sm p-button-outlined la-oc-quick-btn la-oc-quick-btn--weekend"
+              icon="pi pi-calendar"
+              label="Weekend OC"
+              (click)="addWeekendOC()">
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Note ===== -->
+  <div class="la-oc-note">
+    <i class="pi pi-info-circle mr-2"></i>
+    Schedules are stored locally in your browser. The device must be powered on and this dashboard must be open for schedules to activate.
+  </div>
+
+</ng-container>

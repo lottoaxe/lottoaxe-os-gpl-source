@@ -11,7 +11,7 @@ const path = require('path');
 // environments (git may or may not be in PATH), the safest approach is
 // to hardcode the shipping version here so it always matches the
 // compiled firmware.  Bump this when you tag + rebuild the firmware.
-const version = '2.2.0';
+const version = '2.2.1';
 
 const outputPath = path.join(__dirname, 'dist', 'axe-os', 'version.txt');
 fs.writeFileSync(outputPath, version);

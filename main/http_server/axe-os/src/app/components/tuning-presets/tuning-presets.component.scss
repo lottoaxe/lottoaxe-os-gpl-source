@@ -21,6 +21,38 @@
   white-space: nowrap;
 }
 
+// --- Experimental Badge ---
+.la-experimental-badge {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  color: #FFB300;
+  background: rgba(255, 179, 0, 0.12);
+  border: 1px solid rgba(255, 179, 0, 0.35);
+  animation: la-exp-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes la-exp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+// --- Extreme Risk Extra Warning ---
+.la-disclosure-extreme {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(255, 59, 59, 0.08);
+  border: 1px solid rgba(255, 59, 59, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
 // --- Custom Tuning Panel ---
 .la-custom-panel {
   background: rgba(141, 255, 0, 0.03);
@@ -355,6 +387,104 @@
       background: rgba(255, 59, 59, 0.25) !important;
       box-shadow: 0 0 15px rgba(255, 59, 59, 0.35) !important;
     }
+  }
+}
+
+// --- Inline Editing for Preset Cards ---
+.la-preset-edit-toggle {
+  margin-left: auto;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.2s ease, transform 0.2s ease;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+
+  &:hover {
+    color: #8DFF00;
+    transform: scale(1.15);
+  }
+
+  i {
+    font-size: 0.8rem;
+  }
+}
+
+.la-preset-inline-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.la-inline-field {
+  width: 72px;
+  background: rgba(141, 255, 0, 0.06);
+  border: 1px solid rgba(141, 255, 0, 0.25);
+  border-radius: 5px;
+  color: #8DFF00;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &:focus {
+    border-color: rgba(141, 255, 0, 0.5);
+    box-shadow: 0 0 8px rgba(141, 255, 0, 0.15);
+  }
+}
+
+.la-inline-unit {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  min-width: 24px;
+}
+
+.la-preset-modified {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  margin-bottom: 0.5rem;
+  background: rgba(141, 255, 0, 0.06);
+  border: 1px solid rgba(141, 255, 0, 0.15);
+  border-radius: 6px;
+}
+
+.la-preset-modified-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8DFF00;
+
+  i {
+    font-size: 0.7rem;
+    margin-right: 4px;
+  }
+}
+
+.la-preset-reset-link {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #FF3B3B;
   }
 }
 

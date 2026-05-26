@@ -4,6 +4,19 @@
       <h5 class="la-section-title">Pool Profiles</h5>
       <p class="text-500 text-sm mb-3">Save and switch between pool configurations. Activate a profile to load it into the stratum settings.</p>
 
+      <!-- Default profiles warning -->
+      <div class="la-default-banner mb-3">
+        <div class="la-default-banner-icon">
+          <i class="pi pi-wallet"></i>
+        </div>
+        <div class="la-default-banner-body">
+          <strong>These are default pool profiles with example addresses.</strong>
+          Before mining, replace the wallet address in each profile with <strong>your own</strong> wallet address.
+          Mining to the default address means <strong>you will not receive any rewards</strong>.
+          Go to <strong>Pool</strong> settings or edit a profile below to update your address.
+        </div>
+      </div>
+
       <div class="grid">
         <div class="col-12 md:col-6 lg:col-4" *ngFor="let profile of profiles; let i = index">
           <div class="la-pool-card" [class.la-pool-card--active]="i === activeIndex">

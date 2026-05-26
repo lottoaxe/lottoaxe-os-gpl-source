@@ -1,0 +1,26 @@
+<div class="card">
+    <h2>How To</h2>
+    <p class="la-howto-subtitle">Quick guides to get the most out of your LottoAxe miner.</p>
+
+    <p-accordion [multiple]="true" [activeIndex]="[0]">
+        <p-accordionTab *ngFor="let guide of guides; let i = index">
+            <ng-template pTemplate="header">
+                <div class="la-howto-header">
+                    <i [class]="guide.icon + ' la-howto-icon'"></i>
+                    <span>{{ guide.title }}</span>
+                </div>
+            </ng-template>
+
+            <div class="la-howto-content">
+                <p class="la-howto-description">{{ guide.content }}</p>
+
+                <div class="la-howto-steps" *ngIf="guide.tips?.length">
+                    <div class="la-howto-step" *ngFor="let tip of guide.tips; let j = index">
+                        <span class="la-howto-step-num">{{ j + 1 }}</span>
+                        <span class="la-howto-step-text" [innerHTML]="tip"></span>
+                    </div>
+                </div>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>

@@ -14,21 +14,35 @@
         </ng-container>
     </div>
 
-    <!-- Center: Live stats ticker -->
+    <!-- Center: Live stats ticker (polls every 5s) -->
     <div class="la-topbar-stats" *ngIf="info$ | async as info">
-        <div class="la-topbar-stat">
+        <div class="la-topbar-stat la-topbar-stat--hashrate">
             <span class="la-topbar-stat-value">{{info.hashRate | hashSuffix}}</span>
             <span class="la-topbar-stat-label">HASH</span>
         </div>
-        <div class="la-topbar-stat">
+        <div class="la-topbar-stat la-topbar-stat--temp">
             <span class="la-topbar-stat-value">{{info.temp}}&deg;C</span>
             <span class="la-topbar-stat-label">TEMP</span>
         </div>
-        <div class="la-topbar-stat">
+        <div class="la-topbar-stat la-topbar-stat--power">
             <span class="la-topbar-stat-value">{{info.power | number:'1.1-1'}}W</span>
             <span class="la-topbar-stat-label">POWER</span>
         </div>
+        <div class="la-topbar-stat la-topbar-stat--diff">
+            <span class="la-topbar-stat-value">{{info.bestDiff | diffSuffix}}</span>
+            <span class="la-topbar-stat-label">BEST</span>
+        </div>
+        <div class="la-topbar-stat la-topbar-stat--shares">
+            <span class="la-topbar-stat-value">{{info.sharesAccepted}}</span>
+            <span class="la-topbar-stat-label">SHARES</span>
+        </div>
     </div>
+
+    <!-- Tip pill button -->
+    <a class="la-tip-pill" href="https://lottoaxe.com/#tip" target="_blank" rel="noopener">
+        <i class="pi pi-heart-fill"></i>
+        <span>TIP THE DEVS</span>
+    </a>
 
     <!-- Right: Action icons -->
     <ng-container *ngIf="info$ | async as info">

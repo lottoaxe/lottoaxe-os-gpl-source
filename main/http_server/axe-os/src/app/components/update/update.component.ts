@@ -1,53 +1,44 @@
-import { Component, ViewChild } from '@angular/core';
-import { Observable, switchMap, shareReplay, map, timer, distinctUntilChanged } from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Observable, switchMap, shareReplay, timer, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { FileUploadHandlerEvent, FileUpload } from 'primeng/fileupload';
-import { GithubUpdateService } from 'src/app/services/github-update.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SystemApiService } from 'src/app/services/system.service';
-import { LocalStorageService } from 'src/app/local-storage.service';
+import { UpdateCheckService, UpdateStatus } from 'src/app/services/update-check.service';
 import { ModalComponent } from '../modal/modal.component';
 import { SystemInfo } from 'src/app/generated/models';
-
-const IGNORE_RELEASE_CHECK_WARNING = 'IGNORE_RELEASE_CHECK_WARNING';
 
 @Component({
   selector: 'app-update',
   templateUrl: './update.component.html',
   styleUrls: ['./update.component.scss']
 })
-export class UpdateComponent {
+export class UpdateComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   public firmwareUpdateProgress: number = 0;
   public websiteUpdateProgress: number = 0;
 
-  public checkLatestRelease: boolean = false;
-  public latestRelease$: Observable<any>;
+  public uploadStep: number = 0;
+  public totalSteps: number = 0;
+  public currentStepLabel: string = '';
 
+  public versionStatus: UpdateStatus | null = null;
   public info$: Observable<SystemInfo>;
 
-  @ViewChild('firmwareUpload') firmwareUpload!: FileUpload;
-  @ViewChild('websiteUpload') websiteUpload!: FileUpload;
-
-  @ViewChild('privacyModal') privacyModal?: ModalComponent;
-  @ViewChild('progressModal') progressModal?: ModalComponent;
-
-  public updateTarget: string = '';
   public updateStatus: 'progress' | 'success' | 'error' = 'progress';
   public updateMessage: string = '';
+
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
+  @ViewChild('progressModal') progressModal?: ModalComponent;
 
   constructor(
     private systemService: SystemApiService,
     private toastrService: ToastrService,
     private loadingService: LoadingService,
-    private githubUpdateService: GithubUpdateService,
-    private localStorageService: LocalStorageService,
+    private updateCheck: UpdateCheckService,
   ) {
-    this.latestRelease$ = this.githubUpdateService.getReleases().pipe(map(releases => {
-      return (releases as any)[0];
-    }));
-
     this.info$ = timer(0, 5000).pipe(
       switchMap(() => this.systemService.getInfo()),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
@@ -55,138 +46,123 @@ export class UpdateComponent {
     );
   }
 
-  otaUpdate(event: FileUploadHandlerEvent) {
-    const file = event.files[0];
-    this.firmwareUpload.clear(); // clear the file upload component
+  ngOnInit(): void {
+    this.updateCheck.status$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(status => {
+        this.versionStatus = status;
+      });
+  }
 
-    if (file.name != 'esp-miner.bin') {
-      this.toastrService.error('Incorrect file, looking for esp-miner.bin.');
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onFilesSelected(event: FileUploadHandlerEvent): void {
+    const files = event.files;
+    this.fileUpload.clear();
+
+    const wwwFile = files.find((f: File) => f.name === 'www.bin');
+    const fwFile = files.find((f: File) => f.name === 'esp-miner.bin');
+
+    // Validate files
+    const invalidFiles = files.filter((f: File) => f.name !== 'www.bin' && f.name !== 'esp-miner.bin');
+    if (invalidFiles.length > 0) {
+      this.toastrService.error(`Unrecognized file(s): ${invalidFiles.map((f: File) => f.name).join(', ')}. Expected www.bin and/or esp-miner.bin.`);
       return;
     }
 
-    this.updateTarget = 'Firmware';
+    if (!wwwFile && !fwFile) {
+      this.toastrService.error('No valid update files selected. Expected www.bin and/or esp-miner.bin.');
+      return;
+    }
+
+    // Calculate steps
+    const hasWww = !!wwwFile;
+    const hasFw = !!fwFile;
+    this.totalSteps = (hasWww ? 1 : 0) + (hasFw ? 1 : 0);
+    this.uploadStep = 0;
     this.updateStatus = 'progress';
     this.updateMessage = '';
+    this.firmwareUpdateProgress = 0;
+    this.websiteUpdateProgress = 0;
+
     if (this.progressModal) {
       this.progressModal.isVisible = true;
     }
 
-    this.systemService.performOTAUpdate(file)
-      .subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.firmwareUpdateProgress = Math.round((event.loaded / (event.total as number)) * 100);
-          } else if (event.type === HttpEventType.Response) {
-            if (event.ok) {
-              this.toastrService.success('Device restarted');
-              this.updateStatus = 'success';
-              this.updateMessage = 'Firmware updated. Device has been successfully restarted.';
-            } else {
-              this.updateStatus = 'error';
-              this.updateMessage = event.statusText || 'An unknown error occurred.';
-            }
-          }
-          else if (event instanceof HttpErrorResponse)
-          {
-            this.updateStatus = 'error';
-            this.updateMessage = event.error?.message || event.error || event.message || 'Unknown error occurred';
-          }
-        },
-        error: (err) => {
-          this.updateStatus = 'error';
-          this.updateMessage = err.error?.message || err.error || err.message || 'Unknown error occurred';
-        },
-        complete: () => {
-          this.firmwareUpdateProgress = 0;
-        }
+    if (hasWww && hasFw) {
+      // Upload both: www first, then firmware
+      this.uploadWww(wwwFile!, () => {
+        this.uploadFirmware(fwFile!);
       });
+    } else if (hasWww) {
+      this.uploadWww(wwwFile!);
+    } else if (hasFw) {
+      this.uploadFirmware(fwFile!);
+    }
   }
 
-  otaWWWUpdate(event: FileUploadHandlerEvent) {
-    const file = event.files[0];
-    this.websiteUpload.clear(); // clear the file upload component
+  private uploadWww(file: File, onSuccess?: () => void): void {
+    this.uploadStep++;
+    this.currentStepLabel = this.totalSteps > 1
+      ? `Uploading UI update (www.bin)...`
+      : `Uploading UI update...`;
 
-    if (file.name != 'www.bin') {
-      this.toastrService.error('Incorrect file, looking for www.bin.');
-      return;
-    }
-
-    this.updateTarget = 'AxeOS';
-    this.updateStatus = 'progress';
-    this.updateMessage = '';
-    if (this.progressModal) {
-      this.progressModal.isVisible = true;
-    }
-
-    this.systemService.performWWWOTAUpdate(file)
-      .subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.websiteUpdateProgress = Math.round((event.loaded / (event.total as number)) * 100);
-          } else if (event.type === HttpEventType.Response) {
-            if (event.ok) {
-              this.updateStatus = 'success';
-              this.updateMessage = 'AxeOS updated. The page will reload in a few seconds.';
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
+    this.systemService.performWWWOTAUpdate(file).subscribe({
+      next: (event: any) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.websiteUpdateProgress = Math.round((event.loaded / (event.total as number)) * 100);
+        } else if (event.type === HttpEventType.Response) {
+          if (event.ok) {
+            if (onSuccess) {
+              // Continue to firmware upload
+              onSuccess();
             } else {
-              this.updateStatus = 'error';
-              this.updateMessage = event.statusText || 'An unknown error occurred.';
+              // Only www update — done
+              this.updateStatus = 'success';
+              this.updateMessage = 'UI updated successfully! The page will reload in a few seconds.';
+              setTimeout(() => window.location.reload(), 3000);
             }
-          }
-          else if (event instanceof HttpErrorResponse)
-          {
+          } else {
             this.updateStatus = 'error';
-            this.updateMessage = event.error?.message || event.error || event.message || 'Unknown error occurred';
+            this.updateMessage = event.statusText || 'UI update failed.';
           }
-        },
-        error: (err) => {
-          this.updateStatus = 'error';
-          this.updateMessage = err.error?.message || err.error || err.message || 'Unknown error occurred';
-        },
-        complete: () => {
-          this.websiteUpdateProgress = 0;
         }
-      });
-  }
-
-  // https://gist.github.com/elfefe/ef08e583e276e7617cd316ba2382fc40
-  public simpleMarkdownParser(markdown: string): string {
-    const toHTML = markdown
-      .replace(/^#{1,6}\s+(.+)$/gim, '<h4 class="mt-2">$1</h4>') // Headlines
-      .replace(/\*\*(.+?)\*\*|__(.+?)__/gim, '<b>$1</b>') // Bold text
-      .replace(/\*(.+?)\*|_(.+?)_/gim, '<i>$1</i>') // Italic text
-      .replace(/\[(.*?)\]\((.*?)\s?(?:"(.*?)")?\)/gm, '<a href="$2" class="underline text-white" target="_blank">$1</a>') // Markdown links
-      .replace(/(https?:\/\/github\.com\/.+\/(.+[^\s])+)/gim, (match, p1, p2) => `<a href="${p1}" target="_blank">${match.includes('/pull/') ? '#' : ''}${p2}</a>`) // Regular links
-      .replace(/@([^\s]+)/gim, ' <a href="https://github.com/$1" target="_blank">@$1</a> ') // Username links
-      .replace(/^\s*[-+*]\s?(.+)$/gim, '<li>$1</li>') // Unordered list
-      .replace(/`([^`]+)`/gim, '<code class="surface-100">$1</code>') // Code
-      .replace(/\r\n\r\n/gim, '<br>'); // Breaks
-
-    return toHTML.trim();
-  }
-
-  public handleReleaseCheck(): void {
-    if (this.localStorageService.getBool(IGNORE_RELEASE_CHECK_WARNING)) {
-      this.checkLatestRelease = true;
-    } else {
-      if (this.privacyModal) {
-        this.privacyModal.isVisible = true;
+      },
+      error: (err) => {
+        this.updateStatus = 'error';
+        this.updateMessage = err.error?.message || err.error || err.message || 'UI update failed.';
       }
-    }
+    });
   }
 
-  public continueReleaseCheck(skipWarning: boolean): void {
-    this.checkLatestRelease = true;
-    if (this.privacyModal) {
-      this.privacyModal.isVisible = false;
-    }
+  private uploadFirmware(file: File): void {
+    this.uploadStep++;
+    this.currentStepLabel = this.totalSteps > 1
+      ? `Uploading firmware (esp-miner.bin)...`
+      : `Uploading firmware update...`;
 
-    if (!skipWarning) {
-      return;
-    }
-
-    this.localStorageService.setBool(IGNORE_RELEASE_CHECK_WARNING, true);
+    this.systemService.performOTAUpdate(file).subscribe({
+      next: (event: any) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.firmwareUpdateProgress = Math.round((event.loaded / (event.total as number)) * 100);
+        } else if (event.type === HttpEventType.Response) {
+          if (event.ok) {
+            this.updateStatus = 'success';
+            this.updateMessage = 'Update complete! Your miner is rebooting with the new firmware. This page will reload shortly.';
+            setTimeout(() => window.location.reload(), 5000);
+          } else {
+            this.updateStatus = 'error';
+            this.updateMessage = event.statusText || 'Firmware update failed.';
+          }
+        }
+      },
+      error: (err) => {
+        this.updateStatus = 'error';
+        this.updateMessage = err.error?.message || err.error || err.message || 'Firmware update failed.';
+      }
+    });
   }
 }

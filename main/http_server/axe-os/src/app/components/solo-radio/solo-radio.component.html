@@ -1,0 +1,106 @@
+<!-- ═══════ Solo Radio Header ═══════ -->
+<div class="card la-header mb-4">
+  <div class="flex align-items-center gap-2 mb-2">
+    <i class="pi pi-wifi la-accent-icon"></i>
+    <span class="la-page-title">Solo Miner Radio</span>
+    <span class="la-live-badge" [class.la-offline]="feedStatus !== 'Live'">
+      <span class="la-pulse-dot" *ngIf="feedStatus === 'Live'"></span>
+      <i class="pi pi-exclamation-circle" *ngIf="feedStatus !== 'Live'" style="font-size: 0.5rem"></i>
+      {{feedStatus}}
+    </span>
+  </div>
+  <p class="la-subtitle">
+    Live feed of every block found on the Bitcoin network. Solo miner wins are highlighted — proof that lottery mining works.
+  </p>
+</div>
+
+<!-- ═══════ Solo Highlight Banner ═══════ -->
+<div class="la-solo-banner mb-4" *ngIf="lastSoloBlock">
+  <div class="la-solo-banner-inner">
+    <div class="la-solo-glow"></div>
+    <div class="la-solo-content">
+      <div class="la-solo-label">LATEST SOLO MINER WIN</div>
+      <div class="la-solo-reward">{{formatBtc(lastSoloBlock.reward)}} BTC</div>
+      <div class="la-solo-usd" *ngIf="btcPrice > 0">{{formatUsd(lastSoloBlock.rewardUsd)}}</div>
+      <div class="la-solo-details">
+        Block #{{lastSoloBlock.height}} &bull; via {{lastSoloBlock.poolName}} &bull; {{getBlockAge(lastSoloBlock.timestamp)}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Stats Row ═══════ -->
+<div class="la-stat-row mb-4" *ngIf="info$ | async as info">
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Blocks Tracked</span>
+    <span class="la-stat-value">{{totalBlocksTracked}}</span>
+  </div>
+  <div class="la-stat-pill la-stat-solo">
+    <span class="la-stat-label">Solo Wins Seen</span>
+    <span class="la-stat-value la-gold">{{soloBlocksFound}}</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Solo Win Rate</span>
+    <span class="la-stat-value">{{soloBlockRate || 'Calculating...'}}</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Your Odds</span>
+    <span class="la-stat-value la-green">{{latestBlock ? getYourOddsVsPool(info, latestBlock) : 'N/A'}}</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">BTC Price</span>
+    <span class="la-stat-value la-yellow">{{btcPrice > 0 ? formatUsd(btcPrice) : 'Loading...'}}</span>
+  </div>
+</div>
+
+<!-- ═══════ Block Feed ═══════ -->
+<div class="card la-feed-card mb-4" *ngIf="blocks.length > 0">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-list la-section-icon"></i>
+      <span class="la-section-title">Block Feed</span>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <span class="la-feed-count">{{blocks.length}} blocks</span>
+      <button pButton class="p-button-text p-button-sm la-clear-btn" (click)="clearHistory()">
+        <i class="pi pi-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="la-block-list">
+    <div class="la-block-entry" *ngFor="let block of blocks; let i = index"
+         [class.la-solo-entry]="block.isSolo"
+         [class.la-latest]="i === 0">
+      <div class="la-block-icon">
+        <i class="pi" [ngClass]="block.isSolo ? 'pi-star-fill' : 'pi-box'" [style.color]="block.isSolo ? '#FFD700' : 'rgba(255,255,255,0.2)'"></i>
+      </div>
+      <div class="la-block-height">
+        #{{block.height}}
+      </div>
+      <div class="la-block-pool" [class.la-solo-pool]="block.isSolo">
+        {{block.poolName}}
+        <span class="la-solo-tag" *ngIf="block.isSolo">SOLO</span>
+      </div>
+      <div class="la-block-reward">
+        <span class="la-reward-btc">{{formatBtc(block.reward)}} BTC</span>
+        <span class="la-reward-usd" *ngIf="btcPrice > 0">{{formatUsd(block.rewardUsd)}}</span>
+      </div>
+      <div class="la-block-meta">
+        {{block.txCount}} txs &bull; {{formatSize(block.size)}}
+      </div>
+      <div class="la-block-age">
+        {{getBlockAge(block.timestamp)}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Loading State ═══════ -->
+<div class="card la-nodata-card mb-4" *ngIf="blocks.length === 0 && loading">
+  <div class="la-nodata-content">
+    <i class="pi pi-spin pi-spinner la-nodata-icon"></i>
+    <h3>Tuning into the network...</h3>
+    <p>Fetching the latest Bitcoin blocks from the mempool. Solo miner wins will be highlighted in gold.</p>
+  </div>
+</div>

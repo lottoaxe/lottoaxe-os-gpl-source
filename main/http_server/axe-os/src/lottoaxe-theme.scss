@@ -160,20 +160,20 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.25rem 0.75rem;
-  background: rgba(141, 255, 0, 0.04);
-  border: 1px solid rgba(141, 255, 0, 0.1);
+  padding: 0.35rem 1rem;
+  background: rgba(141, 255, 0, 0.05);
+  border: 1px solid rgba(141, 255, 0, 0.12);
   border-radius: 100px;
   line-height: 1;
-  min-width: 70px;
+  min-width: 80px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   transition: all var(--la-transition);
 
   &:hover {
-    background: rgba(141, 255, 0, 0.08);
-    border-color: rgba(141, 255, 0, 0.2);
-    box-shadow: 0 0 10px rgba(141, 255, 0, 0.1);
+    background: rgba(141, 255, 0, 0.10);
+    border-color: rgba(141, 255, 0, 0.25);
+    box-shadow: 0 0 12px rgba(141, 255, 0, 0.12);
   }
 
   // Color-coded stat variants
@@ -181,19 +181,24 @@ body {
     color: var(--la-neon);
     text-shadow: 0 0 6px rgba(141, 255, 0, 0.3);
   }
+  &--hashrate { border-color: rgba(141, 255, 0, 0.18); }
 
-  &--temp .la-topbar-stat-value {
-    color: var(--la-info);
-  }
+  &--temp .la-topbar-stat-value { color: #f59e0b; }
+  &--temp { border-color: rgba(245, 158, 11, 0.18); background: rgba(245, 158, 11, 0.04); }
 
-  &--power .la-topbar-stat-value {
-    color: var(--la-gray);
-  }
+  &--power .la-topbar-stat-value { color: #38bdf8; }
+  &--power { border-color: rgba(56, 189, 248, 0.18); background: rgba(56, 189, 248, 0.04); }
+
+  &--diff .la-topbar-stat-value { color: #a78bfa; }
+  &--diff { border-color: rgba(167, 139, 250, 0.18); background: rgba(167, 139, 250, 0.04); }
+
+  &--shares .la-topbar-stat-value { color: #22c55e; }
+  &--shares { border-color: rgba(34, 197, 94, 0.18); background: rgba(34, 197, 94, 0.04); }
 }
 
 // -- Stat pill value (the number) --
 .la-topbar-stat-value {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--la-neon);
   white-space: nowrap;
@@ -201,12 +206,12 @@ body {
 
 // -- Stat pill label (unit text) --
 .la-topbar-stat-label {
-  font-size: 0.55rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: var(--la-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 // -- Topbar action icons list --
@@ -1266,16 +1271,20 @@ body {
   }
 
   .la-topbar-stat {
-    padding: 0.15rem 0.4rem;
-    min-width: 55px;
+    padding: 0.2rem 0.5rem;
+    min-width: 60px;
   }
 
   .la-topbar-stat-value {
-    font-size: 0.7rem;
+    font-size: 0.78rem;
   }
 
   .la-topbar-stat-label {
-    font-size: 0.5rem;
+    font-size: 0.52rem;
+  }
+
+  .la-topbar-stats {
+    gap: 0.3rem;
   }
 
   .la-page-title {

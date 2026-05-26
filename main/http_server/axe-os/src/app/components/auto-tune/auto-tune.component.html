@@ -1,0 +1,294 @@
+<!-- ═══════ Auto-Tune Header ═══════ -->
+<div class="card la-autotune-header mb-4">
+  <div class="flex align-items-center gap-2 mb-2">
+    <i class="pi pi-bolt la-accent-icon"></i>
+    <span class="la-page-title">Auto-Tune</span>
+    <span class="la-asic-badge" *ngIf="asicModel">{{asicModel}}</span>
+  </div>
+  <p class="la-subtitle">
+    Automatically finds the optimal frequency &amp; voltage for your ASIC by testing each combination and measuring stability, hashrate, and efficiency.
+  </p>
+</div>
+
+<!-- ═══════ Current State Pill Row ═══════ -->
+<div class="la-stat-row mb-4">
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Frequency</span>
+    <span class="la-stat-value">{{currentFrequency}} MHz</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Voltage</span>
+    <span class="la-stat-value">{{currentVoltage}} mV</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Hashrate</span>
+    <span class="la-stat-value la-green">{{currentHashRate | number:'1.1-1'}} GH/s</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Temp</span>
+    <span class="la-stat-value" [ngClass]="{'la-red': currentTemp > maxTemp, 'la-yellow': currentTemp > maxTemp - 5}">{{currentTemp}}°C</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Power</span>
+    <span class="la-stat-value">{{currentPower | number:'1.1-1'}} W</span>
+  </div>
+  <div class="la-stat-pill">
+    <span class="la-stat-label">Errors</span>
+    <span class="la-stat-value" [ngClass]="{'la-red': currentErrorPct > maxErrorPct}">{{currentErrorPct | number:'1.1-1'}}%</span>
+  </div>
+</div>
+
+<!-- ═══════ Configuration ═══════ -->
+<div class="card la-config-card mb-4" *ngIf="state === 'idle' || state === 'complete' || state === 'aborted'">
+  <div class="flex align-items-center gap-2 mb-3">
+    <i class="pi pi-cog la-section-icon"></i>
+    <span class="la-section-title">Tune Configuration</span>
+  </div>
+
+  <div class="grid">
+    <!-- Mode Selection -->
+    <div class="col-12 md:col-6">
+      <label class="la-label">Optimization Goal</label>
+      <div class="la-mode-group">
+        <button class="la-mode-btn" [class.active]="tuneMode === 'max-hashrate'" (click)="tuneMode = 'max-hashrate'">
+          <i class="pi pi-bolt"></i>
+          <span>Max Hashrate</span>
+          <small>Highest GH/s</small>
+        </button>
+        <button class="la-mode-btn" [class.active]="tuneMode === 'best-efficiency'" (click)="tuneMode = 'best-efficiency'">
+          <i class="pi pi-leaf"></i>
+          <span>Best Efficiency</span>
+          <small>Best GH/W</small>
+        </button>
+        <button class="la-mode-btn" [class.active]="tuneMode === 'balanced'" (click)="tuneMode = 'balanced'">
+          <i class="pi pi-sliders-h"></i>
+          <span>Balanced</span>
+          <small>Quick scan</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- Safety Thresholds -->
+    <div class="col-12 md:col-6">
+      <label class="la-label">Safety Thresholds</label>
+      <div class="grid">
+        <div class="col-6">
+          <label class="la-sublabel">Max Temp (°C)</label>
+          <input pInputText type="number" [(ngModel)]="maxTemp" min="50" max="85" class="w-full la-input" />
+        </div>
+        <div class="col-6">
+          <label class="la-sublabel">Max Error %</label>
+          <input pInputText type="number" [(ngModel)]="maxErrorPct" min="1" max="50" step="0.5" class="w-full la-input" />
+        </div>
+        <div class="col-6">
+          <label class="la-sublabel">Settle Time (s)</label>
+          <input pInputText type="number" [(ngModel)]="settleTime" min="10" max="180" class="w-full la-input" />
+        </div>
+        <div class="col-6">
+          <label class="la-sublabel">Samples</label>
+          <input pInputText type="number" [(ngModel)]="sampleCount" min="3" max="20" class="w-full la-input" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Scan Range -->
+    <div class="col-12">
+      <label class="la-label">Scan Range</label>
+      <div class="grid">
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Start Freq (MHz)</label>
+          <input pInputText type="number" [(ngModel)]="startFreq" min="100" max="1000" step="25" class="w-full la-input" />
+        </div>
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Stop Freq (MHz)</label>
+          <input pInputText type="number" [(ngModel)]="stopFreq" min="100" max="1000" step="25" class="w-full la-input" />
+        </div>
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Freq Step</label>
+          <input pInputText type="number" [(ngModel)]="freqStep" min="5" max="100" step="5" class="w-full la-input" />
+        </div>
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Start Volt (mV)</label>
+          <input pInputText type="number" [(ngModel)]="startVolt" min="800" max="2000" step="50" class="w-full la-input" />
+        </div>
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Stop Volt (mV)</label>
+          <input pInputText type="number" [(ngModel)]="stopVolt" min="800" max="2000" step="50" class="w-full la-input" />
+        </div>
+        <div class="col-6 md:col-2">
+          <label class="la-sublabel">Volt Step</label>
+          <input pInputText type="number" [(ngModel)]="voltStep" min="10" max="200" step="10" class="w-full la-input" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Button -->
+  <div class="flex justify-content-center mt-4">
+    <button pButton class="la-start-btn" (click)="startTune()" [disabled]="startFreq >= stopFreq || startVolt > stopVolt">
+      <i class="pi pi-play"></i>
+      Start Auto-Tune
+    </button>
+  </div>
+
+  <div class="la-step-count">
+    Will test <strong>{{buildSteps().length}}</strong> combinations
+    &bull; {{startFreq}}–{{stopFreq}} MHz (step {{freqStep}})
+    &bull; {{startVolt}}–{{stopVolt}} mV (step {{voltStep}})
+    &bull; ~{{buildSteps().length * (settleTime + sampleCount * sampleInterval)}} seconds
+  </div>
+</div>
+
+<!-- ═══════ Progress (Running / Paused) ═══════ -->
+<div class="card la-progress-card mb-4" *ngIf="state === 'running' || state === 'paused'">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-spin pi-spinner la-accent-icon" *ngIf="state === 'running'"></i>
+      <i class="pi pi-pause la-accent-icon" *ngIf="state === 'paused'"></i>
+      <span class="la-section-title">{{state === 'running' ? 'Tuning...' : 'Paused'}}</span>
+    </div>
+    <div class="flex gap-2">
+      <button pButton class="p-button-sm p-button-outlined la-ctrl-btn" (click)="pauseTune()" *ngIf="state === 'running'">
+        <i class="pi pi-pause"></i> Pause
+      </button>
+      <button pButton class="p-button-sm la-ctrl-btn la-ctrl-resume" (click)="resumeTune()" *ngIf="state === 'paused'">
+        <i class="pi pi-play"></i> Resume
+      </button>
+      <button pButton class="p-button-sm p-button-danger la-ctrl-btn" (click)="abortTune()">
+        <i class="pi pi-stop"></i> Abort
+      </button>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="la-progress-bar-track">
+    <div class="la-progress-bar-fill" [style.width.%]="progress"></div>
+  </div>
+  <div class="la-progress-info">
+    <span>{{statusMessage}}</span>
+    <span class="la-progress-meta">
+      Step {{currentStepIdx + 1}}/{{totalSteps}} &bull;
+      {{passedSteps}} passed &bull; {{failedSteps}} failed &bull;
+      ETA {{estimatedTimeRemaining}}
+    </span>
+  </div>
+</div>
+
+<!-- ═══════ Results ═══════ -->
+<div class="card la-results-card mb-4" *ngIf="result && state === 'complete'">
+  <div class="flex align-items-center gap-2 mb-3">
+    <i class="pi pi-trophy la-accent-icon"></i>
+    <span class="la-section-title">Results</span>
+  </div>
+
+  <!-- Winner cards -->
+  <div class="grid mb-3" *ngIf="result.bestStep">
+    <div class="col-12 md:col-6">
+      <div class="la-winner-card la-winner--hashrate">
+        <div class="la-winner-badge">BEST HASHRATE</div>
+        <div class="la-winner-value">{{result.bestStep.avgHashRate | number:'1.1-1'}} <small>GH/s</small></div>
+        <div class="la-winner-detail">
+          {{result.bestStep.frequency}} MHz / {{result.bestStep.voltage}} mV
+        </div>
+        <div class="la-winner-stats">
+          <span>{{result.bestStep.temp | number:'1.0-0'}}°C</span>
+          <span>{{result.bestStep.power | number:'1.1-1'}}W</span>
+          <span>{{result.bestStep.efficiency | number:'1.2-2'}} GH/W</span>
+        </div>
+        <button pButton class="la-apply-btn mt-2" (click)="applyBest()">
+          <i class="pi pi-check"></i> Apply These Settings
+        </button>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6" *ngIf="result.bestEfficiency">
+      <div class="la-winner-card la-winner--efficiency">
+        <div class="la-winner-badge">BEST EFFICIENCY</div>
+        <div class="la-winner-value">{{result.bestEfficiency.efficiency | number:'1.2-2'}} <small>GH/W</small></div>
+        <div class="la-winner-detail">
+          {{result.bestEfficiency.frequency}} MHz / {{result.bestEfficiency.voltage}} mV
+        </div>
+        <div class="la-winner-stats">
+          <span>{{result.bestEfficiency.avgHashRate | number:'1.1-1'}} GH/s</span>
+          <span>{{result.bestEfficiency.temp | number:'1.0-0'}}°C</span>
+          <span>{{result.bestEfficiency.power | number:'1.1-1'}}W</span>
+        </div>
+        <button pButton class="la-apply-btn la-apply-btn--green mt-2" (click)="applyEfficient()">
+          <i class="pi pi-check"></i> Apply These Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button pButton class="p-button-text la-restore-btn" (click)="restoreOriginal()">
+    <i class="pi pi-undo"></i> Restore Original ({{result.originalFrequency}} MHz / {{result.originalVoltage}} mV)
+  </button>
+</div>
+
+<!-- ═══════ Step Grid ═══════ -->
+<div class="card la-steps-card mb-4" *ngIf="steps.length > 0">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-table la-section-icon"></i>
+      <span class="la-section-title">All Steps</span>
+    </div>
+    <span class="la-step-summary">
+      {{passedSteps}} passed / {{failedSteps}} failed / {{totalSteps}} total
+    </span>
+  </div>
+
+  <div class="la-steps-table-wrap">
+    <table class="la-steps-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Freq</th>
+          <th>Voltage</th>
+          <th>Avg Hash</th>
+          <th>Temp</th>
+          <th>Power</th>
+          <th>Error %</th>
+          <th>GH/W</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let step of steps; let i = index"
+            [class.la-row-active]="i === currentStepIdx && state === 'running'"
+            [class.la-row-passed]="step.status === 'passed'"
+            [class.la-row-failed]="step.status === 'failed'">
+          <td><i [class]="getStepStatusIcon(step)" [style.color]="getStepStatusColor(step)"></i></td>
+          <td>{{step.frequency}} MHz</td>
+          <td>{{step.voltage}} mV</td>
+          <td>{{step.avgHashRate > 0 ? (step.avgHashRate | number:'1.1-1') : '—'}}</td>
+          <td>{{step.temp > 0 ? (step.temp | number:'1.0-0') + '°C' : '—'}}</td>
+          <td>{{step.power > 0 ? (step.power | number:'1.1-1') + 'W' : '—'}}</td>
+          <td>{{step.errorPct > 0 ? (step.errorPct | number:'1.1-1') + '%' : '—'}}</td>
+          <td>{{step.efficiency > 0 ? (step.efficiency | number:'1.2-2') : '—'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════ Saved History ═══════ -->
+<div class="card la-history-card" *ngIf="savedResults.length > 0">
+  <div class="flex align-items-center justify-content-between mb-3">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-history la-section-icon"></i>
+      <span class="la-section-title">Tune History</span>
+    </div>
+    <button pButton class="p-button-text p-button-sm la-clear-btn" (click)="clearHistory()">
+      <i class="pi pi-trash"></i> Clear
+    </button>
+  </div>
+
+  <div class="la-history-list">
+    <div class="la-history-item" *ngFor="let entry of savedResults">
+      <div class="la-history-date">{{entry.date | date:'short'}}</div>
+      <div class="la-history-mode">{{getModeLabel(entry.mode)}}</div>
+      <div class="la-history-result">
+        {{entry.best.frequency}} MHz / {{entry.best.voltage}} mV — {{entry.best.avgHashRate | number:'1.1-1'}} GH/s
+      </div>
+    </div>
+  </div>
+</div>

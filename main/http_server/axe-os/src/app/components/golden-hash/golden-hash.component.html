@@ -1,0 +1,138 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- ===== Hero / Radar Section ===== -->
+  <div class="la-radar-hero">
+    <div class="la-radar-hero__header">
+      <i class="pi pi-search la-radar-hero__icon"></i>
+      <h2 class="la-radar-hero__title">Golden Hash Radar</h2>
+      <span class="la-radar-hero__subtitle">High-Difficulty Share Scanner</span>
+    </div>
+
+    <!-- Radar Canvas -->
+    <div class="la-radar-container">
+      <canvas #radarCanvas class="la-radar-canvas"></canvas>
+    </div>
+
+    <!-- Current Best Session Diff -->
+    <div class="la-radar-best-diff">
+      <span class="la-radar-best-diff__label">Session Best Difficulty</span>
+      <span class="la-radar-best-diff__value" pTooltip="{{ info.bestSessionDiff }}" tooltipPosition="top">
+        {{ info.bestSessionDiff | diffSuffix }}
+      </span>
+    </div>
+
+    <!-- Scanning Indicator -->
+    <div class="la-scanning-indicator">
+      <span class="la-scanning-indicator__dot"></span>
+      <span class="la-scanning-indicator__text">SCANNING FOR GOLDEN HASHES</span>
+    </div>
+  </div>
+
+  <!-- ===== Stats Row ===== -->
+  <div class="grid mt-3">
+
+    <!-- Best All-Time Diff -->
+    <div class="col-6 md:col-3">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--gold">
+          <i class="pi pi-star-fill"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Best All-Time</span>
+          <span class="la-stat-card__value" pTooltip="{{ info.bestDiff }}" tooltipPosition="top">
+            {{ info.bestDiff | diffSuffix }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Best Session Diff -->
+    <div class="col-6 md:col-3">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--purple">
+          <i class="pi pi-bolt"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Best Session</span>
+          <span class="la-stat-card__value" pTooltip="{{ info.bestSessionDiff }}" tooltipPosition="top">
+            {{ info.bestSessionDiff | diffSuffix }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shares / Min -->
+    <div class="col-6 md:col-3">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--blue">
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Shares / Min</span>
+          <span class="la-stat-card__value">{{ getSharesPerMinute(info) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Shares -->
+    <div class="col-6 md:col-3">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--green">
+          <i class="pi pi-check-square"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Total Shares</span>
+          <span class="la-stat-card__value">{{ info.sharesAccepted | number }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Event Log ===== -->
+  <div class="la-event-log mt-3">
+    <h5 class="la-event-log__title">
+      <i class="pi pi-list mr-2"></i>Recent Share Events
+      <span class="la-event-log__count" *ngIf="events.length > 0">({{ events.length }})</span>
+    </h5>
+
+    <!-- Empty State -->
+    <div class="la-event-log__empty" *ngIf="events.length === 0">
+      <i class="pi pi-spin pi-spinner la-event-log__empty-icon"></i>
+      <span>Waiting for shares...</span>
+    </div>
+
+    <!-- Event List -->
+    <div class="la-event-log__list" *ngIf="events.length > 0">
+      <div class="la-event-entry"
+           *ngFor="let event of events; let i = index"
+           [ngClass]="'la-event-entry--' + getDifficultyTier(event.difficulty)">
+        <div class="la-event-entry__time">{{ formatTimestamp(event.timestamp) }}</div>
+        <div class="la-event-entry__diff">
+          <span class="la-tier-badge"
+                [ngClass]="'la-tier-badge--' + getDifficultyTier(event.difficulty)">
+            {{ getTierLabel(getDifficultyTier(event.difficulty)) }}
+          </span>
+          <span class="la-event-entry__diff-value">{{ formatDifficulty(event.difficulty) }}</span>
+        </div>
+        <span class="la-record-badge" *ngIf="event.isRecord">NEW RECORD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Difficulty Tier Legend ===== -->
+  <div class="la-tier-legend mt-3">
+    <h5 class="la-tier-legend__title">
+      <i class="pi pi-palette mr-2"></i>Difficulty Tiers
+    </h5>
+    <div class="la-tier-legend__items">
+      <div class="la-tier-legend__item" *ngFor="let tier of tiers">
+        <span class="la-tier-badge" [ngClass]="'la-tier-badge--' + tier.name">{{ tier.label }}</span>
+        <span class="la-tier-legend__threshold">
+          <ng-container *ngIf="tier.min > 0">{{ formatDifficulty(tier.min) }}+</ng-container>
+          <ng-container *ngIf="tier.min === 0">&lt; 100 K</ng-container>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

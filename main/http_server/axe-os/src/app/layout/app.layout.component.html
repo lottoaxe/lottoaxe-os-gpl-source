@@ -1,5 +1,63 @@
 <div class="layout-wrapper" [ngClass]="containerClass">
     <app-topbar [isAPMode]="isAPMode"></app-topbar>
+
+    <!-- Update Available Banner -->
+    <div class="la-update-banner"
+         *ngIf="updateStatus?.available && !updateStatus?.dismissed">
+        <div class="la-update-banner__content">
+            <i class="pi pi-arrow-circle-up la-update-banner__icon"></i>
+            <div class="la-update-banner__text">
+                <strong>LottoAxe OS {{ updateStatus?.latestVersion }}</strong> is available!
+                <span class="la-update-banner__changelog">{{ updateStatus?.changelog }}</span>
+            </div>
+            <a class="la-update-banner__btn"
+               [href]="updateStatus?.downloadUrl"
+               target="_blank"
+               rel="noopener">
+                Download Update
+            </a>
+            <button class="la-update-banner__dismiss"
+                    (click)="updateCheck.dismiss()"
+                    pTooltip="Dismiss"
+                    tooltipPosition="bottom">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+        <div class="la-update-banner__version-info">
+            You're running {{ updateStatus?.currentVersion }} &mdash; latest is {{ updateStatus?.latestVersion }}
+        </div>
+    </div>
+
+    <!-- Remote Notifications -->
+    <div *ngFor="let notif of remoteNotifications"
+         class="la-notif-banner la-notif-banner--{{notif.type}}">
+        <div class="la-notif-banner__content">
+            <i class="la-notif-banner__icon pi"
+               [ngClass]="{
+                 'pi-info-circle': notif.type === 'info',
+                 'pi-exclamation-triangle': notif.type === 'warning',
+                 'pi-bolt': notif.type === 'urgent'
+               }"></i>
+            <div class="la-notif-banner__text">
+                <strong>{{ notif.title }}</strong>
+                <span class="la-notif-banner__msg">{{ notif.message }}</span>
+            </div>
+            <a *ngIf="notif.link"
+               class="la-notif-banner__link"
+               [href]="notif.link"
+               target="_blank"
+               rel="noopener">
+                {{ notif.linkText || 'Learn More' }}
+            </a>
+            <button class="la-notif-banner__dismiss"
+                    (click)="notificationService.dismiss(notif.id)"
+                    pTooltip="Dismiss"
+                    tooltipPosition="bottom">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+    </div>
+
     <div class="layout-sidebar" *ngIf="!isAPMode">
         <app-sidebar></app-sidebar>
     </div>
@@ -11,6 +69,7 @@
     </div>
 
     <div class="layout-mask"></div>
+    <app-lucky-share></app-lucky-share>
     <app-loading
         [ngClass]="{'menuIsVisible': !layoutService.state.staticMenuDesktopInactive}"
     ></app-loading>

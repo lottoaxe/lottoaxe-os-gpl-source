@@ -1,9 +1,10 @@
 <form [formGroup]="form" *ngIf="form">
     <div class="card">
-        <div *ngIf="isAnyPoolUsingDefaultAddress()" class="p-message p-message-warn mb-4 p-3 border-round flex align-items-center gap-2" style="background-color: var(--yellow-100); border: 1px solid var(--yellow-500); color: var(--yellow-900);">
-            <i class="pi pi-exclamation-triangle text-xl" style="color: var(--yellow-700);"></i>
-            <div>
-                <strong>Warning:</strong> You are using the default factory Bitcoin address. Please change the <strong>User</strong> field to your own Bitcoin address to receive mining rewards.
+        <div *ngIf="isAnyPoolUsingDefaultAddress()" class="mb-4 p-3 border-round flex align-items-center gap-3" style="background: rgba(255, 179, 0, 0.06); border: 1px solid rgba(255, 179, 0, 0.3); border-radius: 10px;">
+            <i class="pi pi-wallet text-xl" style="color: #FFB300;"></i>
+            <div style="font-size: 0.85rem; line-height: 1.6; color: rgba(255, 255, 255, 0.7);">
+                <strong style="color: #FFB300;">Default address detected.</strong>
+                Change the <strong style="color: #FFB300;">User</strong> field to your own wallet address before mining. Mining to the default address means you will not receive any rewards.
             </div>
         </div>
         <ng-container *ngFor="let pool of pools">

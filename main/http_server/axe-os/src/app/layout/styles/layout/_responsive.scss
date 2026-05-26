@@ -26,6 +26,7 @@
                 left: 0;
                 top: 0;
                 height: 100vh;
+                height: 100dvh;
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
             }
@@ -76,8 +77,11 @@
             left: 0;
             top: 0;
             height: 100vh;
+            height: 100dvh; /* iOS Safari: accounts for browser chrome */
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+            -webkit-overflow-scrolling: touch;
         }
 
         .layout-mask {

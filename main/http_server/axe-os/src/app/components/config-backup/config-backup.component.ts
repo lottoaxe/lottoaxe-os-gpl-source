@@ -74,11 +74,6 @@ export class ConfigBackupComponent {
   }
 
   factoryReset(): void {
-    const msg = 'FACTORY RESET will erase ALL settings (WiFi, pool, tuning) and reboot the device. '
-      + 'You will need to reconnect via the Bitaxe AP. Are you sure?';
-    if (!confirm(msg)) return;
-    if (!confirm('This cannot be undone. Confirm factory reset?')) return;
-
     this.http.post<any>('/api/lottoaxe/config/factory-reset', {})
       .subscribe({
         next: () => {

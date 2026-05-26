@@ -81,3 +81,115 @@ a {
         text-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
     }
 }
+
+// --- New LottoAxe Update Page Styles ---
+
+.la-version-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.la-version-label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.la-version-value {
+    display: block;
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.la-version-new {
+    color: #8DFF00 !important;
+    font-weight: 700;
+}
+
+.la-version-new-icon {
+    color: #8DFF00;
+    font-size: 1.5rem;
+    animation: la-pulse 2s ease-in-out infinite;
+}
+
+.la-version-latest {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(141, 255, 0, 0.06);
+    border: 1px solid rgba(141, 255, 0, 0.15);
+    border-radius: 8px;
+
+    &.la-version-uptodate {
+        background: rgba(0, 200, 100, 0.06);
+        border-color: rgba(0, 200, 100, 0.15);
+
+        i {
+            color: #00c864;
+            font-size: 1.2rem;
+        }
+
+        span {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+    }
+
+    > i.pi-spinner {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    > span {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.85rem;
+    }
+}
+
+.la-version-changelog {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.5;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.la-upload-hint {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.la-upload-accepted {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.la-upload-file-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    background: rgba(141, 255, 0, 0.08);
+    border: 1px solid rgba(141, 255, 0, 0.2);
+    border-radius: 4px;
+    font-family: monospace;
+    color: #8DFF00;
+    font-size: 0.7rem;
+}
+
+.la-step-indicator {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@keyframes la-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

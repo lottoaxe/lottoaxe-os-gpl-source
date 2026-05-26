@@ -1,0 +1,259 @@
+// -- LottoAxe Hashrate History Chart --
+// Dark theme with neon green (#8DFF00) accent, consistent with LottoAxe cyberpunk style
+
+:host {
+  display: block;
+
+  // -- Card base --
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(141, 255, 0, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.3);
+      box-shadow: 0 0 15px rgba(141, 255, 0, 0.08);
+    }
+  }
+
+  // -- Section headers --
+  .la-section-icon {
+    color: #8DFF00;
+    font-size: 1.25rem;
+  }
+
+  .la-section-title {
+    color: #8DFF00;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  // -- Form inputs --
+  .la-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  ::ng-deep .la-dropdown {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(141, 255, 0, 0.2) !important;
+    border-radius: 6px !important;
+
+    .p-dropdown-label {
+      color: #fff !important;
+    }
+
+    .p-dropdown-trigger {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &.p-focus {
+      border-color: #8DFF00 !important;
+      box-shadow: 0 0 8px rgba(141, 255, 0, 0.25) !important;
+    }
+  }
+
+  .la-data-count {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+
+    i {
+      margin-right: 0.35rem;
+      color: rgba(141, 255, 0, 0.5);
+    }
+  }
+
+  // -- Hero hashrate stat --
+  .la-hero-stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-hero-value {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #8DFF00;
+    text-shadow: 0 0 25px rgba(141, 255, 0, 0.4), 0 0 50px rgba(141, 255, 0, 0.15);
+    line-height: 1;
+  }
+
+  .la-hero-unit {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: rgba(141, 255, 0, 0.7);
+  }
+
+  .la-hero-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  // -- General stat values (avg/min/max row) --
+  .la-stat-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-stat-min {
+    color: #ef4444;
+  }
+
+  .la-stat-max {
+    color: #22c55e;
+  }
+
+  .la-stat-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // -- Chart container --
+  .la-chart-container {
+    position: relative;
+    width: 100%;
+    min-height: 320px;
+  }
+
+  .la-chart-card {
+    border-color: rgba(141, 255, 0, 0.2);
+  }
+
+  // -- Stat cards (grid items) --
+  .la-stat-card-wrap {
+    height: 100%;
+  }
+
+  .la-stat-card {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    height: 100%;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.2);
+    }
+  }
+
+  .la-stat-card-icon {
+    color: #8DFF00;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+
+    &.la-icon-temp {
+      color: #f59e0b;
+    }
+
+    &.la-icon-power {
+      color: #38bdf8;
+    }
+
+    &.la-icon-uptime {
+      color: #a78bfa;
+    }
+  }
+
+  .la-stat-card-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-stat-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .la-stat-card-sub {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  // -- Color accents for stat card values --
+  .la-hashrate {
+    color: #8DFF00;
+    text-shadow: 0 0 10px rgba(141, 255, 0, 0.3);
+  }
+
+  .la-temp {
+    color: #f59e0b;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+  }
+
+  .la-power {
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+
+  .la-uptime {
+    color: #a78bfa;
+    text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  }
+
+  // -- Card-specific accents --
+  .la-hero-card {
+    border-color: rgba(141, 255, 0, 0.2);
+  }
+
+  .la-settings-card {
+    border-color: rgba(255, 255, 255, 0.08);
+
+    .la-section-icon,
+    .la-section-title {
+      color: rgba(255, 255, 255, 0.65);
+    }
+  }
+}
+
+// -- Responsive adjustments --
+@media (max-width: 768px) {
+  :host {
+    .la-hero-value {
+      font-size: 2.5rem;
+    }
+
+    .la-stat-value {
+      font-size: 1.35rem;
+    }
+
+    .la-stat-card-value {
+      font-size: 1.25rem;
+    }
+
+    .la-chart-container {
+      min-height: 240px;
+    }
+
+    .card {
+      padding: 1rem;
+    }
+  }
+}

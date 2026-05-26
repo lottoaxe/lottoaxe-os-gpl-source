@@ -1,7 +1,9 @@
-import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription, Subject, takeUntil } from 'rxjs';
 import { SensitiveData } from 'src/app/services/sensitive-data.service';
+import { UpdateCheckService, UpdateStatus } from 'src/app/services/update-check.service';
+import { NotificationService, RemoteNotification } from 'src/app/services/notification.service';
 import { LayoutService } from "./service/app.layout.service";
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppTopBarComponent } from './app.topbar.component';
@@ -10,11 +12,12 @@ import { AppTopBarComponent } from './app.topbar.component';
     selector: 'app-layout',
     templateUrl: './app.layout.component.html'
 })
-export class AppLayoutComponent implements OnDestroy {
+export class AppLayoutComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
 
     public sensitiveDataHidden: boolean = false;
-
+    public updateStatus: UpdateStatus | null = null;
+    public remoteNotifications: RemoteNotification[] = [];
     overlayMenuOpenSubscription: Subscription;
 
     menuOutsideClickListener: any;
@@ -30,6 +33,8 @@ export class AppLayoutComponent implements OnDestroy {
       public renderer: Renderer2,
       public router: Router,
       private sensitiveData: SensitiveData,
+      public updateCheck: UpdateCheckService,
+      public notificationService: NotificationService,
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -117,6 +122,22 @@ export class AppLayoutComponent implements OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe((hidden: boolean) => {
               this.sensitiveDataHidden = hidden;
+          });
+
+        // Start checking for firmware updates
+        this.updateCheck.startChecking();
+        this.updateCheck.status$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(status => {
+              this.updateStatus = status;
+          });
+
+        // Start polling for remote notifications
+        this.notificationService.startPolling();
+        this.notificationService.active$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(notifications => {
+              this.remoteNotifications = notifications;
           });
     }
 

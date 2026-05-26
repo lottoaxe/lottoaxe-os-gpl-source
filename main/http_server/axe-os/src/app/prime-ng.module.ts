@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { AccordionModule } from 'primeng/accordion';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
@@ -15,6 +16,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ProgressBarModule } from 'primeng/progressbar';
 
 const primeNgModules = [
+    AccordionModule,
     SidebarModule,
     InputTextModule,
     CheckboxModule,

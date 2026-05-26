@@ -1,0 +1,576 @@
+// =============================================================================
+// LottoAxe — Golden Hash Radar
+// Namespace: .la-radar-*, .la-stat-card, .la-event-*, .la-tier-*, .la-scanning-*
+// =============================================================================
+
+$primary: #a78bfa;
+$primary-dim: rgba(167, 139, 250, 0.15);
+$primary-glow: rgba(167, 139, 250, 0.35);
+$gold: #f59e0b;
+$gold-dim: rgba(245, 158, 11, 0.15);
+$gold-glow: rgba(245, 158, 11, 0.35);
+$card-bg: linear-gradient(135deg, #111118 0%, #0d0d14 100%);
+$card-border: rgba(167, 139, 250, 0.15);
+$card-radius: 16px;
+$label-color: #888;
+$value-color: #fff;
+
+:host {
+  display: block;
+}
+
+// =============================================================================
+// Hero / Radar Section
+// =============================================================================
+
+.la-radar-hero {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 2rem 2rem 1.75rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(167, 139, 250, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__header {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  &__icon {
+    font-size: 2rem;
+    color: $primary;
+    text-shadow: 0 0 20px $primary-glow;
+    display: block;
+    margin-bottom: 0.5rem;
+    animation: la-radar-icon-pulse 3s ease-in-out infinite;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $value-color;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 0.25rem;
+  }
+
+  &__subtitle {
+    color: $label-color;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}
+
+@keyframes la-radar-icon-pulse {
+  0%, 100% { text-shadow: 0 0 20px $primary-glow; }
+  50% { text-shadow: 0 0 30px rgba(167, 139, 250, 0.55), 0 0 60px rgba(167, 139, 250, 0.2); }
+}
+
+// =============================================================================
+// Radar Canvas
+// =============================================================================
+
+.la-radar-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: rgba(10, 10, 18, 0.6);
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  box-shadow:
+    0 0 30px rgba(167, 139, 250, 0.08),
+    0 0 60px rgba(167, 139, 250, 0.04),
+    inset 0 0 30px rgba(10, 10, 18, 0.5);
+  overflow: hidden;
+}
+
+.la-radar-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+// =============================================================================
+// Best Session Diff Display
+// =============================================================================
+
+.la-radar-best-diff {
+  margin-bottom: 1rem;
+
+  &__label {
+    display: block;
+    color: $label-color;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: $gold;
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 12px $gold-glow;
+    animation: la-diff-glow 2.5s ease-in-out infinite;
+  }
+}
+
+@keyframes la-diff-glow {
+  0%, 100% { text-shadow: 0 0 8px $gold-glow; }
+  50% { text-shadow: 0 0 16px $gold-glow, 0 0 32px rgba(245, 158, 11, 0.15); }
+}
+
+// =============================================================================
+// Scanning Indicator
+// =============================================================================
+
+.la-scanning-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $primary;
+    box-shadow: 0 0 8px $primary-glow;
+    animation: la-blink 1.5s ease-in-out infinite;
+  }
+
+  &__text {
+    color: $label-color;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+}
+
+@keyframes la-blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px $primary-glow; }
+  50% { opacity: 0.3; box-shadow: 0 0 2px $primary-glow; }
+}
+
+// =============================================================================
+// Stat Cards
+// =============================================================================
+
+.la-stat-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 12px $primary-dim;
+  }
+
+  &__icon-wrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+
+    &--gold {
+      background: $gold-dim;
+      color: $gold;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    &--purple {
+      background: rgba(167, 139, 250, 0.12);
+      color: $primary;
+      border: 1px solid rgba(167, 139, 250, 0.25);
+    }
+    &--blue {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+    &--green {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    color: $label-color;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+
+  &__value {
+    color: $value-color;
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+}
+
+// =============================================================================
+// Event Log
+// =============================================================================
+
+.la-event-log {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+
+  &__title {
+    color: $primary;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+    display: flex;
+    align-items: center;
+  }
+
+  &__count {
+    color: $label-color;
+    font-size: 0.75rem;
+    font-weight: 400;
+    margin-left: 0.5rem;
+  }
+
+  &__empty {
+    text-align: center;
+    color: $label-color;
+    padding: 2rem 1rem;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__empty-icon {
+    font-size: 1.5rem;
+    color: $primary;
+    opacity: 0.5;
+  }
+
+  &__list {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+
+    // Scrollbar styling
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(167, 139, 250, 0.2);
+      border-radius: 2px;
+    }
+  }
+}
+
+// =============================================================================
+// Event Entries
+// =============================================================================
+
+.la-event-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 3px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  // Tier-colored left borders
+  &--common    { border-left-color: #6b7280; }
+  &--uncommon  { border-left-color: #22c55e; }
+  &--rare      { border-left-color: #3b82f6; }
+  &--epic      { border-left-color: $primary; }
+  &--legendary { border-left-color: $gold; }
+
+  &__time {
+    color: $label-color;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__diff {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__diff-value {
+    color: $value-color;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+// =============================================================================
+// Tier Badges
+// =============================================================================
+
+.la-tier-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &--common {
+    background: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
+    border: 1px solid rgba(107, 114, 128, 0.25);
+  }
+
+  &--uncommon {
+    background: rgba(34, 197, 94, 0.12);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+
+  &--rare {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  &--epic {
+    background: rgba(167, 139, 250, 0.12);
+    color: $primary;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+  }
+
+  &--legendary {
+    background: rgba(245, 158, 11, 0.15);
+    color: $gold;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.15);
+    animation: la-legendary-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes la-legendary-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.15); }
+  50% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.3), 0 0 4px rgba(245, 158, 11, 0.1); }
+}
+
+// =============================================================================
+// Record Badge
+// =============================================================================
+
+.la-record-badge {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
+  color: $gold;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: la-record-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes la-record-pulse {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.4), 0 0 28px rgba(245, 158, 11, 0.15);
+  }
+}
+
+// =============================================================================
+// Tier Legend
+// =============================================================================
+
+.la-tier-legend {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.25rem 1.5rem;
+
+  &__title {
+    color: $primary;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+    display: flex;
+    align-items: center;
+  }
+
+  &__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__threshold {
+    color: $label-color;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+// =============================================================================
+// Radar Pulse Keyframes (for external/programmatic use)
+// =============================================================================
+
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media (max-width: 768px) {
+  .la-radar-container {
+    width: 220px;
+    height: 220px;
+  }
+
+  .la-radar-hero {
+    padding: 1.25rem 1rem 1.25rem;
+
+    &__title {
+      font-size: 1.15rem;
+    }
+  }
+
+  .la-radar-best-diff__value {
+    font-size: 1.35rem;
+  }
+
+  .la-stat-card {
+    padding: 0.85rem;
+
+    &__value {
+      font-size: 1.1rem;
+    }
+
+    &__icon-wrap {
+      width: 36px;
+      height: 36px;
+      font-size: 0.95rem;
+    }
+  }
+
+  .la-event-entry {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .la-event-log__list {
+    max-height: 280px;
+  }
+
+  .la-tier-legend__items {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .la-radar-container {
+    width: 180px;
+    height: 180px;
+  }
+
+  .la-radar-hero__title {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .la-scanning-indicator__text {
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+  }
+}

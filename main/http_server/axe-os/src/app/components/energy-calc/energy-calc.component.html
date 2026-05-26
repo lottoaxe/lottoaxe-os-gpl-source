@@ -1,0 +1,199 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- Settings Panel -->
+  <div class="card la-settings-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-cog la-section-icon"></i>
+      <span class="la-section-title">Energy Settings</span>
+    </div>
+
+    <form [formGroup]="form">
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <label class="la-label" for="electricityRate">Electricity Rate ({{sym}}/kWh)</label>
+          <input pInputText
+                 id="electricityRate"
+                 type="number"
+                 formControlName="electricityRate"
+                 step="0.01"
+                 min="0"
+                 class="w-full la-input" />
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="la-label" for="currency">Currency</label>
+          <p-dropdown id="currency"
+                      [options]="currencies"
+                      formControlName="currency"
+                      styleClass="w-full la-dropdown">
+          </p-dropdown>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="la-label" for="btcPrice">BTC Price ({{sym}})</label>
+          <input pInputText
+                 id="btcPrice"
+                 type="number"
+                 formControlName="btcPrice"
+                 step="100"
+                 min="0"
+                 class="w-full la-input" />
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Live Power Stats -->
+  <div class="card la-power-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-bolt la-section-icon"></i>
+      <span class="la-section-title">Live Power</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-hero-stat">
+          <span class="la-hero-value">{{info.power | number:'1.1-1'}}</span>
+          <span class="la-hero-unit">W</span>
+        </div>
+        <div class="la-hero-label">Current Draw <tooltip-icon tooltip="Real-time power consumption measured from the device's power sensor." icon="pi-question-circle" /></div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value">{{getKWhPerDay(info) | number:'1.3-3'}}</div>
+        <div class="la-stat-label">kWh / Day <tooltip-icon tooltip="Estimated daily energy usage based on current power draw running 24 hours." icon="pi-question-circle" /></div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value">{{getKWhPerMonth(info) | number:'1.2-2'}}</div>
+        <div class="la-stat-label">kWh / Month <tooltip-icon tooltip="Estimated monthly energy usage (30.44 days) at current power draw." icon="pi-question-circle" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost Breakdown -->
+  <div class="card la-cost-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-wallet la-section-icon"></i>
+      <span class="la-section-title">Cost Breakdown</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Per Hour <tooltip-icon tooltip="Electricity cost based on your configured rate and current power draw." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value">{{sym}}{{formatCost(getCostPerHour(info))}}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Per Day <tooltip-icon tooltip="Electricity cost based on your configured rate and current power draw." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value">{{sym}}{{formatCost(getCostPerDay(info))}}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Per Week <tooltip-icon tooltip="Electricity cost based on your configured rate and current power draw." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value">{{sym}}{{formatCost(getCostPerWeek(info))}}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Per Month <tooltip-icon tooltip="Electricity cost based on your configured rate and current power draw." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value">{{sym}}{{formatCost(getCostPerMonth(info))}}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Per Year <tooltip-icon tooltip="Electricity cost based on your configured rate and current power draw." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value">{{sym}}{{formatCost(getCostPerYear(info))}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mining Economics -->
+  <div class="card la-economics-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-chart-line la-section-icon"></i>
+      <span class="la-section-title">Mining Economics</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Expected Daily Revenue <tooltip-icon tooltip="This is a statistical average, NOT guaranteed income. It represents the block reward multiplied by your share of network hashrate. As a solo miner, you earn nothing until you find a block — then you earn the full block reward (currently 3.125 BTC). This number is the probability-weighted daily expectation." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-revenue">
+            {{sym}}{{formatCost(getExpectedDailyRevenueFiat(info))}}
+          </div>
+          <div class="la-stat-card-sub">{{formatBTC(getExpectedDailyRevenueBTC(info))}} BTC</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Daily Profit / Loss <tooltip-icon tooltip="Expected daily revenue minus electricity cost. Remember: solo mining income is extremely unpredictable — you may earn nothing for months or years, then receive a full block reward." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value"
+               [ngClass]="{'la-profit': getDailyProfit(info) >= 0, 'la-loss': getDailyProfit(info) < 0}">
+            {{getDailyProfit(info) >= 0 ? '+' : ''}}{{sym}}{{formatCost(getDailyProfit(info))}}
+          </div>
+          <div class="la-stat-card-sub">per day at current rates</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Break-Even BTC Price <tooltip-icon tooltip="The minimum BTC price at which your expected mining revenue would cover electricity costs." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-breakeven">
+            {{sym}}{{formatLargeNumber(getBreakEvenBTCPrice(info))}}
+          </div>
+          <div class="la-stat-card-sub">BTC price needed to cover electricity</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Solo Block Lottery <tooltip-icon tooltip="Average time to solo-mine one block at your current hashrate. This is a statistical average — actual time could be much shorter or much longer due to randomness." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-lottery">
+            ~{{formatYears(getYearsToFindBlock(info))}}
+          </div>
+          <div class="la-stat-card-sub">
+            avg. time to solo-mine a block worth {{sym}}{{formatLargeNumber(getExpectedBlockRewardFiat())}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Efficiency Stats -->
+  <div class="card la-efficiency-card">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-gauge la-section-icon"></i>
+      <span class="la-section-title">Efficiency</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">J/TH <tooltip-icon tooltip="Joules per Terahash — measures how much energy your miner uses per unit of hashing work. Lower is more efficient." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-efficiency">
+            {{getJoulesPerTerahash(info) | number:'1.2-2'}}
+          </div>
+          <div class="la-stat-card-sub">Joules per Terahash</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">W/GH <tooltip-icon tooltip="Watts per Gigahash — another way to express mining efficiency. Lower means more hashes per watt." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-efficiency">
+            {{getWattsPerGigahash(info) | number:'1.4-4'}}
+          </div>
+          <div class="la-stat-card-sub">Watts per Gigahash</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Hashrate <tooltip-icon tooltip="Current hashing speed of your ASIC chip as measured by the device." icon="pi-question-circle" /></div>
+          <div class="la-stat-card-value la-efficiency">
+            {{info.hashRate | number:'1.1-1'}} GH/s
+          </div>
+          <div class="la-stat-card-sub">Current device hashrate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

@@ -1,0 +1,137 @@
+:host {
+    h2 {
+        color: #8DFF00;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 1rem;
+    }
+}
+
+.la-howto-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.la-howto-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.la-howto-icon {
+    color: #8DFF00;
+    font-size: 1.1rem;
+}
+
+.la-howto-content {
+    padding: 0.5rem 0;
+}
+
+.la-howto-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.la-howto-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.la-howto-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(20, 20, 20, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+        border-color: rgba(141, 255, 0, 0.12);
+    }
+}
+
+.la-howto-step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    background: rgba(141, 255, 0, 0.1);
+    border: 1px solid rgba(141, 255, 0, 0.25);
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #8DFF00;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.la-howto-step-text {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.8rem;
+    line-height: 1.5;
+
+    :host ::ng-deep {
+        strong {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        code {
+            padding: 0.1rem 0.4rem;
+            background: rgba(141, 255, 0, 0.08);
+            border: 1px solid rgba(141, 255, 0, 0.15);
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #8DFF00;
+        }
+    }
+}
+
+// Style the PrimeNG accordion to match theme
+:host ::ng-deep {
+    .p-accordion {
+        .p-accordion-tab {
+            margin-bottom: 0.5rem;
+        }
+
+        .p-accordion-header-link {
+            background: rgba(20, 20, 20, 0.6) !important;
+            border: 1px solid rgba(141, 255, 0, 0.08) !important;
+            border-radius: 8px !important;
+            padding: 0.85rem 1rem !important;
+            color: rgba(255, 255, 255, 0.85) !important;
+            transition: all 0.2s ease !important;
+
+            &:hover {
+                border-color: rgba(141, 255, 0, 0.2) !important;
+                background: rgba(20, 20, 20, 0.8) !important;
+            }
+        }
+
+        .p-accordion-header-link[aria-expanded="true"] {
+            border-color: rgba(141, 255, 0, 0.25) !important;
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+
+        .p-accordion-content {
+            background: rgba(15, 15, 15, 0.5) !important;
+            border: 1px solid rgba(141, 255, 0, 0.08) !important;
+            border-top: none !important;
+            border-radius: 0 0 8px 8px !important;
+            padding: 1rem !important;
+        }
+
+        .p-accordion-toggle-icon {
+            color: #8DFF00 !important;
+        }
+    }
+}

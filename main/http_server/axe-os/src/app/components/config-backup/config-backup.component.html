@@ -34,7 +34,13 @@
             <i class="pi pi-exclamation-triangle la-config-icon la-config-icon--danger"></i>
             <h6 class="la-config-title">Factory Reset</h6>
             <p class="la-config-desc">Erase ALL settings and reboot. You will need to reconnect via WiFi AP mode.</p>
-            <button pButton label="Factory Reset" icon="pi pi-trash" class="p-button-danger p-button-outlined w-full" (click)="factoryReset()"></button>
+            <app-hold-confirm
+              label="Hold to Reset"
+              [holdDuration]="4000"
+              severity="danger"
+              icon="pi pi-trash"
+              (confirmed)="factoryReset()">
+            </app-hold-confirm>
           </div>
         </div>
       </div>

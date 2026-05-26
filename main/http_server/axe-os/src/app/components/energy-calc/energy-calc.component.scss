@@ -1,0 +1,232 @@
+// ── LottoAxe Energy Cost Calculator ──
+// Dark theme with amber accent, consistent with LottoAxe cyberpunk style
+
+:host {
+  display: block;
+
+  // ── Card base ──
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 158, 11, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+    }
+  }
+
+  // ── Section headers ──
+  .la-section-icon {
+    color: #f59e0b;
+    font-size: 1.25rem;
+  }
+
+  .la-section-title {
+    color: #f59e0b;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  // ── Form inputs ──
+  .la-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .la-input {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(245, 158, 11, 0.2) !important;
+    color: #fff !important;
+    border-radius: 6px !important;
+
+    &:focus {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.25) !important;
+    }
+  }
+
+  ::ng-deep .la-dropdown {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(245, 158, 11, 0.2) !important;
+    border-radius: 6px !important;
+
+    .p-dropdown-label {
+      color: #fff !important;
+    }
+
+    .p-dropdown-trigger {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &.p-focus {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.25) !important;
+    }
+  }
+
+  // ── Live Power hero stat ──
+  .la-hero-stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-hero-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #f59e0b;
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    line-height: 1;
+  }
+
+  .la-hero-unit {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: rgba(245, 158, 11, 0.7);
+  }
+
+  .la-hero-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  // ── General stat values (kWh displays) ──
+  .la-stat-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-stat-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // ── Stat cards (cost/economics/efficiency grid items) ──
+  .la-stat-card {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    height: 100%;
+
+    &:hover {
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+  }
+
+  .la-stat-card-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-stat-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .la-stat-card-sub {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  // ── Color accents for economics ──
+  .la-revenue {
+    color: #f59e0b;
+  }
+
+  .la-profit {
+    color: #22c55e;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+  }
+
+  .la-loss {
+    color: #ef4444;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  }
+
+  .la-breakeven {
+    color: #f59e0b;
+  }
+
+  .la-lottery {
+    color: #a78bfa;
+    text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  }
+
+  .la-efficiency {
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  }
+
+  // ── Card-specific accents ──
+  .la-power-card {
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+
+  .la-economics-card {
+    border-color: rgba(34, 197, 94, 0.12);
+
+    .la-section-icon,
+    .la-section-title {
+      color: #22c55e;
+    }
+  }
+
+  .la-efficiency-card {
+    border-color: rgba(56, 189, 248, 0.12);
+
+    .la-section-icon,
+    .la-section-title {
+      color: #38bdf8;
+    }
+  }
+}
+
+// ── Responsive adjustments ──
+@media (max-width: 768px) {
+  :host {
+    .la-hero-value {
+      font-size: 2.25rem;
+    }
+
+    .la-stat-value {
+      font-size: 1.35rem;
+    }
+
+    .la-stat-card-value {
+      font-size: 1.25rem;
+    }
+
+    .card {
+      padding: 1rem;
+    }
+  }
+}

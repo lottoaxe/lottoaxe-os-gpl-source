@@ -1,0 +1,262 @@
+// ── LottoAxe Hash DNA ──
+:host {
+  display: block;
+
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(141, 255, 0, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.25);
+      box-shadow: 0 0 15px rgba(141, 255, 0, 0.06);
+    }
+  }
+
+  .la-page-title {
+    color: #8DFF00; font-size: 1.4rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+  }
+
+  .la-accent-icon { color: #8DFF00; font-size: 1.4rem; }
+  .la-section-icon { color: #8DFF00; font-size: 1.1rem; }
+  .la-section-title {
+    color: #8DFF00; font-size: 1rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+
+  .la-subtitle {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.82rem; margin: 0; line-height: 1.5;
+  }
+
+  .la-live-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(141, 255, 0, 0.1);
+    border: 1px solid rgba(141, 255, 0, 0.3);
+    padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.6rem; font-weight: 700;
+    color: #8DFF00; letter-spacing: 1.5px;
+  }
+
+  .la-pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #8DFF00;
+    animation: la-dna-pulse 2s ease-in-out infinite;
+  }
+
+  // ── Trophy Card ──
+  .la-trophy-card {
+    position: relative;
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  .la-trophy-glow {
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    pointer-events: none;
+  }
+
+  .la-trophy-content { position: relative; z-index: 1; text-align: center; }
+
+  .la-trophy-label {
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-trophy-hash {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem; font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 2px;
+    word-break: break-all;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-trophy-rarity {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.75rem; margin-bottom: 0.75rem;
+  }
+
+  .la-rarity-badge {
+    border: 1px solid;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .la-trophy-score {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem; font-weight: 600;
+  }
+
+  .la-trophy-traits {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .la-trait-chip {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    border: 1px solid;
+    padding: 0.2rem 0.5rem; border-radius: 4px;
+    font-size: 0.65rem; font-weight: 600;
+  }
+
+  // ── Stats row ──
+  .la-stat-row {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+
+  .la-stat-pill {
+    flex: 1; min-width: 80px;
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px; padding: 0.6rem 0.75rem;
+    text-align: center; transition: border-color 0.2s;
+    &:hover { border-color: rgba(141, 255, 0, 0.15); }
+  }
+
+  .la-stat-label {
+    display: block; color: rgba(255, 255, 255, 0.4);
+    font-size: 0.55rem; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 0.2rem;
+  }
+
+  .la-stat-value {
+    display: block; color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem; font-weight: 700;
+  }
+
+  // ── Collection Grid ──
+  .la-filter-btn {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 0.7rem;
+    &.active { color: #8DFF00 !important; }
+  }
+
+  .la-clear-btn {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 0.75rem;
+    &:hover { color: #FF3B3B !important; }
+  }
+
+  .la-specimen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .la-specimen-card {
+    background: rgba(15, 15, 15, 0.6);
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.2s;
+    &:hover { transform: translateY(-2px); }
+  }
+
+  .la-specimen-header {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .la-rarity-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .la-rarity-name {
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .la-specimen-score {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.65rem; font-weight: 600;
+  }
+
+  .la-specimen-hash {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem; font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1.5px;
+    word-break: break-all;
+    margin-bottom: 0.5rem;
+    padding: 0.4rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+
+  .la-specimen-traits {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .la-trait-mini {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    font-size: 0.6rem; font-weight: 600;
+  }
+
+  .la-specimen-footer {
+    display: flex; justify-content: space-between;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.6rem;
+  }
+
+  // ── Legend ──
+  .la-legend-card { border-color: rgba(255, 255, 255, 0.06); }
+
+  .la-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .la-legend-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    i { font-size: 0.9rem; margin-top: 0.1rem; }
+    strong {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+    }
+    small {
+      display: block;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.7rem;
+    }
+  }
+
+  // ── No data ──
+  .la-nodata-card { border-style: dashed; border-color: rgba(141, 255, 0, 0.15); }
+  .la-nodata-content {
+    text-align: center; padding: 2rem 1rem;
+    .la-nodata-icon { font-size: 2.5rem; color: rgba(141, 255, 0, 0.3); margin-bottom: 1rem; }
+    h3 { color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; margin: 0 0 0.5rem; }
+    p { color: rgba(255, 255, 255, 0.4); font-size: 0.85rem; margin: 0 0 1rem; line-height: 1.6; }
+    .la-nodata-count { color: #8DFF00; font-size: 0.8rem; font-weight: 600; }
+  }
+
+  // ── Animations ──
+  @keyframes la-dna-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  // ── Responsive ──
+  @media (max-width: 768px) {
+    .la-trophy-hash { font-size: 0.85rem; }
+    .la-specimen-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

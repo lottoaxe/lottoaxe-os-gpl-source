@@ -96,6 +96,37 @@ export class HomeComponent implements OnInit, OnDestroy {
   public activePoolUser!: string;
   public activePoolLabel!: PoolLabel;
   public responseTime!: number;
+  public coinTicker: string = 'BTC';
+
+  /**
+   * Auto-detect the cryptocurrency being mined from wallet address and pool URL.
+   * Priority: 1) Wallet address prefix, 2) Pool URL patterns, 3) Default "BTC"
+   */
+  detectCoinTicker(poolUrl: string, poolUser: string): string {
+    // Extract wallet address (before the dot/worker name)
+    const addr = (poolUser || '').split('.')[0].split('_')[0];
+
+    // 1. Wallet address prefix detection (most reliable)
+    if (addr.startsWith('bc1') || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(addr)) return 'BTC';
+    if (addr.startsWith('dgb1')) return 'DGB';
+    if (addr.startsWith('ltc1') || addr.startsWith('L') || addr.startsWith('M')) return 'LTC';
+    if (addr.startsWith('bitcoincash:') || /^q[a-z0-9]{41}$/.test(addr)) return 'BCH';
+    if (addr.startsWith('r') && addr.length >= 25 && addr.length <= 35) return 'XRP';
+    if (addr.startsWith('t1') || addr.startsWith('t3')) return 'ZEC';
+    // DGB legacy addresses start with D (SHA-256 ASIC can't mine DOGE/Scrypt)
+    if (addr.startsWith('D') && addr.length >= 26 && addr.length <= 36) return 'DGB';
+
+    // 2. Pool URL pattern matching
+    const url = (poolUrl || '').toLowerCase();
+    if (url.includes('dgb') || url.includes('digibyte')) return 'DGB';
+    if (url.includes('litecoin') || url.includes('ltc.')) return 'LTC';
+    if (url.includes('bitcoincash') || url.includes('bch.')) return 'BCH';
+    if (url.includes('ckpool') || url.includes('ocean') || url.includes('public-pool')
+     || url.includes('braiins') || url.includes('kano')) return 'BTC';
+
+    // 3. Default to BTC (most common SHA-256 coin)
+    return 'BTC';
+  }
 
   public systemInfoError$ = new BehaviorSubject<ISystemInfoError>({
     duration: 0,
@@ -774,6 +805,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.activePoolUser = isFallbackPool ? info.fallbackStratumUser : info.stratumUser;
         this.activePoolPort = isFallbackPool ? info.fallbackStratumPort : info.stratumPort;
         this.responseTime = info.responseTime;
+        this.coinTicker = this.detectCoinTicker(this.activePoolURL, this.activePoolUser);
       }),
       map(info => {
         info.power = parseFloat(info.power.toFixed(1));

@@ -1,0 +1,578 @@
+// ============================================================================
+// LuckyShare Animation — the signature visual celebration for LottoAxe OS
+// Pure CSS spectacle. No JS animation libraries.
+// ============================================================================
+
+// ---------------------------------------------------------------------------
+// Keyframes
+// ---------------------------------------------------------------------------
+
+@keyframes la-scaleIn {
+  0%   { transform: scale(0) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(1.25) rotate(2deg); opacity: 1; }
+  80%  { transform: scale(0.95) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes la-glowPulse {
+  0%, 100% { text-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+  50%      { text-shadow: 0 0 40px currentColor, 0 0 80px currentColor, 0 0 120px currentColor; }
+}
+
+@keyframes la-ringExpand {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.8; border-width: 4px; }
+  70%  { opacity: 0.3; }
+  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; border-width: 1px; }
+}
+
+@keyframes la-particleRise {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-120vh) scale(0.3); opacity: 0; }
+}
+
+@keyframes la-screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  10%      { transform: translate(-6px, -4px); }
+  20%      { transform: translate(5px, 6px); }
+  30%      { transform: translate(-7px, 2px); }
+  40%      { transform: translate(4px, -6px); }
+  50%      { transform: translate(-3px, 5px); }
+  60%      { transform: translate(6px, -2px); }
+  70%      { transform: translate(-4px, 4px); }
+  80%      { transform: translate(3px, -5px); }
+  90%      { transform: translate(-5px, 3px); }
+}
+
+@keyframes la-neonCycle {
+  0%   { text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 100px #ff00ff; }
+  16%  { text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff, 0 0 60px #00ffff, 0 0 100px #00ffff; }
+  33%  { text-shadow: 0 0 10px #ffff00, 0 0 30px #ffff00, 0 0 60px #ffff00, 0 0 100px #ffff00; }
+  50%  { text-shadow: 0 0 10px #ff4400, 0 0 30px #ff4400, 0 0 60px #ff4400, 0 0 100px #ff4400; }
+  66%  { text-shadow: 0 0 10px #44ff00, 0 0 30px #44ff00, 0 0 60px #44ff00, 0 0 100px #44ff00; }
+  83%  { text-shadow: 0 0 10px #ff0088, 0 0 30px #ff0088, 0 0 60px #ff0088, 0 0 100px #ff0088; }
+  100% { text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 100px #ff00ff; }
+}
+
+@keyframes la-fadeOut {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes la-backdropIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes la-diffSlideUp {
+  0%   { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes la-subtitleFade {
+  0%   { opacity: 0; letter-spacing: 8px; }
+  100% { opacity: 0.8; letter-spacing: 3px; }
+}
+
+@keyframes la-rainbowBg {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes la-burstRotate {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes la-pulseRing {
+  0%   { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+  50%  { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
+  100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+}
+
+@keyframes la-legendaryPulse {
+  0%, 100% { background: radial-gradient(ellipse at center, rgba(255, 0, 255, 0.15) 0%, transparent 70%); }
+  25%      { background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.15) 0%, transparent 70%); }
+  50%      { background: radial-gradient(ellipse at center, rgba(255, 255, 0, 0.15) 0%, transparent 70%); }
+  75%      { background: radial-gradient(ellipse at center, rgba(255, 68, 0, 0.15) 0%, transparent 70%); }
+}
+
+@keyframes la-starTwinkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50%      { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+// ---------------------------------------------------------------------------
+// Overlay base
+// ---------------------------------------------------------------------------
+
+.la-lucky-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  animation: la-backdropIn 0.3s ease-out forwards, la-fadeOut 5s ease-in forwards;
+  cursor: pointer;
+  overflow: hidden;
+
+  // Allow clicks to pass through after the initial moment
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Content container
+// ---------------------------------------------------------------------------
+
+.la-lucky-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  user-select: none;
+}
+
+// ---------------------------------------------------------------------------
+// Tier label (the big text)
+// ---------------------------------------------------------------------------
+
+.la-lucky-tier-label {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 4px;
+  line-height: 1.1;
+  animation: la-scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+}
+
+// ---------------------------------------------------------------------------
+// Difficulty value
+// ---------------------------------------------------------------------------
+
+.la-lucky-diff {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  margin-top: 12px;
+  font-family: 'Courier New', monospace;
+  animation: la-diffSlideUp 0.8s 0.3s ease-out both;
+}
+
+// ---------------------------------------------------------------------------
+// Subtitle
+// ---------------------------------------------------------------------------
+
+.la-lucky-subtitle {
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-top: 8px;
+  animation: la-subtitleFade 1s 0.5s ease-out both;
+}
+
+// ---------------------------------------------------------------------------
+// Expanding rings
+// ---------------------------------------------------------------------------
+
+.la-lucky-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid currentColor;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+
+  &--1 { animation: la-ringExpand 2.0s 0.1s ease-out forwards; }
+  &--2 { animation: la-ringExpand 2.0s 0.4s ease-out forwards; }
+  &--3 { animation: la-ringExpand 2.0s 0.7s ease-out forwards; }
+}
+
+// ===========================================================================
+//  TIER: NICE  (> 1M diff)
+//  Warm amber glow, clean and satisfying
+// ===========================================================================
+
+.la-lucky--nice {
+  background: radial-gradient(ellipse at center, rgba(255, 170, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%);
+
+  .la-lucky-tier-label {
+    color: #ffb833;
+    animation: la-scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               la-glowPulse 1.5s 0.6s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(255, 184, 51, 0.8),
+                 0 0 40px rgba(255, 140, 0, 0.5);
+  }
+
+  .la-lucky-diff {
+    color: #ffe0a0;
+  }
+
+  .la-lucky-subtitle {
+    color: rgba(255, 200, 120, 0.7);
+  }
+
+  .la-lucky-ring {
+    color: rgba(255, 170, 0, 0.5);
+  }
+}
+
+// ===========================================================================
+//  TIER: MEGA  (> 100M diff)
+//  Golden explosion with radial burst and multiple ring expansions
+// ===========================================================================
+
+.la-lucky--mega {
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 60%);
+
+  // Golden radial burst from center
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200vmax;
+    height: 200vmax;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(255, 215, 0, 0.15) 10deg,
+      transparent 20deg,
+      rgba(255, 215, 0, 0.1) 40deg,
+      transparent 50deg,
+      rgba(255, 215, 0, 0.15) 70deg,
+      transparent 80deg,
+      rgba(255, 215, 0, 0.1) 100deg,
+      transparent 110deg,
+      rgba(255, 215, 0, 0.15) 130deg,
+      transparent 140deg,
+      rgba(255, 215, 0, 0.1) 160deg,
+      transparent 170deg,
+      rgba(255, 215, 0, 0.15) 190deg,
+      transparent 200deg,
+      rgba(255, 215, 0, 0.1) 220deg,
+      transparent 230deg,
+      rgba(255, 215, 0, 0.15) 250deg,
+      transparent 260deg,
+      rgba(255, 215, 0, 0.1) 280deg,
+      transparent 290deg,
+      rgba(255, 215, 0, 0.15) 310deg,
+      transparent 320deg,
+      rgba(255, 215, 0, 0.1) 340deg,
+      transparent 350deg
+    );
+    animation: la-burstRotate 8s linear infinite;
+    pointer-events: none;
+  }
+
+  .la-lucky-tier-label {
+    color: #ffd700;
+    animation: la-scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               la-glowPulse 1s 0.5s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.9),
+                 0 0 60px rgba(255, 180, 0, 0.6),
+                 0 0 100px rgba(255, 140, 0, 0.3);
+  }
+
+  .la-lucky-diff {
+    color: #fff3c4;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .la-lucky-subtitle {
+    color: rgba(255, 230, 150, 0.8);
+  }
+
+  .la-lucky-ring {
+    color: rgba(255, 215, 0, 0.6);
+    border-width: 4px;
+
+    &--1 { animation: la-ringExpand 1.8s 0.0s ease-out forwards; }
+    &--2 { animation: la-ringExpand 1.8s 0.3s ease-out forwards; }
+    &--3 { animation: la-ringExpand 1.8s 0.6s ease-out forwards; }
+  }
+}
+
+// ===========================================================================
+//  TIER: GIGA  (> 1B diff)
+//  Rainbow gradient background, floating particles, confetti vibes
+// ===========================================================================
+
+.la-lucky--giga {
+  background: linear-gradient(
+    270deg,
+    rgba(255, 0, 128, 0.2),
+    rgba(128, 0, 255, 0.2),
+    rgba(0, 128, 255, 0.2),
+    rgba(0, 255, 128, 0.2),
+    rgba(255, 255, 0, 0.2),
+    rgba(255, 128, 0, 0.2),
+    rgba(255, 0, 128, 0.2)
+  );
+  background-size: 600% 600%;
+  animation: la-backdropIn 0.3s ease-out forwards,
+             la-rainbowBg 3s ease infinite,
+             la-fadeOut 5s ease-in forwards;
+
+  // Particle field using box-shadows — dozens of glowing dots
+  &::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    top: 100%;
+    left: 50%;
+    animation: la-particleRise 3s ease-out infinite;
+    box-shadow:
+      // Column 1
+      -45vw 0    0 2px #ff4488,
+      -40vw 10vh 0 1px #ffaa00,
+      -35vw 5vh  0 3px #44ff88,
+      -30vw 15vh 0 2px #4488ff,
+      -25vw 8vh  0 1px #ff44ff,
+      -20vw 20vh 0 3px #ffff44,
+      -15vw 3vh  0 2px #ff8844,
+      -10vw 12vh 0 1px #44ffff,
+      -5vw  18vh 0 3px #ff4444,
+      // Center
+      0     7vh  0 2px #88ff44,
+      // Column 2
+      5vw   22vh 0 1px #ff44aa,
+      10vw  2vh  0 3px #44aaff,
+      15vw  16vh 0 2px #aaff44,
+      20vw  9vh  0 1px #ff8800,
+      25vw  25vh 0 3px #8844ff,
+      30vw  6vh  0 2px #44ffaa,
+      35vw  14vh 0 1px #ff4466,
+      40vw  11vh 0 3px #66ff44,
+      45vw  19vh 0 2px #4466ff;
+    pointer-events: none;
+  }
+
+  // Second wave of particles (offset timing)
+  &::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    top: 100%;
+    left: 30%;
+    animation: la-particleRise 3.5s 0.8s ease-out infinite;
+    box-shadow:
+      -42vw 5vh  0 2px #ff88cc,
+      -32vw 12vh 0 1px #88ccff,
+      -22vw 8vh  0 3px #ccff88,
+      -12vw 18vh 0 2px #ff8888,
+      -2vw  3vh  0 1px #88ff88,
+      8vw   15vh 0 3px #8888ff,
+      18vw  10vh 0 2px #ffcc88,
+      28vw  20vh 0 1px #cc88ff,
+      38vw  7vh  0 3px #88ffcc,
+      48vw  13vh 0 2px #ffff88;
+    pointer-events: none;
+  }
+
+  .la-lucky-tier-label {
+    color: #ffffff;
+    background: linear-gradient(90deg, #ff0080, #ff8c00, #ffff00, #00ff88, #00bfff, #8000ff, #ff0080);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: la-scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               la-rainbowBg 2s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+    font-size: clamp(3rem, 9vw, 7rem);
+  }
+
+  .la-lucky-diff {
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
+                 0 0 30px rgba(128, 0, 255, 0.5);
+  }
+
+  .la-lucky-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+
+  .la-lucky-ring {
+    color: rgba(255, 255, 255, 0.7);
+    border-width: 3px;
+    border-style: dashed;
+
+    &--1 {
+      animation: la-ringExpand 1.6s 0.0s ease-out forwards;
+      border-color: #ff0080;
+    }
+    &--2 {
+      animation: la-ringExpand 1.6s 0.25s ease-out forwards;
+      border-color: #00ff88;
+    }
+    &--3 {
+      animation: la-ringExpand 1.6s 0.5s ease-out forwards;
+      border-color: #00bfff;
+    }
+  }
+}
+
+// ===========================================================================
+//  TIER: LEGENDARY  (> 1T diff)
+//  Full screen takeover. Screen shake. Neon cycling. Pulsing rings.
+//  Maximum intensity. The screen itself celebrates.
+// ===========================================================================
+
+.la-lucky--legendary {
+  animation: la-backdropIn 0.2s ease-out forwards,
+             la-screenShake 0.4s 0.1s ease-in-out 3,
+             la-fadeOut 5s ease-in forwards;
+  background: rgba(0, 0, 0, 0.9);
+
+  // Cycling radial pulse background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: la-legendaryPulse 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  // Intense conic burst
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250vmax;
+    height: 250vmax;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(255, 0, 255, 0.12) 30deg,
+      transparent 60deg,
+      rgba(0, 255, 255, 0.12) 90deg,
+      transparent 120deg,
+      rgba(255, 255, 0, 0.12) 150deg,
+      transparent 180deg,
+      rgba(255, 0, 128, 0.12) 210deg,
+      transparent 240deg,
+      rgba(0, 255, 128, 0.12) 270deg,
+      transparent 300deg,
+      rgba(128, 0, 255, 0.12) 330deg,
+      transparent 360deg
+    );
+    animation: la-burstRotate 4s linear infinite;
+    pointer-events: none;
+  }
+
+  .la-lucky-tier-label {
+    color: #ffffff;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    letter-spacing: 8px;
+    animation: la-scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               la-neonCycle 1.5s 0.4s linear infinite;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .la-lucky-diff {
+    color: #ffffff;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    animation: la-diffSlideUp 0.6s 0.3s ease-out both,
+               la-neonCycle 2s 0.9s linear infinite;
+  }
+
+  .la-lucky-subtitle {
+    color: #ffffff;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    letter-spacing: 6px;
+  }
+
+  // Pulsing rings for legendary — they stay and breathe instead of just expanding
+  .la-lucky-ring {
+    border-width: 3px;
+    border-style: solid;
+
+    &--1 {
+      width: 250px;
+      height: 250px;
+      border-color: rgba(255, 0, 255, 0.5);
+      animation: la-pulseRing 1.5s ease-in-out infinite,
+                 la-ringExpand 2.5s 0.0s ease-out forwards;
+    }
+    &--2 {
+      width: 400px;
+      height: 400px;
+      border-color: rgba(0, 255, 255, 0.4);
+      animation: la-pulseRing 1.8s 0.3s ease-in-out infinite,
+                 la-ringExpand 2.5s 0.3s ease-out forwards;
+    }
+    &--3 {
+      width: 550px;
+      height: 550px;
+      border-color: rgba(255, 255, 0, 0.3);
+      animation: la-pulseRing 2.1s 0.6s ease-in-out infinite,
+                 la-ringExpand 2.5s 0.6s ease-out forwards;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Responsive adjustments
+// ---------------------------------------------------------------------------
+
+@media (max-width: 600px) {
+  .la-lucky-tier-label {
+    letter-spacing: 2px !important;
+  }
+
+  .la-lucky-ring {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .la-lucky--legendary .la-lucky-ring {
+    &--1 { width: 150px !important; height: 150px !important; }
+    &--2 { width: 250px !important; height: 250px !important; }
+    &--3 { width: 350px !important; height: 350px !important; }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Reduced motion: respect user preferences
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .la-lucky-overlay,
+  .la-lucky-overlay *,
+  .la-lucky-overlay::before,
+  .la-lucky-overlay::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .la-lucky-tier-label {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

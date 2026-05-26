@@ -46,6 +46,23 @@ import { PoolProfilesComponent } from './components/pool-profiles/pool-profiles.
 import { TuningPresetsComponent } from './components/tuning-presets/tuning-presets.component';
 import { ConfigBackupComponent } from './components/config-backup/config-backup.component';
 import { BootSplashComponent } from './components/boot-splash/boot-splash.component';
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { TermsComponent } from './components/terms/terms.component';
+import { HoldConfirmComponent } from './components/hold-confirm/hold-confirm.component';
+import { AchievementsComponent } from './components/achievements/achievements.component';
+import { LotteryStatsComponent } from './components/lottery-stats/lottery-stats.component';
+import { EnergyCalcComponent } from './components/energy-calc/energy-calc.component';
+import { HashrateHistoryComponent } from './components/hashrate-history/hashrate-history.component';
+import { ThermalPredictionComponent } from './components/thermal-prediction/thermal-prediction.component';
+import { GoldenHashComponent } from './components/golden-hash/golden-hash.component';
+import { MiningAuraComponent } from './components/mining-aura/mining-aura.component';
+import { OverclockSchedulerComponent } from './components/overclock-scheduler/overclock-scheduler.component';
+import { HowToComponent } from './components/how-to/how-to.component';
+import { AutoTuneComponent } from './components/auto-tune/auto-tune.component';
+import { AsicHealthComponent } from './components/asic-health/asic-health.component';
+import { NearMissComponent } from './components/near-miss/near-miss.component';
+import { SoloRadioComponent } from './components/solo-radio/solo-radio.component';
+import { HashDnaComponent } from './components/hash-dna/hash-dna.component';
 
 const components = [
   AppComponent,
@@ -74,7 +91,6 @@ const components = [
     SwarmComponent,
     ScoreboardComponent,
     SettingsComponent,
-    DiffSuffixPipe,
     AddressPipe,
     SatsPipe,
     ThemeConfigComponent,
@@ -84,7 +100,24 @@ const components = [
     TuningPresetsComponent,
     ConfigBackupComponent,
     BootSplashComponent,
-    DialogListComponent
+    DisclaimerComponent,
+    TermsComponent,
+    HoldConfirmComponent,
+    DialogListComponent,
+    AchievementsComponent,
+    LotteryStatsComponent,
+    EnergyCalcComponent,
+    HashrateHistoryComponent,
+    ThermalPredictionComponent,
+    GoldenHashComponent,
+    MiningAuraComponent,
+    OverclockSchedulerComponent,
+    HowToComponent,
+    AutoTuneComponent,
+    AsicHealthComponent,
+    NearMissComponent,
+    SoloRadioComponent,
+    HashDnaComponent
   ],
   imports: [
     BrowserModule,

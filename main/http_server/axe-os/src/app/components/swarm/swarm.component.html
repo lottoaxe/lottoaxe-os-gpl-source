@@ -1,7 +1,7 @@
 <ng-template #noValue>--</ng-template>
 
 <div class="card">
-    <h2>Swarm</h2>
+    <h2>Fleet</h2>
 
     <ng-container *ngIf="swarm.length; else noDevices">
         <div class="grid">
@@ -9,13 +9,34 @@
                 { label: 'Total Devices', value: swarm.length },
                 { label: 'Total Hashrate', value: totals.hashRate | hashSuffix},
                 { label: 'Total Power', value: (totals.power | number: '1.1-1')  + ' W' },
-                { label: 'Best Diff', value: totals.bestDiff | diffSuffix }
+                { label: 'Best Diff', value: totals.bestDiff | diffSuffix },
+                { label: 'Avg Temp', value: (totals.avgTemp | number: '1.0-0') + '°C' },
+                { label: 'Efficiency', value: (totals.efficiency | number: '1.2-2') + ' GH/W' },
+                { label: 'Shares', value: (totals.sharesAccepted | number: '1.0-0') + ' / ' + (totals.sharesRejected | number: '1.0-0') },
+                { label: 'Fleet Health', value: healthCounts.healthy + '✓ ' + healthCounts.warning + '⚠ ' + healthCounts.critical + '✗' }
             ]">
                 <div class="card flex flex-column mb-0">
                     <span class="text-500 font-medium mb-3">{{metric.label}}</span>
                     <div class="text-900 font-medium text-2xl">{{metric.value}}</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Batch Actions -->
+        <div class="flex flex-wrap gap-2 mt-3 mb-2">
+            <span class="text-500 text-sm flex align-items-center mr-2">Fleet Actions:</span>
+            <button pButton class="p-button-sm p-button-outlined" (click)="batchRestartAll()" [disabled]="batchActionRunning">
+                <i class="pi pi-refresh mr-1"></i> Restart All
+            </button>
+            <button pButton class="p-button-sm p-button-outlined" (click)="batchPauseAll()" [disabled]="batchActionRunning">
+                <i class="pi pi-pause mr-1"></i> Pause All
+            </button>
+            <button pButton class="p-button-sm p-button-outlined" (click)="batchResumeAll()" [disabled]="batchActionRunning">
+                <i class="pi pi-play mr-1"></i> Resume All
+            </button>
+            <button pButton class="p-button-sm p-button-outlined" (click)="batchIdentifyAll()" [disabled]="batchActionRunning">
+                <i class="pi pi-lightbulb mr-1"></i> Identify All
+            </button>
         </div>
 
         <div class="mt-2 mb-3 gap-2 sm:gap-3 flex justify-content-end">

@@ -1,0 +1,366 @@
+// =============================================================================
+// LottoAxe — Lottery Stats Page
+// Namespace: .la-lottery-*, .la-stat-card, .la-detail-card, .la-luck-*, .la-mini-stat
+// =============================================================================
+
+$amber: #f59e0b;
+$amber-dim: rgba(245, 158, 11, 0.15);
+$amber-glow: rgba(245, 158, 11, 0.35);
+$card-bg: linear-gradient(135deg, #111118 0%, #0d0d14 100%);
+$card-border: rgba(245, 158, 11, 0.15);
+$card-radius: 16px;
+$label-color: #888;
+$value-color: #fff;
+
+// =============================================================================
+// Hero Section
+// =============================================================================
+
+.la-lottery-hero {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 2rem 2rem 1.75rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  // Subtle radial glow behind the hero
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__header {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  &__icon {
+    font-size: 2rem;
+    color: $amber;
+    text-shadow: 0 0 20px $amber-glow;
+    display: block;
+    margin-bottom: 0.5rem;
+    animation: la-hero-pulse 3s ease-in-out infinite;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $value-color;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 0.25rem;
+  }
+
+  &__subtitle {
+    color: $label-color;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}
+
+@keyframes la-hero-pulse {
+  0%, 100% { text-shadow: 0 0 20px $amber-glow; }
+  50% { text-shadow: 0 0 30px rgba(245, 158, 11, 0.55), 0 0 60px rgba(245, 158, 11, 0.2); }
+}
+
+// =============================================================================
+// Luck Meter (Hero)
+// =============================================================================
+
+.la-luck-hero {
+  position: relative;
+  z-index: 1;
+
+  &__label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  &__label {
+    color: $label-color;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    animation: la-luck-glow 2.5s ease-in-out infinite;
+  }
+
+  &__track {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1s ease-out;
+    position: relative;
+    min-width: 2px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -2px;
+      bottom: -2px;
+      width: 4px;
+      background: $value-color;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  &__scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+@keyframes la-luck-glow {
+  0%, 100% { text-shadow: 0 0 8px currentColor; }
+  50% { text-shadow: 0 0 16px currentColor, 0 0 32px currentColor; }
+}
+
+// =============================================================================
+// Stat Cards (Grid)
+// =============================================================================
+
+.la-stat-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 12px $amber-dim;
+  }
+
+  &__icon-wrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+
+    &--amber {
+      background: rgba(245, 158, 11, 0.12);
+      color: $amber;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    &--purple {
+      background: rgba(168, 85, 247, 0.12);
+      color: #a855f7;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+    &--red {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    &--green {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+    &--teal {
+      background: rgba(20, 184, 166, 0.12);
+      color: #14b8a6;
+      border: 1px solid rgba(20, 184, 166, 0.25);
+    }
+    &--blue {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    color: $label-color;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+
+  &__value {
+    color: $value-color;
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  &__hint {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+  }
+}
+
+// =============================================================================
+// Detail Cards
+// =============================================================================
+
+.la-detail-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+  height: 100%;
+
+  &__title {
+    color: $amber;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+  }
+}
+
+// =============================================================================
+// Luck Detail (inside detail cards)
+// =============================================================================
+
+.la-luck-detail {
+  margin-bottom: 0.5rem;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    color: $label-color;
+    font-size: 0.8rem;
+  }
+
+  &__value {
+    color: $value-color;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+  }
+
+  &__bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.25rem 0;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+    min-width: 2px;
+  }
+
+  &__verdict {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: $amber;
+    margin-top: 0.25rem;
+  }
+}
+
+// =============================================================================
+// Mini Stats (Session row)
+// =============================================================================
+
+.la-mini-stat {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+
+  &__label {
+    display: block;
+    color: $label-color;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+  }
+
+  &__value {
+    display: block;
+    color: $value-color;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+
+    &--highlight {
+      color: $amber;
+      text-shadow: 0 0 12px $amber-glow;
+      animation: la-block-found-pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes la-block-found-pulse {
+  0%, 100% { text-shadow: 0 0 12px $amber-glow; }
+  50% { text-shadow: 0 0 24px $amber-glow, 0 0 48px rgba(245, 158, 11, 0.15); }
+}

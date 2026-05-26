@@ -118,8 +118,8 @@ void app_main(void)
         ESP_LOGE(TAG, "Critical peripheral initialization failure (%s). Entering degraded mode.", esp_err_to_name(GLOBAL_STATE.SELF_TEST_MODULE.system_init_ret));
     }
     
-    // Initialize LottoAxe OS modules (pool profiles, safety)
-    lottoaxe_api_init();
+    // Initialize LottoAxe OS modules (pool profiles, safety, tuning presets)
+    lottoaxe_api_init(&GLOBAL_STATE);
 
     if (!GLOBAL_STATE.SELF_TEST_MODULE.is_active) {
         // start the API for AxeOS / LottoAxe OS

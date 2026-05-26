@@ -36,7 +36,11 @@ export class SwarmComponent implements OnInit, OnDestroy {
   public refreshIntervalTime = 30;
   public refreshTimeSet = 30;
 
-  public totals: { hashRate: number; power: number; bestDiff: number } = { hashRate: 0, power: 0, bestDiff: 0 };
+  public totals: { hashRate: number; power: number; bestDiff: number; avgTemp: number; efficiency: number; sharesAccepted: number; sharesRejected: number } = { hashRate: 0, power: 0, bestDiff: 0, avgTemp: 0, efficiency: 0, sharesAccepted: 0, sharesRejected: 0 };
+
+  public healthCounts: { healthy: number; warning: number; critical: number; paused: number } = { healthy: 0, warning: 0, critical: 0, paused: 0 };
+
+  public batchActionRunning = false;
 
   public isRefreshing = false;
 
@@ -328,6 +332,132 @@ export class SwarmComponent implements OnInit, OnDestroy {
     this.totals.hashRate = this.swarm.reduce((sum, axe) => sum + (axe.hashRate || 0), 0);
     this.totals.power = this.swarm.reduce((sum, axe) => sum + (axe.power || 0), 0);
     this.totals.bestDiff = this.swarm.reduce((max, axe) => Math.max(max, axe.bestDiff || 0), 0);
+    this.totals.sharesAccepted = this.swarm.reduce((sum, axe) => sum + (axe.sharesAccepted || 0), 0);
+    this.totals.sharesRejected = this.swarm.reduce((sum, axe) => sum + (axe.sharesRejected || 0), 0);
+
+    // Avg temp (only devices with temp > 0)
+    const temped = this.swarm.filter(axe => (axe.temp || 0) > 0);
+    this.totals.avgTemp = temped.length > 0
+      ? temped.reduce((sum, axe) => sum + axe.temp, 0) / temped.length
+      : 0;
+
+    // Fleet efficiency
+    this.totals.efficiency = this.totals.power > 0
+      ? this.totals.hashRate / this.totals.power
+      : 0;
+
+    // Health counts
+    this.healthCounts = { healthy: 0, warning: 0, critical: 0, paused: 0 };
+    for (const axe of this.swarm) {
+      if (axe.miningPaused) {
+        this.healthCounts.paused++;
+      } else if (axe.overheat_mode === 1 || axe.power_fault || (axe.hashRate || 0) === 0) {
+        this.healthCounts.critical++;
+      } else if ((axe.temp || 0) > 65 || (axe.errorPercentage || 0) > 5 || axe.isUsingFallbackStratum === 1) {
+        this.healthCounts.warning++;
+      } else {
+        this.healthCounts.healthy++;
+      }
+    }
+  }
+
+  // ── Batch actions ──
+
+  batchRestartAll(): void {
+    if (this.batchActionRunning) return;
+    this.batchActionRunning = true;
+    let completed = 0;
+    const total = this.swarm.length;
+
+    for (const axe of this.swarm) {
+      this.httpClient.post(`http://${axe.IP}/api/system/restart`, {}, { responseType: 'json' }).pipe(
+        timeout(3000),
+        catchError(() => of(null))
+      ).subscribe(() => {
+        completed++;
+        if (completed >= total) {
+          this.batchActionRunning = false;
+          this.toastr.success(`Restarted ${total} devices`, 'Fleet Restart');
+          setTimeout(() => this.refreshList(false), 10000);
+        }
+      });
+    }
+  }
+
+  batchPauseAll(): void {
+    if (this.batchActionRunning) return;
+    this.batchActionRunning = true;
+    let completed = 0;
+    const targets = this.swarm.filter(axe => !axe.miningPaused);
+    const total = targets.length;
+
+    if (total === 0) {
+      this.batchActionRunning = false;
+      this.toastr.info('All devices are already paused');
+      return;
+    }
+
+    for (const axe of targets) {
+      this.httpClient.post(`http://${axe.IP}/api/system/pause`, {}, { responseType: 'json' }).pipe(
+        timeout(3000),
+        catchError(() => of(null))
+      ).subscribe(() => {
+        completed++;
+        if (completed >= total) {
+          this.batchActionRunning = false;
+          this.toastr.success(`Paused ${total} devices`, 'Fleet Pause');
+          this.refreshList(false);
+        }
+      });
+    }
+  }
+
+  batchResumeAll(): void {
+    if (this.batchActionRunning) return;
+    this.batchActionRunning = true;
+    let completed = 0;
+    const targets = this.swarm.filter(axe => axe.miningPaused);
+    const total = targets.length;
+
+    if (total === 0) {
+      this.batchActionRunning = false;
+      this.toastr.info('All devices are already mining');
+      return;
+    }
+
+    for (const axe of targets) {
+      this.httpClient.post(`http://${axe.IP}/api/system/resume`, {}, { responseType: 'json' }).pipe(
+        timeout(3000),
+        catchError(() => of(null))
+      ).subscribe(() => {
+        completed++;
+        if (completed >= total) {
+          this.batchActionRunning = false;
+          this.toastr.success(`Resumed ${total} devices`, 'Fleet Resume');
+          this.refreshList(false);
+        }
+      });
+    }
+  }
+
+  batchIdentifyAll(): void {
+    if (this.batchActionRunning) return;
+    this.batchActionRunning = true;
+    let completed = 0;
+    const total = this.swarm.length;
+
+    for (const axe of this.swarm) {
+      this.httpClient.post(`http://${axe.IP}/api/system/identify`, {}, { responseType: 'json' }).pipe(
+        timeout(3000),
+        catchError(() => of(null))
+      ).subscribe(() => {
+        completed++;
+        if (completed >= total) {
+          this.batchActionRunning = false;
+          this.toastr.success(`Identify sent to ${total} devices`, 'Fleet Identify');
+        }
+      });
+    }
   }
 
   get deviceFamilies(): SwarmDevice[] {

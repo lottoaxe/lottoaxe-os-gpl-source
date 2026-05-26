@@ -1,0 +1,11 @@
+<div *ngIf="showAnimation" class="la-lucky-overlay" [ngClass]="'la-lucky--' + animationTier"
+     (click)="dismiss()">
+  <div class="la-lucky-content">
+    <div class="la-lucky-tier-label">{{ getTierLabel() }}</div>
+    <div class="la-lucky-diff">{{ formatDiff(shareValue) }}</div>
+    <div class="la-lucky-subtitle">New Best Session Share!</div>
+  </div>
+  <div class="la-lucky-ring la-lucky-ring--1"></div>
+  <div class="la-lucky-ring la-lucky-ring--2"></div>
+  <div class="la-lucky-ring la-lucky-ring--3"></div>
+</div>

@@ -2,106 +2,90 @@
     <h2>Update</h2>
 
     <div class="grid">
-        <div class="col-12 xl:col-4">
+        <!-- Version Info Card -->
+        <div class="col-12 xl:col-5">
             <div class="card h-full">
-                <h5>Current Version: {{(info$ | async)?.version}}</h5>
+                <div class="la-version-card">
+                    <div class="la-version-current">
+                        <span class="la-version-label">RUNNING VERSION</span>
+                        <span class="la-version-value">{{ (info$ | async)?.version || 'Loading...' }}</span>
+                    </div>
 
-                <ng-container *ngIf="checkLatestRelease == false; else afterCheck">
-                    <h3>Latest Release: <p-button (onClick)="handleReleaseCheck()">Check</p-button></h3>
-
-                    <app-modal #privacyModal [headline]="'Privacy Warning'">
-                        <p>
-                            Please note, this will connect to <strong>github.com</strong> to check for the latest release.
-                        </p>
-                        <p class="flex gap-2">
-                            <p-checkbox
-                                [binary]="true"
-                                inputId="ignoreWarning"
-                                #ignoreWarning></p-checkbox>
-                            <label for="ignoreWarning">Don't show again</label>
-                        </p>
-                        <div class="flex gap-3 mt-5">
-                            <p-button (onClick)="continueReleaseCheck(ignoreWarning.model)">Continue</p-button>
-                            <p-button styleClass="p-button-secondary" (onClick)="privacyModal.isVisible = false">Cancel</p-button>
+                    <div class="la-version-latest" *ngIf="versionStatus?.available">
+                        <i class="pi pi-arrow-circle-up la-version-new-icon"></i>
+                        <div>
+                            <span class="la-version-label">LATEST VERSION</span>
+                            <span class="la-version-value la-version-new">{{ versionStatus?.latestVersion }}</span>
                         </div>
-                    </app-modal>
-                </ng-container>
+                    </div>
+                    <div class="la-version-latest la-version-uptodate" *ngIf="versionStatus && !versionStatus.available">
+                        <i class="pi pi-check-circle"></i>
+                        <span>You're up to date!</span>
+                    </div>
+                    <div class="la-version-latest" *ngIf="!versionStatus">
+                        <i class="pi pi-spin pi-spinner"></i>
+                        <span>Checking for updates...</span>
+                    </div>
 
-                <ng-template #afterCheck>
-                    <ng-container *ngIf="latestRelease$ | async as latestRelease">
-                        <h3>Latest Release:
-                            <a style="text-decoration: underline;" target="_blank"
-                            [href]="latestRelease.html_url">{{latestRelease.name}}</a>
-                        </h3>
-
-                        <div class="text-orange-500 mb-3">Download both files for update!</div>
-
-                        <div *ngFor="let asset of latestRelease.assets">
-                            <div *ngIf="asset.name == 'esp-miner.bin'">
-                                <a style="text-decoration: underline;" target="_blank"
-                                    [href]="asset.browser_download_url">esp-miner.bin</a>
-                            </div>
-                            <div *ngIf="asset.name == 'www.bin'">
-                                <a style="text-decoration: underline;" target="_blank"
-                                    [href]="asset.browser_download_url">www.bin</a>
-                            </div>
-                        </div>
-
-                        <a class="text-500 underline block mt-3 cursor-pointer" (click)="releaseNotesModal.isVisible = true">
-                            Release Notes
-                        </a>
-
-                        <app-modal #releaseNotesModal [headline]="latestRelease.name">
-                            <div [innerHTML]="simpleMarkdownParser(latestRelease.body)"></div>
-                        </app-modal>
-                    </ng-container>
-                </ng-template>
+                    <div class="la-version-changelog" *ngIf="versionStatus?.available && versionStatus?.changelog">
+                        {{ versionStatus?.changelog }}
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-12 lg:col-6 xl:col-4">
+
+        <!-- Upload Card -->
+        <div class="col-12 xl:col-7">
             <div class="card h-full">
-                <h3>Update AxeOS</h3>
+                <h3><i class="pi pi-upload mr-2"></i>Upload Update</h3>
+                <p class="la-upload-hint">
+                    Select your update files below. You can upload both files at once
+                    or one at a time.
+                </p>
 
-                <p-fileUpload #websiteUpload [customUpload]="true" mode="basic" accept=".bin" (uploadHandler)="otaWWWUpdate($event)"
-                    [auto]="true" chooseLabel="Browse"></p-fileUpload>
+                <p-fileUpload #fileUpload
+                    [customUpload]="true"
+                    [multiple]="true"
+                    accept=".bin"
+                    (uploadHandler)="onFilesSelected($event)"
+                    [auto]="true"
+                    chooseLabel="Choose .bin Files"
+                    chooseIcon="pi pi-folder-open">
+                </p-fileUpload>
 
-                <small>(www.bin)</small>
+                <div class="la-upload-accepted">
+                    <span class="la-upload-file-tag">www.bin</span> UI Update
+                    <span class="la-upload-file-tag ml-3">esp-miner.bin</span> Firmware Update
+                </div>
             </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-4">
-            <div class="card h-full">
-                <h3>Update Firmware</h3>
-                <p-fileUpload #firmwareUpload [customUpload]="true" mode="basic" accept=".bin" (uploadHandler)="otaUpdate($event)"
-                    [auto]="true" chooseLabel="Browse"></p-fileUpload>
-
-                <small>(esp-miner.bin)</small>
-            </div>
-
         </div>
     </div>
 </div>
-<app-modal #progressModal [headline]="'Updating ' + updateTarget" [closable]="updateStatus !== 'progress'">
+
+<!-- Progress Modal -->
+<app-modal #progressModal [headline]="'Updating LottoAxe OS'" [closable]="updateStatus !== 'progress'">
     <div class="flex flex-column align-items-center justify-content-center p-4">
         <ng-container *ngIf="updateStatus === 'progress'">
-            <div class="text-xl mb-3" *ngIf="updateTarget === 'AxeOS' && websiteUpdateProgress !== null">
-                Uploading... {{ websiteUpdateProgress }}%
+            <div class="la-step-indicator mb-3" *ngIf="totalSteps > 1">
+                Step {{ uploadStep }} of {{ totalSteps }}
             </div>
-            <div class="text-xl mb-3" *ngIf="updateTarget === 'Firmware' && firmwareUpdateProgress !== null">
-                Uploading... {{ firmwareUpdateProgress }}%
-            </div>
-            <div class="text-xl mb-3" *ngIf="(updateTarget === 'AxeOS' && websiteUpdateProgress === null) || (updateTarget === 'Firmware' && firmwareUpdateProgress === null)">
-                Applying update...
-            </div>
-            <p-progressBar class="w-full" [styleClass]="'instant-progress'" [showValue]="false" [value]="updateTarget === 'AxeOS' ? websiteUpdateProgress : firmwareUpdateProgress" [style]="{'height': '1.5rem', 'width': '100%'}"></p-progressBar>
+            <div class="text-xl mb-3">{{ currentStepLabel }}</div>
+            <p-progressBar class="w-full"
+                [styleClass]="'instant-progress'"
+                [showValue]="false"
+                [value]="uploadStep === 1 ? websiteUpdateProgress : firmwareUpdateProgress"
+                [style]="{'height': '1.5rem', 'width': '100%'}">
+            </p-progressBar>
             <div class="text-center mt-3 text-500">
-                Please do not disconnect the power.
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Do not disconnect power during update.
             </div>
         </ng-container>
 
         <ng-container *ngIf="updateStatus === 'success'">
             <i class="pi pi-check-circle text-green-500" style="font-size: 3.5rem; margin-bottom: 1rem;"></i>
             <div class="text-lg text-center">{{ updateMessage }}</div>
-            <div class="mt-4" *ngIf="updateTarget !== 'AxeOS'">
+            <div class="mt-4">
                 <p-button (onClick)="progressModal.isVisible = false">Close</p-button>
             </div>
         </ng-container>
@@ -109,7 +93,7 @@
         <ng-container *ngIf="updateStatus === 'error'">
             <i class="pi pi-times-circle text-red-500" style="font-size: 3.5rem; margin-bottom: 1rem;"></i>
             <div class="text-lg text-center text-red-500">{{ updateMessage }}</div>
-             <div class="mt-4">
+            <div class="mt-4">
                 <p-button (onClick)="progressModal.isVisible = false">Close</p-button>
             </div>
         </ng-container>

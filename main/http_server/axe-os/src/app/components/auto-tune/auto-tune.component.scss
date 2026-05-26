@@ -1,0 +1,490 @@
+// ── LottoAxe Auto-Tune ──
+// Cyberpunk dark theme with LottoAxe green (#8DFF00) accent
+
+:host {
+  display: block;
+
+  .la-green { color: #8DFF00 !important; }
+  .la-red { color: #FF3B3B !important; }
+  .la-yellow { color: #FFB300 !important; }
+
+  // ── Card base ──
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(141, 255, 0, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.25);
+      box-shadow: 0 0 15px rgba(141, 255, 0, 0.06);
+    }
+  }
+
+  // ── Header ──
+  .la-autotune-header {
+    border-color: rgba(141, 255, 0, 0.25);
+  }
+
+  .la-page-title {
+    color: #8DFF00;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .la-accent-icon {
+    color: #8DFF00;
+    font-size: 1.4rem;
+  }
+
+  .la-asic-badge {
+    background: rgba(141, 255, 0, 0.12);
+    border: 1px solid rgba(141, 255, 0, 0.3);
+    color: #8DFF00;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .la-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  // ── Section headers ──
+  .la-section-icon {
+    color: #8DFF00;
+    font-size: 1.1rem;
+  }
+
+  .la-section-title {
+    color: #8DFF00;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  // ── Stat pills row ──
+  .la-stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .la-stat-pill {
+    flex: 1 1 auto;
+    min-width: 120px;
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(141, 255, 0, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+  }
+
+  .la-stat-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+
+  .la-stat-value {
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  // ── Labels ──
+  .la-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-sublabel {
+    display: block;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+  }
+
+  // ── Inputs ──
+  .la-input {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(141, 255, 0, 0.2) !important;
+    color: #fff !important;
+    border-radius: 6px !important;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: rgba(141, 255, 0, 0.5) !important;
+      box-shadow: 0 0 0 2px rgba(141, 255, 0, 0.1) !important;
+    }
+  }
+
+  // ── Mode buttons ──
+  .la-mode-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .la-mode-btn {
+    flex: 1 1 0;
+    min-width: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.85rem 0.75rem;
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i { font-size: 1.2rem; }
+    span { font-size: 0.8rem; font-weight: 600; }
+    small { font-size: 0.65rem; color: rgba(255, 255, 255, 0.35); }
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &.active {
+      border-color: rgba(141, 255, 0, 0.5);
+      background: rgba(141, 255, 0, 0.08);
+      color: #8DFF00;
+      box-shadow: 0 0 10px rgba(141, 255, 0, 0.1);
+
+      small { color: rgba(141, 255, 0, 0.6); }
+    }
+  }
+
+  // ── Start button ──
+  .la-start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2.5rem;
+    background: rgba(141, 255, 0, 0.15) !important;
+    border: 1px solid rgba(141, 255, 0, 0.4) !important;
+    color: #8DFF00 !important;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba(141, 255, 0, 0.25) !important;
+      box-shadow: 0 0 20px rgba(141, 255, 0, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .la-step-count {
+    text-align: center;
+    margin-top: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+
+    strong { color: #8DFF00; }
+  }
+
+  // ── Progress card ──
+  .la-progress-card {
+    border-color: rgba(56, 189, 248, 0.25);
+  }
+
+  .la-ctrl-btn {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+
+  .la-ctrl-resume {
+    background: rgba(141, 255, 0, 0.15) !important;
+    border-color: rgba(141, 255, 0, 0.4) !important;
+    color: #8DFF00 !important;
+  }
+
+  .la-progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .la-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8DFF00, #38bdf8);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .la-progress-info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+  }
+
+  .la-progress-meta {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+  }
+
+  // ── Results ──
+  .la-results-card {
+    border-color: rgba(141, 255, 0, 0.3);
+  }
+
+  .la-winner-card {
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid rgba(141, 255, 0, 0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.3s ease;
+
+    &:hover {
+      border-color: rgba(141, 255, 0, 0.4);
+    }
+  }
+
+  .la-winner--hashrate {
+    border-color: rgba(56, 189, 248, 0.3);
+    .la-winner-badge { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+    .la-winner-value { color: #38bdf8; }
+  }
+
+  .la-winner--efficiency {
+    border-color: rgba(141, 255, 0, 0.3);
+    .la-winner-badge { background: rgba(141, 255, 0, 0.12); color: #8DFF00; border-color: rgba(141, 255, 0, 0.3); }
+    .la-winner-value { color: #8DFF00; }
+  }
+
+  .la-winner-badge {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.75rem;
+  }
+
+  .la-winner-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+
+    small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      opacity: 0.7;
+    }
+  }
+
+  .la-winner-detail {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+  }
+
+  .la-winner-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+  }
+
+  .la-apply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.25rem !important;
+    background: rgba(56, 189, 248, 0.15) !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    color: #38bdf8 !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(56, 189, 248, 0.25) !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+    }
+
+    &--green {
+      background: rgba(141, 255, 0, 0.15) !important;
+      border-color: rgba(141, 255, 0, 0.4) !important;
+      color: #8DFF00 !important;
+
+      &:hover {
+        background: rgba(141, 255, 0, 0.25) !important;
+        box-shadow: 0 0 12px rgba(141, 255, 0, 0.15);
+      }
+    }
+  }
+
+  .la-restore-btn {
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.8rem;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+  }
+
+  // ── Steps table ──
+  .la-steps-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .la-steps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+
+    th {
+      text-align: left;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    tr.la-row-active {
+      background: rgba(56, 189, 248, 0.06);
+      td { color: #38bdf8; }
+    }
+
+    tr.la-row-passed td:nth-child(4) {
+      color: #8DFF00;
+    }
+
+    tr.la-row-failed {
+      opacity: 0.5;
+    }
+  }
+
+  .la-step-summary {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+  }
+
+  // ── History ──
+  .la-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .la-history-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 0.85rem;
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    font-size: 0.8rem;
+  }
+
+  .la-history-date {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.7rem;
+    min-width: 100px;
+  }
+
+  .la-history-mode {
+    color: #8DFF00;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 100px;
+  }
+
+  .la-history-result {
+    color: rgba(255, 255, 255, 0.7);
+    flex: 1;
+  }
+
+  .la-clear-btn {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 0.75rem;
+
+    &:hover {
+      color: #FF3B3B !important;
+    }
+  }
+
+  // ── Responsive ──
+  @media (max-width: 768px) {
+    .la-stat-pill {
+      min-width: 90px;
+    }
+
+    .la-mode-btn {
+      min-width: 90px;
+      padding: 0.65rem 0.5rem;
+    }
+
+    .la-winner-value {
+      font-size: 1.5rem;
+    }
+
+    .la-history-item {
+      flex-wrap: wrap;
+    }
+  }
+}

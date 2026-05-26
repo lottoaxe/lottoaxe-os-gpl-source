@@ -1,0 +1,245 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- ===== Hero Section ===== -->
+  <div class="la-lottery-hero">
+    <div class="la-lottery-hero__header">
+      <i class="pi pi-star-fill la-lottery-hero__icon"></i>
+      <h2 class="la-lottery-hero__title">Lottery Dashboard</h2>
+      <span class="la-lottery-hero__subtitle">Solo Mining Probability Tracker</span>
+    </div>
+
+    <!-- Luck Meter (Hero) -->
+    <div class="la-luck-hero">
+      <div class="la-luck-hero__label-row">
+        <span class="la-luck-hero__label">Closest to Block <tooltip-icon tooltip="How close your best share's difficulty is to the network difficulty. At 100% you've found a block." icon="pi-question-circle" /></span>
+        <span class="la-luck-hero__value" [style.color]="getLuckMeterColor(info)">
+          {{ getLuckPercentageDisplay(info) }}%
+        </span>
+      </div>
+      <div class="la-luck-hero__track">
+        <div class="la-luck-hero__fill"
+             [style.width.%]="getLuckMeterValue(info)"
+             [style.background]="'linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, #eab308 70%, #22c55e 100%)'">
+        </div>
+      </div>
+      <div class="la-luck-hero__scale">
+        <span>0%</span>
+        <span>Network Difficulty</span>
+        <span>100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Stats Grid ===== -->
+  <div class="grid mt-3">
+
+    <!-- Time to Block -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--amber">
+          <i class="pi pi-hourglass"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Expected Time to Block <tooltip-icon tooltip="Statistical average time to find a block solo mining at your current hashrate. This is NOT a countdown — actual time is random and could be much shorter or longer." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value">{{ getExpectedTimeToBlock(info) }}</span>
+          <span class="la-stat-card__hint">Statistical average at current hashrate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Odds Today -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--purple">
+          <i class="pi pi-box"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Odds Today <tooltip-icon tooltip="Probability of your miner finding at least one block within the next 24 hours at current hashrate and network difficulty." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value">{{ getOddsToday(info) }}</span>
+          <span class="la-stat-card__hint">Chance of finding a block in 24 hours</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closest Share -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--red">
+          <i class="pi pi-bullseye"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Closest Share Ever <tooltip-icon tooltip="The highest-difficulty share your device has ever submitted. The closer this gets to the network difficulty, the closer you were to finding a block." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value" pTooltip="{{ info.bestDiff }}" tooltipPosition="top">
+            {{ info.bestDiff | diffSuffix }}
+          </span>
+          <span class="la-stat-card__hint">{{ getClosestSharePct(info) }}% of network difficulty</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Shares -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--green">
+          <i class="pi pi-check-square"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Total Shares <tooltip-icon tooltip="Number of valid proof-of-work solutions your device has submitted to the pool since first boot." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value">{{ info.sharesAccepted | number }}</span>
+          <span class="la-stat-card__hint">{{ info.sharesRejected }} rejected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acceptance Rate -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--teal">
+          <i class="pi pi-percentage"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Acceptance Rate <tooltip-icon tooltip="Percentage of submitted shares accepted by the pool. Low rates may indicate network latency, stale work, or pool issues." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value">{{ getAcceptanceRate(info) | number:'1.1-1' }}%</span>
+          <span class="la-stat-card__hint">{{ info.sharesAccepted + info.sharesRejected }} total submitted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Network Share -->
+    <div class="col-12 md:col-6 lg:col-4">
+      <div class="la-stat-card">
+        <div class="la-stat-card__icon-wrap la-stat-card__icon-wrap--blue">
+          <i class="pi pi-globe"></i>
+        </div>
+        <div class="la-stat-card__body">
+          <span class="la-stat-card__label">Network Share <tooltip-icon tooltip="Your device's hashrate as a percentage of the entire Bitcoin network. This determines your probability of finding a block." icon="pi-question-circle" /></span>
+          <span class="la-stat-card__value">{{ getNetworkSharePercentage(info) }}%</span>
+          <span class="la-stat-card__hint">Your hashrate vs global network</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Detailed Sections ===== -->
+  <div class="grid mt-2">
+
+    <!-- Your Luck -->
+    <div class="col-12 lg:col-6">
+      <div class="la-detail-card">
+        <h5 class="la-detail-card__title">
+          <i class="pi pi-star mr-2"></i>Your Luck
+        </h5>
+
+        <div class="la-luck-detail">
+          <div class="la-luck-detail__row">
+            <span class="la-luck-detail__label">Luck Percentile <tooltip-icon tooltip="Compares your best difficulty against what's statistically expected. Higher is luckier." icon="pi-question-circle" /></span>
+            <span class="la-luck-detail__value" [style.color]="getLuckMeterColor(info)">
+              {{ getLuckPercentile(info) | number:'1.0-0' }}th
+            </span>
+          </div>
+          <div class="la-luck-detail__bar-track">
+            <div class="la-luck-detail__bar-fill"
+                 [style.width.%]="getLuckPercentile(info)"
+                 [style.background]="'linear-gradient(90deg, #ef4444 0%, #f59e0b 35%, #22c55e 100%)'">
+            </div>
+          </div>
+          <div class="la-luck-detail__verdict">{{ getLuckPercentileLabel(info) }}</div>
+        </div>
+
+        <div class="la-luck-detail__row mt-3">
+          <span class="la-luck-detail__label">Best All-Time Diff <tooltip-icon tooltip="The highest difficulty share your device has ever produced across all sessions." icon="pi-question-circle" /></span>
+          <span class="la-luck-detail__value" pTooltip="{{ info.bestDiff }}" tooltipPosition="top">
+            {{ info.bestDiff | diffSuffix }}
+          </span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Session Best Diff <tooltip-icon tooltip="Highest difficulty share found since the last reboot." icon="pi-question-circle" /></span>
+          <span class="la-luck-detail__value" pTooltip="{{ info.bestSessionDiff }}" tooltipPosition="top">
+            {{ info.bestSessionDiff | diffSuffix }}
+          </span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Pool Difficulty <tooltip-icon tooltip="The minimum difficulty threshold set by your mining pool for accepting shares." icon="pi-question-circle" /></span>
+          <span class="la-luck-detail__value">{{ info.poolDifficulty | diffSuffix }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Network Context -->
+    <div class="col-12 lg:col-6">
+      <div class="la-detail-card">
+        <h5 class="la-detail-card__title">
+          <i class="pi pi-globe mr-2"></i>Network Context
+        </h5>
+
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Block Height <tooltip-icon tooltip="The current Bitcoin blockchain height — the total number of blocks mined since genesis." icon="pi-question-circle" /></span>
+          <span class="la-luck-detail__value">{{ info.blockHeight | number }}</span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Network Difficulty <tooltip-icon tooltip="Current Bitcoin mining difficulty. This adjusts every 2,016 blocks (~2 weeks) to maintain ~10 minute block times." icon="pi-question-circle" /></span>
+          <span class="la-luck-detail__value" pTooltip="{{ info.networkDifficulty }}" tooltipPosition="top">
+            {{ info.networkDifficulty | diffSuffix }}
+          </span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Your Hashrate</span>
+          <span class="la-luck-detail__value">{{ info.hashRate | hashSuffix }}</span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Hashrate (1h avg)</span>
+          <span class="la-luck-detail__value">{{ info.hashRate_1h | hashSuffix }}</span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Network Share</span>
+          <span class="la-luck-detail__value">{{ getNetworkSharePercentage(info) }}%</span>
+        </div>
+        <div class="la-luck-detail__row">
+          <span class="la-luck-detail__label">Power Draw</span>
+          <span class="la-luck-detail__value">{{ info.power | number:'1.1-1' }} W</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Stats -->
+    <div class="col-12">
+      <div class="la-detail-card">
+        <h5 class="la-detail-card__title">
+          <i class="pi pi-clock mr-2"></i>Session Stats
+        </h5>
+
+        <div class="grid">
+          <div class="col-6 md:col-3">
+            <div class="la-mini-stat">
+              <span class="la-mini-stat__label">Uptime <tooltip-icon tooltip="Time since last device reboot." icon="pi-question-circle" /></span>
+              <span class="la-mini-stat__value">{{ formatUptime(info.uptimeSeconds) }}</span>
+            </div>
+          </div>
+          <div class="col-6 md:col-3">
+            <div class="la-mini-stat">
+              <span class="la-mini-stat__label">Session Best Diff <tooltip-icon tooltip="Highest difficulty share found this session." icon="pi-question-circle" /></span>
+              <span class="la-mini-stat__value" pTooltip="{{ info.bestSessionDiff }}" tooltipPosition="top">
+                {{ info.bestSessionDiff | diffSuffix }}
+              </span>
+            </div>
+          </div>
+          <div class="col-6 md:col-3">
+            <div class="la-mini-stat">
+              <span class="la-mini-stat__label">Shares This Session <tooltip-icon tooltip="Shares accepted by the pool since last reboot." icon="pi-question-circle" /></span>
+              <span class="la-mini-stat__value">{{ info.sharesAccepted | number }}</span>
+            </div>
+          </div>
+          <div class="col-6 md:col-3">
+            <div class="la-mini-stat">
+              <span class="la-mini-stat__label">Blocks Found <tooltip-icon tooltip="Number of blocks your device has found. Finding even one is extremely rare for a solo miner!" icon="pi-question-circle" /></span>
+              <span class="la-mini-stat__value" [ngClass]="{'la-mini-stat__value--highlight': info.blockFound > 0}">
+                {{ info.blockFound }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

@@ -1,0 +1,202 @@
+// ---------------------------------------------------------------------------
+// LottoAxe Achievement System -- Dark-theme styles
+// ---------------------------------------------------------------------------
+
+// --- Header ---
+.la-achievements-header {
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+// --- Category filter pills ---
+.la-category-filters {
+  .la-filter-pill {
+    background: var(--surface-card);
+    color: var(--text-color-secondary);
+    border: 1px solid var(--surface-border);
+    border-radius: 2rem;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-color);
+    }
+
+    &--active {
+      background: var(--primary-color);
+      color: var(--primary-color-text);
+      border-color: var(--primary-color);
+
+      &:hover {
+        background: var(--primary-color);
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
+// --- Achievement grid ---
+.la-achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// --- Achievement card ---
+.la-achievement-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // Locked state
+  &--locked {
+    opacity: 0.5;
+    filter: grayscale(0.8);
+  }
+
+  // Secret + locked
+  &--secret {
+    opacity: 0.35;
+  }
+
+  // Unlocked state
+  &--unlocked {
+    opacity: 1;
+    filter: none;
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+  }
+
+  // Recently unlocked -- pulsing glow
+  &--recent {
+    animation: la-achievement-glow 2s ease-in-out infinite;
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.35);
+  }
+}
+
+// --- Icon circle ---
+.la-achievement-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-ground);
+
+  i {
+    font-size: 1.5rem;
+  }
+}
+
+.la-achievement-check {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: var(--surface-card);
+  border-radius: 50%;
+  line-height: 1;
+
+  i {
+    font-size: 1rem;
+    color: #22c55e;
+  }
+}
+
+// --- Content area ---
+.la-achievement-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.la-achievement-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.la-achievement-desc {
+  line-height: 1.35;
+  margin-top: 0.15rem;
+}
+
+// --- Tier badge ---
+.la-tier-badge {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+// --- Progress bar ---
+.la-achievement-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.la-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.la-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, #f59e0b 100%);
+  transition: width 0.6s ease;
+  min-width: 0;
+}
+
+.la-progress-label {
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: right;
+}
+
+// --- Unlocked timestamp ---
+.la-achievement-unlocked-at {
+  color: #22c55e;
+}
+
+// --- Keyframe: recently-unlocked glow pulse ---
+@keyframes la-achievement-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.45);
+  }
+}

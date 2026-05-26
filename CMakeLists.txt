@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.5)
 # set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
 
 # LottoAxe OS version — hardcoded so it doesn't inherit upstream ESP-Miner tags
-set(GIT_VERSION "2.2.0")
+set(GIT_VERSION "2.2.1")
 set(PROJECT_VER "${GIT_VERSION}")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
