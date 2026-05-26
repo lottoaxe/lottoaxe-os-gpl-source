@@ -346,17 +346,17 @@
                         </strong>
                     </div>
 
-                    <div class="mb-3" *ngIf="info.boardTemp > 0">
+                    <div class="mb-3" *ngIf="info.boardTemp! > 0">
                         <h6 class="flex justify-content-between mb-1">
                             Board Temperature
                             <span>
                                 {{info.boardTemp}} &deg;C
                                 <span class="text-sm text-gray-400" *ngIf="info.temp > 0">
-                                    (&Delta; {{(info.temp - info.boardTemp).toFixed(1)}} &deg;C)
+                                    (&Delta; {{(info.temp - info.boardTemp!).toFixed(1)}} &deg;C)
                                 </span>
                             </span>
                         </h6>
-                        <p-progressBar [value]="(info.boardTemp / maxTemp) * 100" [styleClass]="'p-progressbar--thin'">
+                        <p-progressBar [value]="(info.boardTemp! / maxTemp) * 100" [styleClass]="'p-progressbar--thin'">
                             <ng-template pTemplate="content" let-value></ng-template>
                         </p-progressBar>
                     </div>

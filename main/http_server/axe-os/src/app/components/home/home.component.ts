@@ -1188,7 +1188,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       case eChartLabel.asicTemp:           return info.temp;
       case eChartLabel.asicTemp2:          return info.temp2;
       case eChartLabel.vrTemp:             return info.vrTemp;
-      case eChartLabel.boardTemp:          return info.boardTemp;
+      case eChartLabel.boardTemp:          return info.boardTemp ?? 0;
       case eChartLabel.asicVoltage:        return info.coreVoltageActual;
       case eChartLabel.voltage:            return info.voltage;
       case eChartLabel.power:              return info.power;

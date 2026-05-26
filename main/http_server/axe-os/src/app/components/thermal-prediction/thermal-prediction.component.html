@@ -183,7 +183,7 @@
           <div class="la-stat-card-sub">Voltage regulator</div>
         </div>
       </div>
-      <div class="col-12 md:col-6 lg:col-3" *ngIf="info.boardTemp > 0">
+      <div class="col-12 md:col-6 lg:col-3" *ngIf="info.boardTemp != null && info.boardTemp > 0">
         <div class="la-stat-card">
           <div class="la-stat-card-label">Board Temp</div>
           <div class="la-stat-card-value">{{info.boardTemp | number:'1.1-1'}}°C</div>
