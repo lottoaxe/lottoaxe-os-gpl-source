@@ -462,6 +462,9 @@ components:
         vrTemp:
           type: number
           description: Voltage regulator temperature
+        boardTemp:
+          type: number
+          description: Board/ambient temperature from EMC2101 internal sensor
         wifiStatus:
           type: string
           description: WiFi connection status
@@ -940,7 +943,7 @@ paths:
             type: array
             items:
               type: string
-            example: [hashrate,hashrate_1m,hashrate_10m,hashrate_1h,asicTemp,vrTemp,asicVoltage,voltage,power,current,fanSpeed,fanRpm,fan2Rpm,wifiRssi,freeHeap,responseTime]
+            example: [hashrate,hashrate_1m,hashrate_10m,hashrate_1h,asicTemp,vrTemp,boardTemp,asicVoltage,voltage,power,current,fanSpeed,fanRpm,fan2Rpm,wifiRssi,freeHeap,responseTime]
           description: List of labels for which data should be retrieved
       tags:
         - system
