@@ -91,7 +91,7 @@
             <div class="grid-stack-item-content">
                 <div class="card mb-0">
                     <div class="flex flex-column justify-content-between">
-                        <span class="block text-lg font-medium mb-3">Efficiency</span>
+                        <span class="block text-lg font-medium mb-3">Efficiency <tooltip-icon tooltip="How efficiently your miner converts electricity into hashing power. Lower J/Th means better efficiency." icon="pi-question-circle" /></span>
 
                         <ng-container *ngIf="!info.power_fault; else powerFault">
                             <div class="flex align-items-center justify-content-between gap-2 mb-3">
@@ -136,7 +136,7 @@
                 <div class="card mb-0">
                     <div class="flex justify-content-between mb-3">
                         <div>
-                            <span class="block text-lg font-medium mb-3">Shares</span>
+                            <span class="block text-lg font-medium mb-3">Shares <tooltip-icon tooltip="Valid proof-of-work solutions submitted to your mining pool. Each accepted share represents completed work." icon="pi-question-circle" /></span>
                             <div class="text-900 font-medium text-2xl">
                                 {{info.sharesAccepted | number: '1.0-0'}}
                             </div>
@@ -170,7 +170,7 @@
                 <div class="card mb-0">
                     <div class="flex justify-content-between mb-3">
                         <div>
-                            <span class="block text-lg font-medium mb-3">Best Difficulty</span>
+                            <span class="block text-lg font-medium mb-3">Best Difficulty <tooltip-icon tooltip="The highest difficulty value achieved by any share from your device. Higher values mean you came closer to finding a block." icon="pi-question-circle" /></span>
                             <div class="text-900 font-medium text-2xl">
                                 <span class="cursor-pointer" pTooltip="{{info.bestDiff | number:'1.0-0'}}" tooltipPosition="bottom">
                                     {{info.bestDiff | diffSuffix}}
@@ -345,6 +345,21 @@
                             Danger: High Temperature
                         </strong>
                     </div>
+
+                    <div class="mb-3" *ngIf="info.boardTemp > 0">
+                        <h6 class="flex justify-content-between mb-1">
+                            Board Temperature
+                            <span>
+                                {{info.boardTemp}} &deg;C
+                                <span class="text-sm text-gray-400" *ngIf="info.temp > 0">
+                                    (&Delta; {{(info.temp - info.boardTemp).toFixed(1)}} &deg;C)
+                                </span>
+                            </span>
+                        </h6>
+                        <p-progressBar [value]="(info.boardTemp / maxTemp) * 100" [styleClass]="'p-progressbar--thin'">
+                            <ng-template pTemplate="content" let-value></ng-template>
+                        </p-progressBar>
+                    </div>
                 </div>
             </div>
         </div>
@@ -366,9 +381,9 @@
                                 Fan Speed
                             </ng-template>
 
-                            <span>{{info.fanspeed.toFixed(1)}} %</span>
+                            <span>{{(info.fanspeed > 100 ? 100 : info.fanspeed).toFixed(1)}} %</span>
                         </h6>
-                        <p-progressBar [value]="info.fanspeed" [styleClass]="'p-progressbar--thin'">
+                        <p-progressBar [value]="info.fanspeed > 100 ? 100 : info.fanspeed" [styleClass]="'p-progressbar--thin'">
                             <ng-template pTemplate="content" let-value></ng-template>
                         </p-progressBar>
                     </div>

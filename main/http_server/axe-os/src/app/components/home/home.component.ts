@@ -32,9 +32,6 @@ type MessageType =
   | 'POWER_FAULT'
   | 'FREQUENCY_LOW'
   | 'FALLBACK_STRATUM'
-  | 'VERSION_MISMATCH'
-  | 'NOT_SOLO_MINING'
-  | 'NO_MINING_REWARD'
   | 'HARDWARE_FAULT';
 
 interface ISystemMessage {
@@ -752,13 +749,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           // Align both axis if they're hashrates. TODO: for others, such as temperatures as well
           if (this.isHashrateAxis(chartY1DataLabel) && this.isHashrateAxis(chartY2DataLabel)) {
-            this.chartOptions.scales.y.suggestedMin = this.chartOptions.scales.y2.suggestedMin = Math.min(...this.chartY1Data, ...this.chartY2Data);
-            this.chartOptions.scales.y.suggestedMax = this.chartOptions.scales.y2.suggestedMax = Math.max(...this.chartY1Data, ...this.chartY2Data);
+            const allData = [...this.chartY1Data, ...this.chartY2Data].filter(v => v > 0);
+            const dataMin = allData.length ? Math.min(...allData) : 0;
+            const dataMax = allData.length ? Math.max(...allData) : 0;
+            this.chartOptions.scales.y.suggestedMin = this.chartOptions.scales.y2.suggestedMin = Math.max(0, dataMin - 100);
+            this.chartOptions.scales.y.suggestedMax = this.chartOptions.scales.y2.suggestedMax = dataMax + 100;
           } else {
-            this.chartOptions.scales.y.suggestedMin = undefined;
-            this.chartOptions.scales.y2.suggestedMin = undefined;
-            this.chartOptions.scales.y.suggestedMax = this.getSuggestedMaxForLabel(chartY1DataLabel, info);
-            this.chartOptions.scales.y2.suggestedMax = this.getSuggestedMaxForLabel(chartY2DataLabel, info);
+            this.chartOptions.scales.y.suggestedMin = this.isHashrateAxis(chartY1DataLabel) ? this.getHashrateSuggestedMin(this.chartY1Data) : undefined;
+            this.chartOptions.scales.y2.suggestedMin = this.isHashrateAxis(chartY2DataLabel) ? this.getHashrateSuggestedMin(this.chartY2Data) : undefined;
+            this.chartOptions.scales.y.suggestedMax = this.isHashrateAxis(chartY1DataLabel) ? this.getHashrateSuggestedMax(this.chartY1Data) : this.getSuggestedMaxForLabel(chartY1DataLabel, info);
+            this.chartOptions.scales.y2.suggestedMax = this.isHashrateAxis(chartY2DataLabel) ? this.getHashrateSuggestedMax(this.chartY2Data) : this.getSuggestedMaxForLabel(chartY2DataLabel, info);
           }
 
           this.chartOptions.scales.y.display = (chartY1DataLabel != eChartLabel.none);
@@ -979,12 +979,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     updateMessage(!!info.hardware_fault, 'HARDWARE_FAULT', 'error', `${info.hardware_fault}`);
     updateMessage(!info.frequency || info.frequency < 400, 'FREQUENCY_LOW', 'warn', 'Device frequency is set low - See settings');
     updateMessage(!!info.isUsingFallbackStratum, 'FALLBACK_STRATUM', 'warn', 'Using fallback pool - Share stats reset. Check Pool Settings and / or reboot Device.');
-    updateMessage(info.version !== info.axeOSVersion, 'VERSION_MISMATCH', 'warn', `Firmware (${info.version}) and AxeOS (${info.axeOSVersion}) versions do not match. Please make sure to update both www.bin and esp-miner.bin.`);
-    if (info.coinbaseOutputs && info.coinbaseOutputs.length > 0) {
-      let percentage = this.getPayoutPercentage(info);
-      updateMessage(percentage > 0 && percentage < 95, 'NOT_SOLO_MINING', 'warn', `Your share of the mining reward is only ${percentage.toFixed(1)}%`);
-      updateMessage(percentage === 0, 'NO_MINING_REWARD', 'warn', `You don't have a share in the mining reward`);
-    }
+    // Version mismatch check removed — the C firmware already logs a
+    // warning on the device console.  Showing it in the UI confused
+    // customers because the firmware and UI version strings are produced
+    // by different build pipelines and can legitimately differ in format
+    // (e.g. "2.0.0" vs "v2.14.0b2-5-g46c4650") even when both are the
+    // correct matching release.
+    // Coinbase payout warnings removed — solo mining pools (solomining.io etc.)
+    // use their own address in the coinbase and pay out separately, so these
+    // banners are misleading for our primary use case.
   }
 
   private calculateEfficiency(info: ISystemInfo, key: 'hashRate' | 'expectedHashrate'): number {
@@ -1146,7 +1149,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       case eChartLabel.hashrate_1h:      return info.expectedHashrate;
       case eChartLabel.errorPercentage:  return 1;
       case eChartLabel.asicTemp:
-      case eChartLabel.asicTemp2:        return this.maxTemp;
+      case eChartLabel.asicTemp2:
+      case eChartLabel.boardTemp:        return this.maxTemp;
       case eChartLabel.vrTemp:           return this.maxTemp + 25;
       case eChartLabel.asicVoltage:      return info.coreVoltage;
       case eChartLabel.voltage:          return info.nominalVoltage + .5;
@@ -1160,6 +1164,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Compute a tight suggestedMin for hashrate data (100 Gh/s below lowest non-zero point, floored at 0) */
+  private getHashrateSuggestedMin(data: number[]): number {
+    const nonZero = data.filter(v => v > 0);
+    if (!nonZero.length) return 0;
+    return Math.max(0, Math.min(...nonZero) - 100);
+  }
+
+  /** Compute a tight suggestedMax for hashrate data (100 Gh/s above highest point) */
+  private getHashrateSuggestedMax(data: number[]): number {
+    const nonZero = data.filter(v => v > 0);
+    if (!nonZero.length) return 100;
+    return Math.max(...nonZero) + 100;
+  }
+
   static getDataForLabel(label: eChartLabel | undefined, info: ISystemInfo): number {
     switch (label) {
       case eChartLabel.hashrate:           return info.hashRate;
@@ -1170,6 +1188,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       case eChartLabel.asicTemp:           return info.temp;
       case eChartLabel.asicTemp2:          return info.temp2;
       case eChartLabel.vrTemp:             return info.vrTemp;
+      case eChartLabel.boardTemp:          return info.boardTemp;
       case eChartLabel.asicVoltage:        return info.coreVoltageActual;
       case eChartLabel.voltage:            return info.voltage;
       case eChartLabel.power:              return info.power;
@@ -1189,7 +1208,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       case eChartLabel.errorPercentage:  return {suffix: ' %', precision: 2};
       case eChartLabel.asicTemp:
       case eChartLabel.asicTemp2:
-      case eChartLabel.vrTemp:           return {suffix: ' °C', precision: 1};
+      case eChartLabel.vrTemp:
+      case eChartLabel.boardTemp:        return {suffix: ' °C', precision: 1};
       case eChartLabel.asicVoltage:
       case eChartLabel.voltage:          return {suffix: ' V', precision: 1};
       case eChartLabel.power:            return {suffix: ' W', precision: 1};
@@ -1249,6 +1269,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSourceLabels(info: ISystemInfo) {
     return Object.entries(eChartLabel)
       .filter(([key, ]) => key !== 'vrTemp' || info.vrTemp)
+      .filter(([key, ]) => key !== 'boardTemp' || (info.boardTemp && info.boardTemp > 0))
       .filter(([key, ]) => key !== 'asicTemp2' || (info.temp2 && info.temp2 !== -1))
       .filter(([key, ]) => key !== 'fanRpm' || info.fanrpm)
       .filter(([key, ]) => key !== 'fan2Rpm' || info.fan2rpm)

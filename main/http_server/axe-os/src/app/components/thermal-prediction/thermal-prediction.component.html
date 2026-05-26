@@ -1,0 +1,226 @@
+<ng-container *ngIf="info$ | async as info">
+
+  <!-- Hero: Current Temperature -->
+  <div class="card la-hero-card mb-4">
+    <div class="flex align-items-center justify-content-between mb-3">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-sun la-section-icon"></i>
+        <span class="la-section-title">Thermal Status</span>
+      </div>
+      <span class="la-status-badge thermal-{{getThermalStatus(info)}}"
+            [style.background-color]="getThermalColor(info)">
+        {{getThermalStatusLabel(info)}}
+      </span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-hero-stat">
+          <span class="la-hero-value" [style.color]="getThermalColor(info)">
+            {{info.temp | number:'1.1-1'}}
+          </span>
+          <span class="la-hero-unit" [style.color]="getThermalColor(info)">°C</span>
+        </div>
+        <div class="la-hero-label">ASIC Temperature</div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value">{{getThermalScore(info)}}</div>
+        <div class="la-stat-label">Health Score</div>
+      </div>
+      <div class="col-12 md:col-4 text-center">
+        <div class="la-stat-value la-efficiency-impact">{{getEfficiencyImpact(info)}}</div>
+        <div class="la-stat-label">Hashrate Impact</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prediction Cards -->
+  <div class="grid mb-4">
+    <!-- Time to Throttle -->
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="card la-prediction-card h-full">
+        <div class="la-prediction-label">
+          <i class="pi pi-exclamation-triangle"></i>
+          Time to Throttle
+        </div>
+        <div class="la-prediction-sub">{{65}}°C threshold</div>
+        <div class="la-prediction-value"
+             [ngClass]="{'la-safe': getTimeToThrottle(info) === null, 'la-danger': getTimeToThrottle(info) !== null}">
+          <ng-container *ngIf="!hasEnoughData()">Collecting...</ng-container>
+          <ng-container *ngIf="hasEnoughData() && info.temp >= 65">Throttling</ng-container>
+          <ng-container *ngIf="hasEnoughData() && info.temp < 65">
+            {{formatCountdown(getTimeToThrottle(info))}}
+          </ng-container>
+        </div>
+        <div class="la-prediction-icon" *ngIf="hasEnoughData() && getTimeToThrottle(info) === null && info.temp < 65">
+          <i class="pi pi-shield" style="color: #22c55e;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time to Shutdown -->
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="card la-prediction-card h-full">
+        <div class="la-prediction-label">
+          <i class="pi pi-exclamation-triangle"></i>
+          Time to Shutdown
+        </div>
+        <div class="la-prediction-sub">{{72}}°C threshold</div>
+        <div class="la-prediction-value"
+             [ngClass]="{'la-safe': getTimeToShutdown(info) === null, 'la-danger': getTimeToShutdown(info) !== null}">
+          <ng-container *ngIf="!hasEnoughData()">Collecting...</ng-container>
+          <ng-container *ngIf="hasEnoughData() && info.temp >= 72">SHUTDOWN</ng-container>
+          <ng-container *ngIf="hasEnoughData() && info.temp < 72">
+            {{formatCountdown(getTimeToShutdown(info))}}
+          </ng-container>
+        </div>
+        <div class="la-prediction-icon" *ngIf="hasEnoughData() && getTimeToShutdown(info) === null && info.temp < 72">
+          <i class="pi pi-shield" style="color: #22c55e;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Temp Trend -->
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="card la-prediction-card h-full">
+        <div class="la-prediction-label">
+          <i class="pi pi-chart-line"></i>
+          Temp Trend
+        </div>
+        <div class="la-prediction-sub">Last {{thermalBuffer.length}} readings</div>
+        <div class="la-prediction-value la-trend"
+             [ngClass]="{
+               'la-trend-rising': getTrendDirection() === 'rising',
+               'la-trend-falling': getTrendDirection() === 'falling',
+               'la-trend-stable': getTrendDirection() === 'stable'
+             }">
+          <ng-container *ngIf="!hasEnoughData()">Collecting...</ng-container>
+          <ng-container *ngIf="hasEnoughData()">
+            <span *ngIf="getTrendDirection() === 'rising'">&#9650; </span>
+            <span *ngIf="getTrendDirection() === 'falling'">&#9660; </span>
+            <span *ngIf="getTrendDirection() === 'stable'">&#9644; </span>
+            {{getTrendDisplay()}}
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thermal Score -->
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="card la-prediction-card h-full">
+        <div class="la-prediction-label">
+          <i class="pi pi-shield"></i>
+          Thermal Score
+        </div>
+        <div class="la-prediction-sub">0 = critical, 100 = cool</div>
+        <div class="la-prediction-value la-score" [style.color]="getThermalColor(info)">
+          {{getThermalScore(info)}}/100
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Temperature Gauge -->
+  <div class="card la-gauge-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-sliders-h la-section-icon"></i>
+      <span class="la-section-title">Temperature Gauge</span>
+    </div>
+
+    <div class="la-gauge-container">
+      <div class="la-gauge-labels">
+        <span>0°C</span>
+        <span>20°C</span>
+        <span>40°C</span>
+        <span>55°C</span>
+        <span>65°C</span>
+        <span>72°C</span>
+        <span>80°C</span>
+      </div>
+      <div class="la-gauge-bar">
+        <div class="la-gauge-fill" [style.width.%]="getGaugePercent(info)"></div>
+        <div class="la-gauge-marker la-gauge-marker-throttle"
+             [style.left.%]="getThrottleMarkerPercent()"
+             title="Throttle threshold (65°C)">
+          <span class="la-gauge-marker-label">65°C</span>
+        </div>
+        <div class="la-gauge-marker la-gauge-marker-shutdown"
+             [style.left.%]="getShutdownMarkerPercent()"
+             title="Shutdown threshold (72°C)">
+          <span class="la-gauge-marker-label">72°C</span>
+        </div>
+      </div>
+      <div class="la-gauge-current">
+        Current: {{info.temp | number:'1.1-1'}}°C
+      </div>
+    </div>
+
+    <div class="la-buffer-info" *ngIf="!hasEnoughData()">
+      <i class="pi pi-spin pi-spinner"></i>
+      Collecting thermal data... {{getBufferFill()}}% (need at least 3 readings for predictions)
+    </div>
+  </div>
+
+  <!-- Live Stats -->
+  <div class="card la-stats-card mb-4">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-bolt la-section-icon"></i>
+      <span class="la-section-title">Live Thermal Stats</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Fan RPM</div>
+          <div class="la-stat-card-value">{{info.fanrpm | number:'1.0-0'}}</div>
+          <div class="la-stat-card-sub">{{info.fanspeed > 100 ? 100 : info.fanspeed}}% speed</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">VR Temp</div>
+          <div class="la-stat-card-value">{{info.vrTemp | number:'1.1-1'}}°C</div>
+          <div class="la-stat-card-sub">Voltage regulator</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3" *ngIf="info.boardTemp > 0">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Board Temp</div>
+          <div class="la-stat-card-value">{{info.boardTemp | number:'1.1-1'}}°C</div>
+          <div class="la-stat-card-sub">ASIC delta: +{{(info.temp - info.boardTemp) | number:'1.1-1'}}°C</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Power Draw</div>
+          <div class="la-stat-card-value">{{info.power | number:'1.1-1'}}W</div>
+          <div class="la-stat-card-sub">of {{info.maxPower}}W max</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="la-stat-card">
+          <div class="la-stat-card-label">Frequency</div>
+          <div class="la-stat-card-value">{{info.actualFrequency}} MHz</div>
+          <div class="la-stat-card-sub">Target: {{info.frequency}} MHz</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cooling Recommendations -->
+  <div class="card la-recommendations-card">
+    <div class="flex align-items-center gap-2 mb-3">
+      <i class="pi pi-list la-section-icon"></i>
+      <span class="la-section-title">Cooling Recommendations</span>
+    </div>
+
+    <div class="la-recommendations-list">
+      <div *ngFor="let rec of getCoolingRecommendations(info)"
+           class="la-recommendation-item la-rec-{{rec.priority}}">
+        <i [class]="rec.icon" class="la-rec-icon"></i>
+        <span class="la-rec-text">{{rec.text}}</span>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

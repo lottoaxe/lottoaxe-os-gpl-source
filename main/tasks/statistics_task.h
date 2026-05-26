@@ -16,6 +16,7 @@ struct StatisticsData
     float chipTemperature;
     float chipTemperature2;
     float vrTemperature;
+    float boardTemperature;
     float power;
     float voltage;
     float current;

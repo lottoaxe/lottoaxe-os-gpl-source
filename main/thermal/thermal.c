@@ -106,3 +106,19 @@ float Thermal_get_chip_temp2(GlobalState * GLOBAL_STATE)
     }
     return -1;
 }
+
+// Returns the board/ambient temperature from EMC2101 internal sensor.
+// Only available on boards using EMC2101 with external diode mode
+// (emc_internal_temp = false), where the internal sensor reads PCB temp
+// independently from the ASIC diode temp.
+float Thermal_get_board_temp(GlobalState * GLOBAL_STATE)
+{
+    if (!GLOBAL_STATE->ASIC_initalized) {
+        return -1;
+    }
+    // Only EMC2101 boards in external diode mode have a separate internal reading
+    if (GLOBAL_STATE->DEVICE_CONFIG.EMC2101 && !GLOBAL_STATE->DEVICE_CONFIG.emc_internal_temp) {
+        return EMC2101_get_internal_temp();
+    }
+    return -1;
+}

@@ -148,6 +148,7 @@ void POWER_MANAGEMENT_task(void * pvParameters)
 
         power_management->chip_temp_avg = Thermal_get_chip_temp(GLOBAL_STATE);
         power_management->chip_temp2_avg = Thermal_get_chip_temp2(GLOBAL_STATE);
+        power_management->board_temp = Thermal_get_board_temp(GLOBAL_STATE);
 
         power_management->vr_temp = Power_get_vreg_temp(GLOBAL_STATE);
         // User requested pause or hardware fault

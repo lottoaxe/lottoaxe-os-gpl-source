@@ -58,6 +58,7 @@ export class SystemApiService {
         temp: 60,
         temp2: 60,
         vrTemp: 45,
+        boardTemp: 38,
         maxPower: 25,
         nominalVoltage: 5,
         hashRate: 475,
@@ -74,7 +75,7 @@ export class SystemApiService {
         freeHeapSpiram: 200504,
         coreVoltage: 1200,
         coreVoltageActual: 1200,
-        hostname: "Bitaxe",
+        hostname: "LottoAxe",
         macAddr: "2C:54:91:88:C9:E3",
         ssid: "default",
         ipv4: "192.168.1.1",
@@ -182,6 +183,7 @@ export class SystemApiService {
     const powerData = [14.45068359375,14.86083984375,15.03173828125,15.1171875,15.1171875,15.1513671875,15.185546875,15.27099609375,15.30517578125,15.33935546875];
     const asicTempData = [-1,58.5,59.625,60.125,60.75,61.5,61.875,62.125,62.5,63];
     const vrTempData = [45,45,45,44,45,44,44,45,45,45];
+    const boardTempData = [36,37,37,38,38,38,39,39,38,38];
     const asicVoltageData = [1221,1223,1219,1223,1217,1222,1221,1219,1221,1221];
     const voltageData = [5196.875,5204.6875,5196.875,5196.875,5196.875,5196.875,5196.875,5196.875,5196.875,5204.6875];
     const currentData = [2284.375,2284.375,2253.125,2284.375,2253.125,2231.25,2284.375,2253.125,2253.125,2284.375];
@@ -207,6 +209,7 @@ export class SystemApiService {
           case eChartLabel.power:        statisticsList[i][j] = powerData[i];        break;
           case eChartLabel.asicTemp:     statisticsList[i][j] = asicTempData[i];     break;
           case eChartLabel.vrTemp:       statisticsList[i][j] = vrTempData[i];       break;
+          case eChartLabel.boardTemp:    statisticsList[i][j] = boardTempData[i];    break;
           case eChartLabel.asicVoltage:  statisticsList[i][j] = asicVoltageData[i];  break;
           case eChartLabel.voltage:      statisticsList[i][j] = voltageData[i];      break;
           case eChartLabel.current:      statisticsList[i][j] = currentData[i];      break;

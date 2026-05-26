@@ -6,6 +6,10 @@ cmake_minimum_required(VERSION 3.5)
 # This example uses an extra component for common functions such as Wi-Fi and Ethernet connection.
 # set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
 
+# LottoAxe OS version — hardcoded so it doesn't inherit upstream ESP-Miner tags
+set(GIT_VERSION "2.2.0")
+set(PROJECT_VER "${GIT_VERSION}")
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 

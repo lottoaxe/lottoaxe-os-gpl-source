@@ -139,6 +139,7 @@ void statistics_task(void * pvParameters)
                 statsData.chipTemperature = power_management->chip_temp_avg;
                 statsData.chipTemperature2 = power_management->chip_temp2_avg;
                 statsData.vrTemperature = power_management->vr_temp;
+                statsData.boardTemperature = power_management->board_temp;
                 statsData.power = power_management->power;
                 statsData.voltage = power_management->voltage;
                 statsData.current = power_management->current;
